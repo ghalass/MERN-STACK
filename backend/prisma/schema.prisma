@@ -22,8 +22,8 @@ model User {
 model Workout {
   id        Int      @id @default(autoincrement())
   title     String
-  reps      String
+  reps      Int
   load      Int
-  reatedAt  DateTime @default(now()) @db.Timestamp(0)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }

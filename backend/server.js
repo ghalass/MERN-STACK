@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const express = require('express')
-const prisma = require('./prismaClient')
 const workoutRoutes = require('./routes/workouts')
 
 // express app
@@ -11,14 +10,15 @@ const app = express()
 app.use(express.json())
 
 app.use(async (req, res, next) => {
-    console.log(req.path, req.method);
+    console.log(req.method, req.path);
     next();
 })
 
 // routes
 app.use('/api/workouts', workoutRoutes)
 
-prisma.$connect()
+prisma
+    .$connect()
     .then(() => {
         // listen for requests
         app.listen(process.env.PORT, () => {
