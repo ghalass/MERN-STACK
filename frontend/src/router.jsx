@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-// import GuestLayout from "./layouts/GuestLayout";
+import GuestLayout from "./layouts/GuestLayout";
 import DefaultLayout from "./layouts/DefaultLayout";
 
 // import Register from "./pages/auth/Register";
@@ -7,6 +7,8 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Workouts from "./pages/Workouts";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 // import Sites from "./pages/sites/Sites";
 // import Typeparcs from "./pages/typeparcs/Typeparcs";
 
@@ -18,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/about", element: <About /> },
       { path: "/workouts", element: <Workouts /> },
+
       // {
       //   path: "/configs/sites",
       //   element: <Sites />,
@@ -28,20 +31,14 @@ const router = createBrowserRouter([
       // },
     ],
   },
-  // {
-  //   path: "/",
-  //   element: <GuestLayout />,
-  //   children: [
-  // {
-  //   path: "/login",
-  //   element: <Login />,
-  // },
-  // {
-  //   path: "/register",
-  //   element: <Register />,
-  // },
-  //   ],
-  // },
+  {
+    path: "/",
+    element: <GuestLayout />,
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Signup /> },
+    ],
+  },
 ]);
 
 export default router;

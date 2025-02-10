@@ -6,19 +6,16 @@ export const useWorkoutsStore = create(
         (set) => ({
             workouts: [],
 
-            setWorkouts: (allWorkouts) =>
-                set((state) => ({
-                    workouts: [...allWorkouts, ...state.workouts],
-                })),
+            setWorkouts: (allWorkouts) => set((state) => ({
+                workouts: [...allWorkouts, ...state.workouts],
+            })),
 
-            createWorkout: (workout) =>
-                set((state) => ({
-                    workouts: [workout, ...state.workouts]
-                })),
-            deleteWorkout: (workout) =>
-                set((state) => ({
-                    workouts: state.workouts.filter((w) => w.id !== workout.id)
-                })),
+            createWorkout: (workout) => set((state) => ({
+                workouts: [workout, ...state.workouts]
+            })),
+            deleteWorkout: (workout) => set((state) => ({
+                workouts: state.workouts.filter((w) => w.id !== workout.id)
+            })),
         })
     )
 )

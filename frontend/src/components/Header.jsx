@@ -39,12 +39,13 @@ const Header = () => {
             </ul>
 
             <div className="d-flex gap-1">
-              <button className="btn btn-sm btn-outline-success" type="submit">
+              <Link to={"/login"} className="btn btn-sm btn-outline-success">
                 Login
-              </button>
-              <button className="btn btn-sm btn-outline-primary" type="submit">
+              </Link>
+
+              <Link to={"/signup"} className="btn btn-sm btn-outline-primary">
                 Register
-              </button>
+              </Link>
             </div>
           </div>
         </div>

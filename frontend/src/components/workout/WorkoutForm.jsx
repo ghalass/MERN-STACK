@@ -53,6 +53,7 @@ const WorkoutForm = () => {
             id="title"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
+            placeholder="title"
           />
           <label htmlFor="title">Title</label>
         </div>
@@ -66,6 +67,7 @@ const WorkoutForm = () => {
             id="load"
             onChange={(e) => setLoad(e.target.value)}
             value={load}
+            placeholder="load"
           />
           <label htmlFor="load">Load</label>
         </div>
@@ -79,6 +81,7 @@ const WorkoutForm = () => {
             id="reps"
             onChange={(e) => setReps(e.target.value)}
             value={reps}
+            placeholder="reps"
           />
           <label htmlFor="reps">Peps</label>
         </div>
