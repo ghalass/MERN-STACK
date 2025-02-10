@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 const Header = () => {
+  const user = useAuthStore((state) => state.user);
+
   return (
     <div>
       <nav className="navbar navbar-expand-md bg-body-tertiary">
@@ -38,7 +41,8 @@ const Header = () => {
               </li>
             </ul>
 
-            <div className="d-flex gap-1">
+            <div className="d-flex gap-1 align-items-center">
+              <div>{user && user.email}</div>
               <Link to={"/login"} className="btn btn-sm btn-outline-success">
                 Login
               </Link>

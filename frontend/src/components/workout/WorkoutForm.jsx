@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { API } from "../../utils/constants";
 import { useWorkoutsStore } from "../../store/workoutStore";
+import Error from "../Error";
 
 const WorkoutForm = () => {
   const [title, setTitle] = useState("");
@@ -87,11 +88,7 @@ const WorkoutForm = () => {
         </div>
 
         <button className="btn btn-outline-primary w-100">Save</button>
-        {error && (
-          <div className="alert alert-danger mt-2 py-2" role="alert">
-            <i className="bi bi-exclamation-circle"></i> {error}
-          </div>
-        )}
+        <Error error={error} />
       </form>
     </div>
   );

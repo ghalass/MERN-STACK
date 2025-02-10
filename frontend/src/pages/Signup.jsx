@@ -1,27 +1,41 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useSignup } from "../hooks/useSignup";
+import Error from "../components/Error";
+
 const Signup = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
+  const { signup, error, isLoading } = useSignup();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = { email, password };
-
-    console.log(user);
+    await signup(name, email, password);
   };
 
   return (
     <>
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
+      <div className="d-flex justify-content-center align-items-center mt-2">
         <form onSubmit={handleSubmit} style={{ width: "400px" }}>
           <h3 className="text-center mb-3">Sign Up</h3>
+
+          <div className="form-floating mb-2">
+            <input
+              type="text"
+              className={`form-control `}
+              id="name"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              placeholder="name"
+            />
+            <label htmlFor="name">Name</label>
+          </div>
+
           <div className="form-floating mb-2">
             <input
               type="email"
@@ -46,7 +60,7 @@ const Signup = () => {
             <label htmlFor="password">Password</label>
           </div>
 
-          <div className="form-floating mb-2">
+          {/* <div className="form-floating mb-2">
             <input
               type="password"
               className={`form-control `}
@@ -56,9 +70,14 @@ const Signup = () => {
               placeholder="passwordConfirm"
             />
             <label htmlFor="passwordConfirm">Password Confirm</label>
-          </div>
+          </div> */}
 
-          <button className="btn btn-outline-primary w-100">Sign Up</button>
+          <button
+            disabled={isLoading}
+            className="btn btn-outline-primary w-100"
+          >
+            Sign Up
+          </button>
 
           <p className="d-flex gap-1 mt-3">
             Your have an account?
@@ -73,6 +92,8 @@ const Signup = () => {
               Home
             </Link>
           </p>
+
+          <Error error={error} />
         </form>
       </div>
     </>
