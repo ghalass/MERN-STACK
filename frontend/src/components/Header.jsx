@@ -37,6 +37,15 @@ const Header = () => {
                 </Link>
               </li>
             </ul>
+
+            <div className="d-flex gap-1">
+              <button className="btn btn-sm btn-outline-success" type="submit">
+                Login
+              </button>
+              <button className="btn btn-sm btn-outline-primary" type="submit">
+                Register
+              </button>
+            </div>
           </div>
         </div>
       </nav>
