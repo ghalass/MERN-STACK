@@ -1,10 +1,14 @@
 require('dotenv').config()
 
 const express = require('express')
+const cors = require('cors');
 const workoutRoutes = require('./routes/workouts')
 
 // express app
 const app = express()
+
+// Enable CORS for all origins
+app.use(cors());
 
 // middleware
 app.use(express.json())

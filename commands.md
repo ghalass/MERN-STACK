@@ -1,5 +1,7 @@
 # backend
 
+npm install cors
+
 # frontend
 
 npm create vite@latest
