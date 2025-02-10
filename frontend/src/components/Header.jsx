@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { useLogout } from "../hooks/useLogout";
 
 const Header = () => {
   const user = useAuthStore((state) => state.user);
+
+  const { logoutUser } = useLogout();
 
   return (
     <div>
@@ -43,12 +46,20 @@ const Header = () => {
 
             <div className="d-flex gap-1 align-items-center">
               <div>{user && user.email}</div>
+
+              <button
+                onClick={logoutUser}
+                className="btn btn-sm btn-outline-success"
+              >
+                Log Out
+              </button>
+
               <Link to={"/login"} className="btn btn-sm btn-outline-success">
-                Login
+                Log In
               </Link>
 
               <Link to={"/signup"} className="btn btn-sm btn-outline-primary">
-                Register
+                Sign Up
               </Link>
             </div>
           </div>
