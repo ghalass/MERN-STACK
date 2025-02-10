@@ -3,19 +3,19 @@ import { API } from "../utils/constants";
 
 import { useAuthStore } from "../store/authStore";
 
-export const useSignup = () => {
+export const useLogin = () => {
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
 
     const login = useAuthStore((state) => state.login);
 
-    const signup = async (name, email, password) => {
+    const loginUser = async (email, password) => {
         setIsLoading(true)
         setError(null)
 
-        const response = await fetch(`${API}/user/signup`, {
+        const response = await fetch(`${API}/user/login`, {
             method: 'POST',
-            body: JSON.stringify({ name, email, password }),
+            body: JSON.stringify({ email, password }),
             headers: {
                 "Content-Type": "application/json",
             }
@@ -36,6 +36,6 @@ export const useSignup = () => {
         }
     }
 
-    return { signup, isLoading, error }
+    return { loginUser, isLoading, error }
 }
 
