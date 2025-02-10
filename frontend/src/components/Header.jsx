@@ -45,22 +45,36 @@ const Header = () => {
             </ul>
 
             <div className="d-flex gap-1 align-items-center">
-              <div>{user && user.email}</div>
+              {user && (
+                <>
+                  <div>{user && user.email}</div>
 
-              <button
-                onClick={logoutUser}
-                className="btn btn-sm btn-outline-success"
-              >
-                Log Out
-              </button>
+                  <button
+                    onClick={logoutUser}
+                    className="btn btn-sm btn-outline-success"
+                  >
+                    Log Out
+                  </button>
+                </>
+              )}
 
-              <Link to={"/login"} className="btn btn-sm btn-outline-success">
-                Log In
-              </Link>
+              {!user && (
+                <>
+                  <Link
+                    to={"/login"}
+                    className="btn btn-sm btn-outline-success"
+                  >
+                    Log In
+                  </Link>
 
-              <Link to={"/signup"} className="btn btn-sm btn-outline-primary">
-                Sign Up
-              </Link>
+                  <Link
+                    to={"/signup"}
+                    className="btn btn-sm btn-outline-primary"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
