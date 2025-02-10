@@ -2,6 +2,7 @@
 
 npm install cors
 npm i bcrypt
+npm i jsonwebtoken
 
 # frontend
 
