@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+// components
+import WorkoutDetails from "../components/workout/WorkoutDetails";
 
 const Home = () => {
   const [workouts, setWorkouts] = useState(null);
@@ -17,9 +20,13 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="m-2">
       {workouts &&
-        workouts.map((workout) => <p key={workout.id}>{workout.title}</p>)}
+        workouts.map((workout) => (
+          <ul className="list-group" key={workout.id}>
+            <WorkoutDetails workout={workout} />
+          </ul>
+        ))}
     </div>
   );
 };
