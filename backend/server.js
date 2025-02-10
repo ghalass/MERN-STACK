@@ -7,11 +7,11 @@ const workoutRoutes = require('./routes/workouts')
 // express app
 const app = express()
 
-// Enable CORS for all origins
-app.use(cors());
-
 // middleware
 app.use(express.json())
+
+// Enable CORS for all origins
+app.use(cors());
 
 app.use(async (req, res, next) => {
     console.log(req.method, req.path);
