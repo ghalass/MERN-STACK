@@ -4,8 +4,8 @@
 import { Navigate, Outlet } from "react-router-dom";
 // import axiosClient from "../axiosClient";
 // import { useStateContext } from "../contexts/contextprovider";
-// import Header from "../components/Header";
-// import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
 export default function DefaultLayout() {
   // const { token, setUser } = useStateContext();
@@ -21,13 +21,13 @@ export default function DefaultLayout() {
 
   return (
     <>
-      {/* <Header /> */}
-      <span>Header</span>
+      <Header />
 
       {/* <Sidebar /> */}
-      <span>Sidebar</span>
 
-      <Outlet />
+      <div className="container-fluid">
+        <Outlet />
+      </div>
     </>
   );
 }
