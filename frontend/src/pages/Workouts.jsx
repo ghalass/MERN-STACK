@@ -10,13 +10,21 @@ import { API } from "../utils/constants";
 //
 import { useWorkoutsStore } from "../store/workoutStore";
 
+import { useAuthStore } from "../store/authStore";
+
 const Workouts = () => {
   const workouts = useWorkoutsStore((state) => state.workouts);
   const setWorkouts = useWorkoutsStore((state) => state.setWorkouts);
 
+  const user = useAuthStore((state) => state.user);
+
   useEffect(() => {
     const fetchWorkouts = async () => {
-      const response = await fetch(`${API}/workouts`);
+      const response = await fetch(`${API}/workouts`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       const json = await response.json();
 
       if (response.ok) {
@@ -24,8 +32,10 @@ const Workouts = () => {
       }
     };
 
-    fetchWorkouts();
-  }, [setWorkouts]);
+    if (user) {
+      fetchWorkouts();
+    }
+  }, [setWorkouts, user]);
 
   return (
     <div className="m-2">

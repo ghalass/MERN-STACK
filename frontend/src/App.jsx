@@ -10,6 +10,8 @@ const App = () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (user) login(user);
+
+    console.log(user);
   }, []);
 
   return <></>;

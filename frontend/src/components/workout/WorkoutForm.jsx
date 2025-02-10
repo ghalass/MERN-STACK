@@ -2,6 +2,7 @@ import { useState } from "react";
 import { API } from "../../utils/constants";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import Error from "../Error";
+import { useAuthStore } from "../../store/authStore";
 
 const WorkoutForm = () => {
   const [title, setTitle] = useState("");
@@ -12,9 +13,15 @@ const WorkoutForm = () => {
   const [emptyFields, setEmptyFields] = useState([]);
 
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
+  const user = useAuthStore((state) => state.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      setError("Vous devez est connecté!");
+      return;
+    }
 
     const workout = { title, load: parseInt(load), reps: parseInt(reps) };
 
@@ -23,6 +30,7 @@ const WorkoutForm = () => {
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
       },
     });
     const json = await response.json();

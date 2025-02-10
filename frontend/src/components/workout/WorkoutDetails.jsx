@@ -3,13 +3,22 @@ import { useWorkoutsStore } from "../../store/workoutStore";
 import { API } from "../../utils/constants";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { fr } from "date-fns/locale";
+import { useAuthStore } from "../../store/authStore";
 
 const WorkoutDetails = ({ workout }) => {
   const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
+  const user = useAuthStore((state) => state.user);
 
   const handleDelete = async () => {
+    if (!user) {
+      return;
+    }
+
     const response = await fetch(`${API}/workouts/${workout.id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
     });
     const json = await response.json();
     if (response.ok) {
