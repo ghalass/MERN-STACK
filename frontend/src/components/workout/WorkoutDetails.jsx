@@ -1,6 +1,8 @@
 import React from "react";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import { API } from "../../utils/constants";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { fr } from "date-fns/locale";
 
 const WorkoutDetails = ({ workout }) => {
   const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
@@ -32,7 +34,12 @@ const WorkoutDetails = ({ workout }) => {
         <strong>Reps: </strong>
         {workout.reps}
       </p>
-      <p>{workout.createdAt}</p>
+      <p>
+        {formatDistanceToNow(new Date(workout.createdAt), {
+          addSuffix: true,
+          locale: fr,
+        })}
+      </p>
     </li>
   );
 };

@@ -9,3 +9,4 @@ npm i react-router-dom
 npm i bootstrap@5.3.3
 npm install zustand
 npm i bootstrap-icons
+npm install date-fns --save

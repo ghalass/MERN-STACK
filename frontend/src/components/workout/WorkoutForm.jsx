@@ -6,7 +6,9 @@ const WorkoutForm = () => {
   const [title, setTitle] = useState("");
   const [load, setLoad] = useState("");
   const [reps, setReps] = useState("");
+
   const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
 
@@ -26,14 +28,15 @@ const WorkoutForm = () => {
 
     if (!response.ok) {
       setError(json.error);
-    }
-    if (response.ok) {
+      setEmptyFields(json.emptyFields);
+    } else {
       setTitle("");
       setLoad("");
       setReps("");
       setError(null);
       console.log("new workout added", json);
       createWorkout(json);
+      setEmptyFields([]);
     }
   };
 
@@ -44,7 +47,9 @@ const WorkoutForm = () => {
         <div className="form-floating mb-2">
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${
+              emptyFields.includes("title") ? "is-invalid" : ""
+            }`}
             id="title"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
@@ -55,7 +60,9 @@ const WorkoutForm = () => {
         <div className="form-floating mb-2">
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${
+              emptyFields.includes("load") ? "is-invalid" : ""
+            }`}
             id="load"
             onChange={(e) => setLoad(e.target.value)}
             value={load}
@@ -66,7 +73,9 @@ const WorkoutForm = () => {
         <div className="form-floating mb-2">
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${
+              emptyFields.includes("reps") ? "is-invalid" : ""
+            }`}
             id="reps"
             onChange={(e) => setReps(e.target.value)}
             value={reps}
@@ -76,8 +85,8 @@ const WorkoutForm = () => {
 
         <button className="btn btn-outline-primary w-100">Save</button>
         {error && (
-          <div className="alert alert-danger mt-2" role="alert">
-            {error}
+          <div className="alert alert-danger mt-2 py-2" role="alert">
+            <i className="bi bi-exclamation-circle"></i> {error}
           </div>
         )}
       </form>
