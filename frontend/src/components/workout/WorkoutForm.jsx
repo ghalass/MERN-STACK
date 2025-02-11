@@ -14,19 +14,21 @@ yup.setLocale(fr);
 
 // 🏋️‍♂️ Schéma de validation avec Yup
 const workoutSchema = yup.object().shape({
-  title: yup.string().min(2).required(),
+  title: yup.string().min(2).required().label("Nom de Workout"),
   load: yup
     .number()
     .typeError("Load doit être un nombre")
     .positive()
     .integer()
-    .required(),
+    .required()
+    .label("Charge (kg)"),
   reps: yup
     .number()
     .typeError("Reps doit être un nombre")
     .positive()
     .integer()
-    .required(),
+    .required()
+    .label("Répétitions"),
 });
 
 const WorkoutForm = () => {

@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAuthStore } from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
+import toast from "react-hot-toast";
 // import Sites from "./pages/sites/Sites";
 // import Typeparcs from "./pages/typeparcs/Typeparcs";
 
@@ -31,6 +32,8 @@ const ProtectedRoute = ({ element }) => {
 
     // remove user from global state
     logout();
+
+    toast.error("Votre session est expirée, veuillez connecter à nouveau!");
 
     return <Navigate to="/login" replace />;
   }
