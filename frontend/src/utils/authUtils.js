@@ -25,7 +25,6 @@ export const isTokenExpired = (token) => {
         });
         // console.log(`Expiration du token : ${tokenExpiryTime}`);
 
-
         return decodedToken.exp < currentTime; // Comparer l'expiration avec le temps actuel
     } catch (error) {
         console.error("Erreur lors de la vérification du token:", error);

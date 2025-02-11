@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const login = useAuthStore((state) => state.login);
@@ -14,7 +15,16 @@ const App = () => {
     // console.log(user);
   }, []);
 
-  return <></>;
+  return (
+    <>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          removeDelay: 1000,
+        }}
+      />
+    </>
+  );
 };
 
 export default App;

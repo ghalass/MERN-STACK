@@ -3,6 +3,7 @@ import { useAuthStore } from "../../store/authStore";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import { API } from "../../utils/constants";
 import { closeModal } from "../../utils/utils";
+import toast from "react-hot-toast";
 
 const WorkoutDeleteModal = ({ workout }) => {
   const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
@@ -27,6 +28,7 @@ const WorkoutDeleteModal = ({ workout }) => {
       if (response.ok) {
         deleteWorkout(json);
         closeModal("workoutDeleteModal");
+        toast.success(`Supprimé avec succès!`);
       }
       setIsProcessing(false);
     }, 2000);

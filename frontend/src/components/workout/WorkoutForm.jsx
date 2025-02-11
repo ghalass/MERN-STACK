@@ -3,6 +3,7 @@ import { API } from "../../utils/constants";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import Error from "../Error";
 import { useAuthStore } from "../../store/authStore";
+import toast from "react-hot-toast";
 
 const WorkoutForm = () => {
   const [title, setTitle] = useState("");
@@ -46,6 +47,7 @@ const WorkoutForm = () => {
       // console.log("new workout added", json);
       createWorkout(json);
       setEmptyFields([]);
+      toast.success("Ajouté avec succès!");
     }
   };
 

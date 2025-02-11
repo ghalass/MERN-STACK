@@ -14,3 +14,5 @@ npm install zustand
 npm i bootstrap-icons
 npm install date-fns --save
 npm i validator
+npm install sweetalert2
+npm install react-hot-toast
