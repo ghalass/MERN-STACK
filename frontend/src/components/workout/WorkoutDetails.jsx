@@ -12,11 +12,19 @@ const WorkoutDetails = ({ workout }) => {
       <li className="list-group-item mb-1">
         <div className="d-flex justify-content-between align-items-center">
           <h4>{workout.title}</h4>
-          <i
-            onClick={() => openModal("workoutDeleteModal")}
-            role="button"
-            className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill"
-          ></i>
+          <div className="d-flex gap-2">
+            <i
+              onClick={() => {}}
+              role="button"
+              className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill"
+            ></i>
+
+            <i
+              onClick={() => openModal("workoutDeleteModal")}
+              role="button"
+              className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill"
+            ></i>
+          </div>
         </div>
         <p>
           <strong>Load (Kg): </strong>

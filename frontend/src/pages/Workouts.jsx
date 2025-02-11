@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
-// components
+// Components
 import WorkoutDetails from "../components/workout/WorkoutDetails";
 import WorkoutForm from "../components/workout/WorkoutForm";
 import WorkoutPagination from "../components/workout/WorkoutPagination";
 
-//
-import { API } from "../utils/constants";
+// Utils
+import { apiRequest } from "../utils/apiRequest";
 
-//
+// Store
 import { useWorkoutsStore } from "../store/workoutStore";
 import { useAuthStore } from "../store/authStore";
 
@@ -19,19 +19,17 @@ const Workouts = () => {
   const setIsLoading = useWorkoutsStore((state) => state.setIsLoading);
 
   const user = useAuthStore((state) => state.user);
-
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
 
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
-      const response = await fetch(`${API}/workouts`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      const json = await response.json();
-
-      if (response.ok) {
-        setWorkouts(json);
+      try {
+        const data = await apiRequest(`/workouts`, "GET", null, user?.token);
+        setWorkouts(data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des workouts :", error);
+      } finally {
         setIsLoading(false);
       }
     };
