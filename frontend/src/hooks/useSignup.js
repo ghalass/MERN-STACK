@@ -3,6 +3,7 @@ import { API } from "../utils/constants";
 
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const useSignup = () => {
     const [error, setError] = useState(null)
@@ -35,6 +36,7 @@ export const useSignup = () => {
             login(json)
             navigate("/");
             setIsLoading(false)
+            toast.success(`Connecté avec succès!`);
         }
     }
 

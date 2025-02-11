@@ -1,7 +1,7 @@
 import { create } from "zustand";
 // import { devtools } from "zustand/middleware"
 
-export const useWorkoutsStore = create((set) => ({
+export const useWorkoutsStore = create((set, get) => ({
     workouts: [],
 
     setWorkouts: (newWorkouts) => {

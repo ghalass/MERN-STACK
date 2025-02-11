@@ -5,8 +5,8 @@ import { useLogin } from "../hooks/useLogin";
 import Error from "../components/Error";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("mike@email.com");
+  const [password, setPassword] = useState("1234");
 
   const { loginUser, error, isLoading } = useLogin();
 

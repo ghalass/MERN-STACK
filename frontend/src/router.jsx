@@ -20,10 +20,16 @@ const ProtectedRoute = ({ element }) => {
   const logout = useAuthStore((state) => state.logout);
 
   if (!user || isTokenExpired(user.token)) {
-    console.warn(
-      "Token expiré ou utilisateur non authentifié. Redirection vers /login."
-    );
+    // console.warn(
+    //   "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+    // );
+
+    // remove user from global state
     logout();
+
+    // remove user from storage
+    localStorage.removeItem("user");
+
     return <Navigate to="/login" replace />;
   }
 

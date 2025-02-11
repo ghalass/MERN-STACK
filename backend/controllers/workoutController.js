@@ -51,6 +51,14 @@ const createWorkout = async (req, res) => {
     }
 
     try {
+        const exists = await prisma.workout.findFirst({
+            where: { title: title }
+        });
+
+        if (exists) {
+            return res.status(400).json({ error: 'Titre déjà utilisé' })
+        }
+
         const workout = await prisma.workout.create({
             data: { title, load, reps }
         })

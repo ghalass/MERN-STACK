@@ -3,6 +3,7 @@ import { API } from "../utils/constants";
 
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const useLogin = () => {
     const [error, setError] = useState(null)
@@ -10,7 +11,7 @@ export const useLogin = () => {
 
     const navigate = useNavigate(); // ⬅️ Initialisation du navigate
 
-    const login = useAuthStore((state) => state.login);
+    // const login = useAuthStore((state) => state.login);
 
     const loginUser = async (email, password) => {
         setIsLoading(true)
@@ -33,12 +34,14 @@ export const useLogin = () => {
             localStorage.setItem('user', JSON.stringify(json))
 
             // update useAuthStore
-            login(json)
-
+            // login(json)
+            useAuthStore.getState().login()
             setIsLoading(false)
 
             // ⬅️ Redirige l'utilisateur vers la page d'accueil
             navigate("/");
+
+            toast.success(`Connecté avec succès!`);
         }
     }
 

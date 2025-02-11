@@ -5,68 +5,105 @@ import Error from "../Error";
 import { useAuthStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 
-const WorkoutForm = () => {
-  const [title, setTitle] = useState("");
-  const [load, setLoad] = useState("");
-  const [reps, setReps] = useState("");
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-  const [error, setError] = useState(null);
-  const [emptyFields, setEmptyFields] = useState([]);
+import * as yup from "yup";
+import { fr } from "yup-locales";
+yup.setLocale(fr);
+
+// 🏋️‍♂️ Schéma de validation avec Yup
+const workoutSchema = yup.object().shape({
+  title: yup.string().min(2).required(),
+  load: yup
+    .number()
+    .typeError("Load doit être un nombre")
+    .positive()
+    .integer()
+    .required(),
+  reps: yup
+    .number()
+    .typeError("Reps doit être un nombre")
+    .positive()
+    .integer()
+    .required(),
+});
+
+const WorkoutForm = () => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(workoutSchema),
+  });
 
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
   const user = useAuthStore((state) => state.user);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
+  const onSubmit = async (data) => {
     if (!user) {
-      setError("Vous devez est connecté!");
+      toast.error("Vous devez être connecté !");
       return;
     }
 
-    const workout = { title, load: parseInt(load), reps: parseInt(reps) };
+    try {
+      const response = await fetch(`${API}/workouts`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
-    const response = await fetch(`${API}/workouts`, {
-      method: "POST",
-      body: JSON.stringify(workout),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    const json = await response.json();
+      const json = await response.json();
 
-    if (!response.ok) {
-      setError(json.error);
-      setEmptyFields(json.emptyFields);
-    } else {
-      setTitle("");
-      setLoad("");
-      setReps("");
-      setError(null);
-      // console.log("new workout added", json);
-      createWorkout(json);
-      setEmptyFields([]);
-      toast.success("Ajouté avec succès!");
+      if (!response.ok) {
+        setError(json.error);
+        if (json.emptyFields) {
+          setEmptyFields(json.emptyFields);
+        }
+
+        // toast.error(json.error || "Une erreur est survenue");
+      } else {
+        reset(); // Réinitialise le formulaire après succès
+        createWorkout(json);
+        setError(null);
+        setEmptyFields([]);
+        toast.success("Ajouté avec succès !");
+      }
+    } catch (error) {
+      setError(error);
+      // toast.error("Erreur lors de la connexion au serveur.");
     }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <h3>Add a new workout</h3>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <span className="badge rounded-pill text-bg-light">
+          <h6>Ajouter un nouveau workout</h6>
+        </span>
+
         <div className="form-floating mb-2">
           <input
             type="text"
             className={`form-control ${
               emptyFields.includes("title") ? "is-invalid" : ""
-            }`}
+            } ${errors.title ? "is-invalid" : ""}`}
             id="title"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
             placeholder="title"
+            {...register("title")}
           />
           <label htmlFor="title">Title</label>
+          {errors.title && (
+            <div className="invalid-feedback">{errors.title.message}</div>
+          )}
         </div>
 
         <div className="form-floating mb-2">
@@ -74,13 +111,15 @@ const WorkoutForm = () => {
             type="number"
             className={`form-control ${
               emptyFields.includes("load") ? "is-invalid" : ""
-            }`}
+            } ${errors.load ? "is-invalid" : ""}`}
             id="load"
-            onChange={(e) => setLoad(e.target.value)}
-            value={load}
             placeholder="load"
+            {...register("load")}
           />
           <label htmlFor="load">Load</label>
+          {errors.load && (
+            <div className="invalid-feedback">{errors.load.message}</div>
+          )}
         </div>
 
         <div className="form-floating mb-2">
@@ -88,13 +127,15 @@ const WorkoutForm = () => {
             type="number"
             className={`form-control ${
               emptyFields.includes("reps") ? "is-invalid" : ""
-            }`}
+            } ${errors.reps ? "is-invalid" : ""}`}
             id="reps"
-            onChange={(e) => setReps(e.target.value)}
-            value={reps}
             placeholder="reps"
+            {...register("reps")}
           />
           <label htmlFor="reps">Peps</label>
+          {errors.reps && (
+            <div className="invalid-feedback">{errors.reps.message}</div>
+          )}
         </div>
 
         <button className="btn btn-outline-primary w-100">Save</button>

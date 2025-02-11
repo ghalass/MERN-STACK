@@ -13,25 +13,23 @@ const WorkoutDeleteModal = ({ workout }) => {
 
   const handleDelete = async () => {
     setIsProcessing(true);
-    setTimeout(async () => {
-      if (!user) {
-        setIsProcessing(false);
-        return;
-      }
-      const response = await fetch(`${API}/workouts/${workout.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      const json = await response.json();
-      if (response.ok) {
-        deleteWorkout(json);
-        closeModal("workoutDeleteModal");
-        toast.success(`Supprimé avec succès!`);
-      }
+    if (!user) {
       setIsProcessing(false);
-    }, 2000);
+      return;
+    }
+    const response = await fetch(`${API}/workouts/${workout.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+    const json = await response.json();
+    if (response.ok) {
+      deleteWorkout(json);
+      closeModal("workoutDeleteModal");
+      toast.success(`Supprimé avec succès!`);
+    }
+    setIsProcessing(false);
   };
   return (
     <div
