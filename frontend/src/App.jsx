@@ -3,7 +3,7 @@ import { useAuthStore } from "./store/authStore";
 
 const App = () => {
   const login = useAuthStore((state) => state.login);
-  const user = useAuthStore((state) => state.user);
+  // const user = useAuthStore((state) => state.user);
 
   // check if user is logged
   useEffect(() => {

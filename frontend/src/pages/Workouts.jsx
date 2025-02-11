@@ -39,15 +39,16 @@ const Workouts = () => {
 
   return (
     <div className="m-2">
+      <p className="text-center">Workouts : {workouts.length}</p>
       <div className="row">
         <div className="col">
           <h3>Liste</h3>
-          {workouts &&
-            workouts.map((workout, index) => (
-              <ul className="list-group" key={index}>
-                <WorkoutDetails workout={workout} />
-              </ul>
-            ))}
+          <ul className="list-group">
+            {workouts &&
+              workouts.map((workout, index) => (
+                <WorkoutDetails key={index} workout={workout} />
+              ))}
+          </ul>
         </div>
         <div className="col">
           <WorkoutForm />

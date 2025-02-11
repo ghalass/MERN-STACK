@@ -1,21 +1,27 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware"
+// import { devtools } from "zustand/middleware"
 
-export const useWorkoutsStore = create(
-    devtools(
-        (set) => ({
-            workouts: [],
+export const useWorkoutsStore = create((set) => ({
+    workouts: [],
 
-            setWorkouts: (allWorkouts) => set((state) => ({
-                workouts: [...allWorkouts, ...state.workouts],
-            })),
+    setWorkouts: (newWorkouts) => {
+        // console.log("Mise à jour du store Zustand:", newWorkouts);
+        set(() => ({ workouts: newWorkouts }));
+    },
 
-            createWorkout: (workout) => set((state) => ({
-                workouts: [workout, ...state.workouts]
-            })),
-            deleteWorkout: (workout) => set((state) => ({
-                workouts: state.workouts.filter((w) => w.id !== workout.id)
-            })),
-        })
-    )
-)
+    // Ajoute un workout au début de la liste
+    createWorkout: (workout) => {
+        // console.log("Ajout d'un nouveau workout:", workout);
+        set((state) => ({
+            workouts: [workout, ...state.workouts],
+        }));
+    },
+
+    // Supprime un workout en fonction de son ID
+    deleteWorkout: (workout) => {
+        // console.log("Suppression du workout:", workout);
+        set((state) => ({
+            workouts: state.workouts.filter((w) => w.id !== workout.id),
+        }));
+    },
+}));

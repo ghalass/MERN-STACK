@@ -10,13 +10,24 @@ import Workouts from "./pages/Workouts";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAuthStore } from "./store/authStore";
+import { isTokenExpired } from "./utils/authUtils";
 // import Sites from "./pages/sites/Sites";
 // import Typeparcs from "./pages/typeparcs/Typeparcs";
 
 // 🔒 Route protégée pour les utilisateurs connectés
 const ProtectedRoute = ({ element }) => {
   const user = useAuthStore((state) => state.user);
-  return user ? element : <Navigate to="/login" replace />;
+  const logout = useAuthStore((state) => state.logout);
+
+  if (!user || isTokenExpired(user.token)) {
+    console.warn(
+      "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+    );
+    logout();
+    return <Navigate to="/login" replace />;
+  }
+
+  return element;
 };
 
 // 🚫 Route accessible uniquement aux invités (empêche les utilisateurs connectés d'accéder à /login et /signup)
@@ -25,6 +36,7 @@ const GuestRoute = ({ element }) => {
   return user ? <Navigate to="/" replace /> : element;
 };
 
+// 🔀 Configuration des routes
 const router = createBrowserRouter([
   {
     path: "/",
