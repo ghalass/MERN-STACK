@@ -2,12 +2,14 @@ import { useState } from "react"
 import { API } from "../utils/constants";
 
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
 
     const login = useAuthStore((state) => state.login);
+    const navigate = useNavigate(); // ⬅️ Initialisation du navigate
 
     const signup = async (name, email, password) => {
         setIsLoading(true)
@@ -31,7 +33,7 @@ export const useSignup = () => {
 
             // update useAuthStore
             login(json)
-
+            navigate("/");
             setIsLoading(false)
         }
     }

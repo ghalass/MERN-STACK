@@ -2,10 +2,13 @@ import { useState } from "react"
 import { API } from "../utils/constants";
 
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
+
+    const navigate = useNavigate(); // ⬅️ Initialisation du navigate
 
     const login = useAuthStore((state) => state.login);
 
@@ -33,6 +36,9 @@ export const useLogin = () => {
             login(json)
 
             setIsLoading(false)
+
+            // ⬅️ Redirige l'utilisateur vers la page d'accueil
+            navigate("/");
         }
     }
 
