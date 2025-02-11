@@ -3,6 +3,11 @@ import { create } from "zustand";
 
 export const useWorkoutsStore = create((set, get) => ({
     workouts: [],
+    isLoading: false,
+
+    setIsLoading: (newVal) => {
+        set(() => ({ isLoading: newVal }));
+    },
 
     setWorkouts: (newWorkouts) => {
         // console.log("Mise à jour du store Zustand:", newWorkouts);

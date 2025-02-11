@@ -86,9 +86,9 @@ const WorkoutForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <span className="badge rounded-pill text-bg-light">
-          <h6>Ajouter un nouveau workout</h6>
-        </span>
+        <div className="badge rounded-pill text-bg-light text-primary mb-2">
+          <span className="h6">Ajouter un nouveau workout</span>
+        </div>
 
         <div className="form-floating mb-2">
           <input
