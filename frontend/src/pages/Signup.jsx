@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useSignup } from "../hooks/useSignup";
 import Error from "../components/Error";
+import SubmitBtn from "../components/forms/SubmitBtn";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -32,6 +33,7 @@ const Signup = () => {
               onChange={(e) => setName(e.target.value)}
               value={name}
               placeholder="name"
+              disabled={isLoading}
             />
             <label htmlFor="name">Name</label>
           </div>
@@ -44,6 +46,7 @@ const Signup = () => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               placeholder="email"
+              disabled={isLoading}
             />
             <label htmlFor="email">E-mail</label>
           </div>
@@ -56,6 +59,7 @@ const Signup = () => {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               placeholder="password"
+              disabled={isLoading}
             />
             <label htmlFor="password">Password</label>
           </div>
@@ -72,12 +76,7 @@ const Signup = () => {
             <label htmlFor="passwordConfirm">Password Confirm</label>
           </div> */}
 
-          <button
-            disabled={isLoading}
-            className="btn btn-outline-primary w-100"
-          >
-            Sign Up
-          </button>
+          <SubmitBtn isLoading={isLoading} text={"Sign Up"} />
 
           <p className="d-flex gap-1 mt-3">
             Your have an account?

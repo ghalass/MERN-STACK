@@ -11,7 +11,7 @@ export const useLogin = () => {
 
     const navigate = useNavigate(); // ⬅️ Initialisation du navigate
 
-    // const login = useAuthStore((state) => state.login);
+    const login = useAuthStore((state) => state.login);
 
     const loginUser = async (email, password) => {
         setIsLoading(true)
@@ -34,8 +34,7 @@ export const useLogin = () => {
             localStorage.setItem('user', JSON.stringify(json))
 
             // update useAuthStore
-            // login(json)
-            useAuthStore.getState().login()
+            login(json)
             setIsLoading(false)
 
             // ⬅️ Redirige l'utilisateur vers la page d'accueil

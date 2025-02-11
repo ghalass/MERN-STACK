@@ -17,18 +17,20 @@ import { isTokenExpired } from "./utils/authUtils";
 // 🔒 Route protégée pour les utilisateurs connectés
 const ProtectedRoute = ({ element }) => {
   const user = useAuthStore((state) => state.user);
+  const loading = useAuthStore((state) => state.loading);
   const logout = useAuthStore((state) => state.logout);
 
-  if (!user || isTokenExpired(user.token)) {
-    // console.warn(
-    //   "Token expiré ou utilisateur non authentifié. Redirection vers /login."
-    // );
+  if (loading) {
+    return <p>Chargement...</p>; // Or show a Spinner component
+  }
+
+  if (!user || isTokenExpired(user?.token)) {
+    console.warn(
+      "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+    );
 
     // remove user from global state
     logout();
-
-    // remove user from storage
-    localStorage.removeItem("user");
 
     return <Navigate to="/login" replace />;
   }

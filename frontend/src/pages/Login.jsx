@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 
 import { useLogin } from "../hooks/useLogin";
 import Error from "../components/Error";
+import SubmitBtn from "../components/forms/SubmitBtn";
 
 const Login = () => {
   const [email, setEmail] = useState("mike@email.com");
-  const [password, setPassword] = useState("1234");
+  const [password, setPassword] = useState("mike@email.com");
 
   const { loginUser, error, isLoading } = useLogin();
 
@@ -29,6 +30,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               placeholder="email"
+              disabled={isLoading}
             />
             <label htmlFor="email">E-mail</label>
           </div>
@@ -41,23 +43,12 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               placeholder="password"
+              disabled={isLoading}
             />
             <label htmlFor="password">Password</label>
           </div>
 
-          <button
-            disabled={isLoading}
-            className="btn btn-outline-primary w-100"
-          >
-            <div className="d-flex justify-content-center align-items-center gap-2">
-              {isLoading && (
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              )}
-              <div>Log In</div>
-            </div>
-          </button>
+          <SubmitBtn isLoading={isLoading} text={"Log In"} />
 
           <p className="d-flex gap-1 mt-3">
             Your don't have an account?
