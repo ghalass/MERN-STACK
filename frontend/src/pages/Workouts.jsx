@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // components
 import WorkoutDetails from "../components/workout/WorkoutDetails";
 import WorkoutForm from "../components/workout/WorkoutForm";
+import WorkoutPagination from "../components/workout/WorkoutPagination";
 
 //
 import { API } from "../utils/constants";
 
 //
 import { useWorkoutsStore } from "../store/workoutStore";
-
 import { useAuthStore } from "../store/authStore";
 
 const Workouts = () => {
@@ -20,13 +20,13 @@ const Workouts = () => {
 
   const user = useAuthStore((state) => state.user);
 
+  const [currentWorkouts, setCurrentWorkouts] = useState([]);
+
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
       const response = await fetch(`${API}/workouts`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
       const json = await response.json();
 
@@ -52,18 +52,24 @@ const Workouts = () => {
 
           {isLoading ? (
             <div className="text-center mt-5">
-              <div className="spinner-border  text-primary" role="status">
+              <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
               <p>Chargement ...</p>
             </div>
           ) : (
-            <ul className="list-group">
-              {workouts &&
-                workouts.map((workout, index) => (
+            <>
+              <ul className="list-group">
+                {currentWorkouts.map((workout, index) => (
                   <WorkoutDetails key={index} workout={workout} />
                 ))}
-            </ul>
+              </ul>
+
+              <WorkoutPagination
+                workouts={workouts}
+                setCurrentWorkouts={setCurrentWorkouts}
+              />
+            </>
           )}
         </div>
         <div className="col">
