@@ -33,7 +33,7 @@ const ProtectedRoute = ({ element }) => {
     // remove user from global state
     logout();
 
-    toast.error("Votre session est expirée, veuillez connecter à nouveau!");
+    // toast.error("Votre session est expirée, veuillez connecter à nouveau!");
 
     return <Navigate to="/login" replace />;
   }
