@@ -46,24 +46,17 @@ const Workouts = () => {
 
   return (
     <div className="m-2">
-      <p className="text-center">Workouts : {workouts.length}</p>
       <div className="row">
         <div className="col">
-          <div className="badge rounded-pill text-bg-light text-primary mb-2">
-            <span className="h6">Liste des workouts</span>
+          <div className="d-flex justify-content-between">
+            <div className="badge rounded-pill text-bg-light text-primary mb-2">
+              <span className="h6">Liste des workouts</span>
+            </div>
+            <div className="badge rounded-pill text-bg-light text-primary mb-2">
+              <span className="h6">Total : {workouts.length}</span>
+            </div>
           </div>
 
-          {/* {isLoading ? (
-            <>
-              <div className="text-center mt-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
-              <p>Chargement ...</p>
-            </div>
-            </>
-          ) : (
-            <> */}
           <Suspense fallback={<LoaderSpinner />}>
             <ul className="list-group">
               {currentWorkouts.map((workout, index) => (
@@ -75,8 +68,6 @@ const Workouts = () => {
               setCurrentWorkouts={setCurrentWorkouts}
             />
           </Suspense>
-          {/* </>
-          )} */}
         </div>
         <div className="col">
           <WorkoutForm />
