@@ -117,6 +117,7 @@ import SubmitBtn from "../../components/forms/SubmitBtn";
 
 const WorkoutForm = () => {
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
+  const updateWorkout = useWorkoutsStore((state) => state.updateWorkout);
   const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
   const user = useAuthStore((state) => state.user);
 
@@ -185,7 +186,12 @@ const WorkoutForm = () => {
           data,
           user.token
         );
+        reset(); // Réinitialise le formulaire après succès
+        updateWorkout(response);
         toast.success("Modifié avec succès !");
+
+        setError(null);
+        setEmptyFields([]);
       }
     } catch (error) {
       setError(error.error);

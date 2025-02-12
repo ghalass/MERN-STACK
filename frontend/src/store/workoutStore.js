@@ -1,5 +1,4 @@
 import { create } from "zustand";
-// import { devtools } from "zustand/middleware"
 
 export const useWorkoutsStore = create((set, get) => ({
     workouts: [],
@@ -15,23 +14,29 @@ export const useWorkoutsStore = create((set, get) => ({
     },
 
     setWorkouts: (newWorkouts) => {
-        // console.log("Mise à jour du store Zustand:", newWorkouts);
         set(() => ({ workouts: newWorkouts }));
     },
 
-    // Ajoute un workout au début de la liste
+    // ✅ Ajoute un workout
     createWorkout: (workout) => {
-        // console.log("Ajout d'un nouveau workout:", workout);
         set((state) => ({
             workouts: [workout, ...state.workouts],
         }));
     },
 
-    // Supprime un workout en fonction de son ID
+    // ✅ Supprime un workout
     deleteWorkout: (workout) => {
-        // console.log("Suppression du workout:", workout);
         set((state) => ({
             workouts: state.workouts.filter((w) => w.id !== workout.id),
+        }));
+    },
+
+    // ✅ Met à jour un workout existant
+    updateWorkout: (updatedWorkout) => {
+        set((state) => ({
+            workouts: state.workouts.map((workout) =>
+                workout.id === updatedWorkout.id ? { ...workout, ...updatedWorkout } : workout
+            ),
         }));
     },
 }));
