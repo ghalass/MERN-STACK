@@ -35,16 +35,8 @@ const Profile = () => {
 
   return (
     <div className="mt-2">
-      <div className="d-flex gap-1 ">
-        <div className="" style={{ width: "400px" }}>
-          <ProfileInfos userData={userData} />
-        </div>
-
-        <div className="w-100 ">
-          <div className="card">
-            <div className="card-body"></div>
-          </div>
-        </div>
+      <div className="mx-auto" style={{ width: "300px" }}>
+        <ProfileInfos userData={userData} />
       </div>
 
       <ProfileChangePasswordModal userData={userData} />

@@ -15,19 +15,20 @@ function Header() {
   return (
     <Navbar expand="md" className="bg-body-tertiary">
       <Container fluid>
-        <Navbar.Brand href={"/"}>APP</Navbar.Brand>
+        <Navbar.Brand>
+          <Nav.Link as={Link} to="/">
+            APP
+          </Nav.Link>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to={"/"} className="nav-link">
-              Home
+            <Link to={"/workouts"} className="nav-link">
+              Workouts
             </Link>
 
             <Link to={"/about"} className="nav-link">
               About
-            </Link>
-            <Link to={"/workouts"} className="nav-link">
-              Workouts
             </Link>
           </Nav>
 
