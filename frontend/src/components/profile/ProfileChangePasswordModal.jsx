@@ -46,7 +46,7 @@ const ProfileChangePasswordModal = ({ userData }) => {
   } = useForm({
     resolver: yupResolver(newPasswordSchema),
     defaultValues: {
-      oldPassword: "",
+      newPassword: "",
       oldPassword: "",
     },
   });

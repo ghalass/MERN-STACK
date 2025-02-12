@@ -10,7 +10,8 @@ import LoaderSpinner from "./components/ui/LoaderSpinner";
 
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
-const Workouts = lazy(() => import("./pages/Workouts"));
+import Workouts from "./pages/Workouts";
+// const Workouts = lazy(() => import("./pages/Workouts"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -65,18 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/workouts",
-        element: (
-          <Suspense>
-            <Workouts />
-          </Suspense>
-          // <ProtectedRoute
-          //   element={
-          //     <Suspense>
-          //       <Workouts />
-          //     </Suspense>
-          //   }
-          // />
-        ),
+        element: <ProtectedRoute element={<Workouts />} />,
       },
       {
         path: "/profile",
