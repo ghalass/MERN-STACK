@@ -1,4 +1,4 @@
-import { Modal } from 'bootstrap';
+import { Modal } from "bootstrap";
 
 export function openModal(modalId) {
     const modalElement = document.getElementById(modalId);
@@ -8,9 +8,12 @@ export function openModal(modalId) {
     }
 
     const myModal = new Modal(modalElement);
-    // Remove aria-hidden from the modal element directly
-    modalElement.removeAttribute('aria-hidden');
     myModal.show();
+
+    // ✅ Ajoute un délai pour forcer la mise à jour du DOM
+    setTimeout(() => {
+        modalElement.removeAttribute("aria-hidden");
+    }, 100);
 }
 
 
@@ -22,10 +25,15 @@ export function closeModal(modalId) {
     }
 
     const myModal = Modal.getInstance(modalElement);
-
     if (myModal) {
         myModal.hide();
-        // Directly manipulate the modal DOM element to set aria-hidden
-        modalElement.setAttribute('aria-hidden', 'true');
+
+        // ✅ Attendre la fin de l'animation pour modifier aria-hidden et déplacer le focus
+        setTimeout(() => {
+            modalElement.setAttribute("aria-hidden", "true");
+
+            // ✅ Déplacer le focus vers <body> pour éviter le problème d'accessibilité
+            document.body.focus();
+        }, 300); // Correspond au temps d'animation du modal Bootstrap
     }
 }

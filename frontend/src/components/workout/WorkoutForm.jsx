@@ -276,12 +276,12 @@ const OperationType = ({ currentWorkout }) => {
       {currentWorkout?.id === 0 ? (
         <div>
           <span>Ajouter</span>
-          <i className="bi bi-plus-circle ms-2"></i>
+          <i className="bi bi-plus-lg ms-2"></i>
         </div>
       ) : (
         <div>
           <span>Modifier</span>
-          <i className="bi bi-plus-circle ms-2"></i>
+          <i className="bi bi-pencil ms-2"></i>
         </div>
       )}
     </>
