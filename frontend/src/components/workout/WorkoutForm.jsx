@@ -12,9 +12,9 @@ import { workoutSchema } from "../../utils/workoutValidation";
 import { apiRequest } from "../../utils/apiRequest";
 
 import FormInput from "../../components/forms/FormInput";
-import SubmitBtn from "../../components/forms/SubmitBtn";
+import SubmitButton from "../../components/forms/SubmitButton";
 
-const WorkoutForm = () => {
+const WorkoutForm = ({ operation, setOperation }) => {
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
   const updateWorkout = useWorkoutsStore((state) => state.updateWorkout);
   const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
@@ -25,7 +25,6 @@ const WorkoutForm = () => {
   );
 
   const [error, setError] = useState(null);
-  const [emptyFields, setEmptyFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // 🛠️ Ajout de `defaultValues` pour préremplir les inputs
@@ -54,6 +53,15 @@ const WorkoutForm = () => {
     });
   }, [currentWorkout, reset]);
 
+  useEffect(() => {
+    reset({
+      id: 0,
+      title: "",
+      load: 0,
+      reps: 0,
+    });
+  }, []);
+
   const onSubmit = async (data) => {
     if (!user) {
       toast.error("Vous devez être connecté !");
@@ -63,6 +71,7 @@ const WorkoutForm = () => {
     setIsLoading(true);
 
     try {
+      // CREATE
       if (data.id === 0) {
         // create
         const response = await apiRequest(
@@ -71,32 +80,30 @@ const WorkoutForm = () => {
           data,
           user.token
         );
-        reset(); // Réinitialise le formulaire après succès
         createWorkout(response);
         toast.success("Ajouté avec succès !");
-
+        reset();
         setError(null);
-        setEmptyFields([]);
       } else {
-        // update
+        // UPDATE
         const response = await apiRequest(
           `/workouts/${data.id}`,
           "PATCH",
           data,
           user.token
         );
-        reset(); // Réinitialise le formulaire après succès
         updateWorkout(response);
         toast.success("Modifié avec succès !");
-
+        reset({
+          id: 0,
+          title: "",
+          load: 0,
+          reps: 0,
+        });
         setError(null);
-        setEmptyFields([]);
       }
     } catch (error) {
       setError(error.error);
-      if (error.emptyFields) {
-        setEmptyFields(error.emptyFields);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -113,6 +120,7 @@ const WorkoutForm = () => {
           <i
             onClick={() => {
               setCurrentWorkout({ id: 0, title: "", load: 0, reps: 0 });
+              setOperation("add");
             }}
             role="button"
             className="bi bi-plus-lg btn btn-sm btn-outline-primary rounded-pill"
@@ -158,30 +166,9 @@ const WorkoutForm = () => {
         errors={errors}
       />
 
-      <SubmitBtn
-        isLoading={isLoading}
-        text={<OperationType currentWorkout={currentWorkout} />}
-      />
+      <SubmitButton isProcessing={isLoading} operation={operation} />
       <Error error={error} />
     </form>
-  );
-};
-
-const OperationType = ({ currentWorkout }) => {
-  return (
-    <>
-      {currentWorkout?.id === 0 ? (
-        <div>
-          <span>Ajouter</span>
-          <i className="bi bi-plus-lg ms-2"></i>
-        </div>
-      ) : (
-        <div>
-          <span>Modifier</span>
-          <i className="bi bi-pencil ms-2"></i>
-        </div>
-      )}
-    </>
   );
 };
 

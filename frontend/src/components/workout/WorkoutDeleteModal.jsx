@@ -5,7 +5,7 @@ import { API } from "../../utils/constants";
 import { closeModal } from "../../utils/utils";
 import toast from "react-hot-toast";
 
-const WorkoutDeleteModal = ({ workout }) => {
+const WorkoutDeleteModal = ({ workout, setOperation }) => {
   const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
   const user = useAuthStore((state) => state.user);
 
@@ -48,7 +48,10 @@ const WorkoutDeleteModal = ({ workout }) => {
               Suppression d'un Workout
             </h1>
             <button
-              onClick={() => closeModal("workoutDeleteModal")}
+              onClick={() => {
+                closeModal("workoutDeleteModal");
+                setOperation(null);
+              }}
               disabled={isProcessing}
               type="button"
               className="btn-close"
@@ -71,7 +74,10 @@ const WorkoutDeleteModal = ({ workout }) => {
           </div>
           <div className="modal-footer">
             <button
-              onClick={() => closeModal("workoutDeleteModal")}
+              onClick={() => {
+                closeModal("workoutDeleteModal");
+                setOperation(null);
+              }}
               disabled={isProcessing}
               type="button"
               className="btn btn-sm btn-outline-secondary"

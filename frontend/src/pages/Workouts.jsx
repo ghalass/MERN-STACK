@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
 // Components
-const LoaderSpinner = lazy(() => import("../components/ui/LoaderSpinner"));
+import LoaderSpinner from "../components/ui/LoaderSpinner";
 import WorkoutForm from "../components/workout/WorkoutForm";
 const WorkoutDetails = lazy(() =>
   import("../components/workout/WorkoutDetails")
@@ -26,6 +26,8 @@ const Workouts = () => {
   const user = useAuthStore((state) => state.user);
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
 
+  const [operation, setOperation] = useState(null);
+
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
@@ -44,6 +46,10 @@ const Workouts = () => {
     }
   }, [setWorkouts, user]);
 
+  useEffect(() => {
+    console.log("workouts rendred");
+  });
+
   return (
     <div className="m-2">
       <div className="row">
@@ -61,7 +67,12 @@ const Workouts = () => {
               <Suspense fallback={<LoaderSpinner />}>
                 <ul className="list-group">
                   {currentWorkouts.map((workout, index) => (
-                    <WorkoutDetails key={index} workout={workout} />
+                    <WorkoutDetails
+                      key={index}
+                      workout={workout}
+                      operation={operation}
+                      setOperation={setOperation}
+                    />
                   ))}
                 </ul>
                 <WorkoutPagination
@@ -76,7 +87,7 @@ const Workouts = () => {
         <div className="col">
           <div className="card">
             <div className="card-body">
-              <WorkoutForm />
+              <WorkoutForm operation={operation} setOperation={setOperation} />
             </div>
           </div>
         </div>
