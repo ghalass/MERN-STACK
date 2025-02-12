@@ -4,6 +4,11 @@ export const useWorkoutsStore = create((set, get) => ({
     workouts: [],
     isLoading: false,
     currentWorkout: null,
+    op: null,
+
+    setOp: (newVal) => {
+        set(() => ({ op: newVal }));
+    },
 
     setIsLoading: (newVal) => {
         set(() => ({ isLoading: newVal }));

@@ -20,6 +20,9 @@ const WorkoutForm = ({ operation, setOperation }) => {
   const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
   const user = useAuthStore((state) => state.user);
 
+  const op = useWorkoutsStore((state) => state.op);
+  const setOp = useWorkoutsStore((state) => state.setOp);
+
   const setCurrentWorkout = useWorkoutsStore(
     (state) => state.setCurrentWorkout
   );
@@ -72,7 +75,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
 
     try {
       // CREATE
-      if (data.id === 0) {
+      if (operation === "add") {
         // create
         const response = await apiRequest(
           "/workouts",
@@ -84,7 +87,8 @@ const WorkoutForm = ({ operation, setOperation }) => {
         toast.success("Ajouté avec succès !");
         reset();
         setError(null);
-      } else {
+      }
+      if (operation === "update") {
         // UPDATE
         const response = await apiRequest(
           `/workouts/${data.id}`,
@@ -113,7 +117,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="d-flex justify-content-between">
         <div className="badge rounded-pill text-bg-light text-primary mb-2">
-          <span className="h6">Ajouter un nouveau workout</span>
+          <span className="h6">Ajouter un nouveau workout </span>
         </div>
 
         <div>
