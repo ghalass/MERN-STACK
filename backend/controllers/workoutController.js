@@ -19,7 +19,7 @@ const getWorkout = async (req, res) => {
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
-            return res.status(404).json({ error: 'No such workout' });
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" });
         }
 
         const workout = await prisma.workout.findFirst({
@@ -27,7 +27,7 @@ const getWorkout = async (req, res) => {
         });
 
         if (!workout) {
-            return res.status(404).json({ error: "No such workout" })
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
         res.status(200).json(workout)
@@ -74,7 +74,7 @@ const deleteWorkout = async (req, res) => {
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
-            return res.status(404).json({ error: 'No such workout' });
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
         const workout = await prisma.workout.findFirst({
@@ -82,7 +82,7 @@ const deleteWorkout = async (req, res) => {
         });
 
         if (!workout) {
-            return res.status(404).json({ error: "No such workout" })
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
         await prisma.workout.delete({
@@ -101,7 +101,7 @@ const updateWorkout = async (req, res) => {
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
-            return res.status(404).json({ error: 'No such workout' });
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
         const workout = await prisma.workout.findFirst({
@@ -109,7 +109,7 @@ const updateWorkout = async (req, res) => {
         });
 
         if (!workout) {
-            return res.status(404).json({ error: "No such workout" })
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
         const updatedWorkout = await prisma.workout.update({

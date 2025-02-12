@@ -5,8 +5,13 @@ import { fr } from "date-fns/locale";
 import { openModal } from "../../utils/utils";
 
 import WorkoutDeleteModal from "../../components/workout/WorkoutDeleteModal";
+import { useWorkoutsStore } from "../../store/workoutStore";
 
 const WorkoutDetails = ({ workout }) => {
+  const setCurrentWorkout = useWorkoutsStore(
+    (state) => state.setCurrentWorkout
+  );
+
   return (
     <>
       <li className="list-group-item mb-1">
@@ -14,7 +19,9 @@ const WorkoutDetails = ({ workout }) => {
           <h4>{workout.title}</h4>
           <div className="d-flex gap-2">
             <i
-              onClick={() => {}}
+              onClick={() => {
+                setCurrentWorkout(workout);
+              }}
               role="button"
               className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill"
             ></i>

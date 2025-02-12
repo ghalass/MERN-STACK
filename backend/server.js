@@ -28,8 +28,9 @@ prisma
     .$connect()
     .then(() => {
         // listen for requests
-        app.listen(process.env.PORT, () => {
-            console.log(`connected to db & listening on port ${process.env.PORT}`);
+        const PORT = process.env.PORT || 5000;
+        app.listen(PORT, () => {
+            console.log(`connected to db & listening on port ${PORT}`);
         })
     })
     .catch((error) => {

@@ -8,11 +8,17 @@ const FormInput = ({
   value,
   onChange,
   disabled = false,
+  hidden = false, // ✅ Ajout de la prop hidden
 }) => {
   // Vérifier si on utilise react-hook-form ou un input classique
   const inputProps = register
     ? { ...register(id) } // ✅ Gestion react-hook-form
     : { value: value || "", onChange: onChange }; // ✅ Gestion avec useState
+
+  // 📌 Si l'input est caché, on retourne seulement l'input sans label ni div
+  if (hidden) {
+    return <input type="hidden" id={id} {...inputProps} />;
+  }
 
   return (
     <div className="form-floating mb-2">

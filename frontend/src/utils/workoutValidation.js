@@ -6,6 +6,7 @@ yup.setLocale(fr);
 
 // 🏋️‍♂️ Schéma de validation pour le formulaire Workout
 export const workoutSchema = yup.object().shape({
+    id: yup.number().optional(),
     title: yup.string().min(2).required().label("Nom de Workout"),
     load: yup
         .number()
