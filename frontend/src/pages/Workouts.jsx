@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 // Components
-import WorkoutDetails from "../components/workout/WorkoutDetails";
+const LoaderSpinner = lazy(() => import("../components/ui/LoaderSpinner"));
 import WorkoutForm from "../components/workout/WorkoutForm";
-import WorkoutPagination from "../components/workout/WorkoutPagination";
+const WorkoutDetails = lazy(() =>
+  import("../components/workout/WorkoutDetails")
+);
+const WorkoutPagination = lazy(() =>
+  import("../components/workout/WorkoutPagination")
+);
 
 // Utils
 import { apiRequest } from "../utils/apiRequest";
@@ -48,27 +53,30 @@ const Workouts = () => {
             <span className="h6">Liste des workouts</span>
           </div>
 
-          {isLoading ? (
-            <div className="text-center mt-5">
+          {/* {isLoading ? (
+            <>
+              <div className="text-center mt-5">
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
               <p>Chargement ...</p>
             </div>
-          ) : (
-            <>
-              <ul className="list-group">
-                {currentWorkouts.map((workout, index) => (
-                  <WorkoutDetails key={index} workout={workout} />
-                ))}
-              </ul>
-
-              <WorkoutPagination
-                workouts={workouts}
-                setCurrentWorkouts={setCurrentWorkouts}
-              />
             </>
-          )}
+          ) : (
+            <> */}
+          <Suspense fallback={<LoaderSpinner />}>
+            <ul className="list-group">
+              {currentWorkouts.map((workout, index) => (
+                <WorkoutDetails key={index} workout={workout} />
+              ))}
+            </ul>
+            <WorkoutPagination
+              workouts={workouts}
+              setCurrentWorkouts={setCurrentWorkouts}
+            />
+          </Suspense>
+          {/* </>
+          )} */}
         </div>
         <div className="col">
           <WorkoutForm />

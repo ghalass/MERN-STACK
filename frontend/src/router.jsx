@@ -1,30 +1,16 @@
-import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
 
-// Lazy load pages and layouts
-const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
-const GuestLayout = lazy(() => import("./layouts/GuestLayout"));
+import DefaultLayout from "./layouts/DefaultLayout";
+import GuestLayout from "./layouts/GuestLayout";
 
-const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
-const Workouts = lazy(() => import("./pages/Workouts"));
-
-const Login = lazy(() => import("./pages/Login"));
-const Signup = lazy(() => import("./pages/Signup"));
-
-const LoaderSpinner = () => {
-  return (
-    <div className="text-center mt-5">
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Chargement...</span>
-      </div>
-      <p>Chargement ...</p>
-      <p className="text-primary">Veuillez patienter</p>
-    </div>
-  );
-};
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Workouts from "./pages/Workouts";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import LoaderSpinner from "./components/ui/LoaderSpinner";
 
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
@@ -33,7 +19,7 @@ const ProtectedRoute = ({ element }) => {
   const logout = useAuthStore((state) => state.logout);
 
   if (loading) {
-    return <p>Chargement...</p>; // Or show a Spinner component
+    return <LoaderSpinner message="Vérification d'authentification..." />; // Or show a Spinner component
   }
 
   if (!user || isTokenExpired(user?.token)) {
@@ -53,65 +39,36 @@ const GuestRoute = ({ element }) => {
   return user ? <Navigate to="/" replace /> : element;
 };
 
-// 🔀 Router Configuration with Suspense
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense fallback={<LoaderSpinner />}>
-        <DefaultLayout />
-      </Suspense>
-    ),
+    element: <DefaultLayout />,
     children: [
       {
         path: "/",
-        element: (
-          <Suspense fallback={<LoaderSpinner />}>
-            <Home />
-          </Suspense>
-        ),
+        element: <Home />,
       },
       {
         path: "/about",
-        element: (
-          <Suspense fallback={<LoaderSpinner />}>
-            <About />
-          </Suspense>
-        ),
+        element: <About />,
       },
       {
         path: "/workouts",
-        element: (
-          <Suspense fallback={<LoaderSpinner />}>
-            <ProtectedRoute element={<Workouts />} />
-          </Suspense>
-        ),
+        element: <ProtectedRoute element={<Workouts />} />,
       },
     ],
   },
   {
     path: "/",
-    element: (
-      <Suspense fallback={<LoaderSpinner />}>
-        <GuestLayout />
-      </Suspense>
-    ),
+    element: <GuestLayout />,
     children: [
       {
         path: "/login",
-        element: (
-          <Suspense fallback={<LoaderSpinner />}>
-            <GuestRoute element={<Login />} />
-          </Suspense>
-        ),
+        element: <GuestRoute element={<Login />} />,
       },
       {
         path: "/signup",
-        element: (
-          <Suspense fallback={<LoaderSpinner />}>
-            <GuestRoute element={<Signup />} />
-          </Suspense>
-        ),
+        element: <GuestRoute element={<Signup />} />,
       },
     ],
   },

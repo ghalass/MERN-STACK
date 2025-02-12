@@ -223,6 +223,8 @@ const WorkoutForm = () => {
           label="Id"
           placeholder="Id"
           register={register}
+          disabled={true}
+          hidden
         />
 
         <FormInput
