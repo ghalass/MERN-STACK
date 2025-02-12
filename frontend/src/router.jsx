@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
@@ -13,9 +12,7 @@ import About from "./pages/About";
 import Workouts from "./pages/Workouts";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-// import Profile from "./pages/Profile";
-
-const Profile = lazy(() => import("./pages/Profile"));
+import Profile from "./pages/Profile";
 
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
@@ -63,15 +60,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: (
-          <ProtectedRoute
-            element={
-              <Suspense>
-                <Profile />
-              </Suspense>
-            }
-          />
-        ),
+        element: <ProtectedRoute element={<Profile />} />,
       },
     ],
   },

@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-md bg-body-tertiary">
+      <nav className="navbar navbar-expand-md bg-body-tertiary shadow-sm">
         <div className="container-fluid">
           <Link to={"/"} className="navbar-brand">
             APP
@@ -46,18 +46,46 @@ const Header = () => {
 
             <div className="d-flex gap-1 align-items-center">
               {user && (
-                <div className="d-flex gap-2 align-items-center">
-                  <Link to={"/profile"} className="nav-link text-secondary">
-                    <div>{user && user.email}</div>
-                  </Link>
+                <>
+                  <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {user && user.email}
+                      </a>
+                      <ul className="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <Link to={"/profile"} className="dropdown-item">
+                            <i className="bi bi-person me-1"></i>
+                            Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <a className="dropdown-item" href="#">
+                            Another action
+                          </a>
+                        </li>
+                        <li>
+                          <hr className="dropdown-divider" />
+                        </li>
 
-                  <button
-                    onClick={logoutUser}
-                    className="btn btn-sm btn-outline-success"
-                  >
-                    Log Out
-                  </button>
-                </div>
+                        <li>
+                          <button
+                            onClick={logoutUser}
+                            className="dropdown-item text-danger"
+                          >
+                            <i className="bi bi-power me-1"></i>Se Déconnecter
+                          </button>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </>
               )}
 
               {!user && (
