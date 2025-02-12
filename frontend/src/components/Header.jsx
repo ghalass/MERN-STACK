@@ -46,8 +46,10 @@ const Header = () => {
 
             <div className="d-flex gap-1 align-items-center">
               {user && (
-                <>
-                  <div>{user && user.email}</div>
+                <div className="d-flex gap-2 align-items-center">
+                  <Link to={"/profile"} className="nav-link text-secondary">
+                    <div>{user && user.email}</div>
+                  </Link>
 
                   <button
                     onClick={logoutUser}
@@ -55,7 +57,7 @@ const Header = () => {
                   >
                     Log Out
                   </button>
-                </>
+                </div>
               )}
 
               {!user && (

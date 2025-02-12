@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
@@ -5,12 +6,16 @@ import { isTokenExpired } from "./utils/authUtils";
 import DefaultLayout from "./layouts/DefaultLayout";
 import GuestLayout from "./layouts/GuestLayout";
 
+import LoaderSpinner from "./components/ui/LoaderSpinner";
+
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Workouts from "./pages/Workouts";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import LoaderSpinner from "./components/ui/LoaderSpinner";
+// import Profile from "./pages/Profile";
+
+const Profile = lazy(() => import("./pages/Profile"));
 
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
@@ -55,6 +60,18 @@ const router = createBrowserRouter([
       {
         path: "/workouts",
         element: <ProtectedRoute element={<Workouts />} />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute
+            element={
+              <Suspense>
+                <Profile />
+              </Suspense>
+            }
+          />
+        ),
       },
     ],
   },

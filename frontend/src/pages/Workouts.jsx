@@ -48,29 +48,37 @@ const Workouts = () => {
     <div className="m-2">
       <div className="row">
         <div className="col">
-          <div className="d-flex justify-content-between">
-            <div className="badge rounded-pill text-bg-light text-primary mb-2">
-              <span className="h6">Liste des workouts</span>
-            </div>
-            <div className="badge rounded-pill text-bg-light text-primary mb-2">
-              <span className="h6">Total : {workouts.length}</span>
+          <div className="card">
+            <div className="card-body">
+              <div className="d-flex justify-content-between">
+                <div className="badge rounded-pill text-bg-light text-primary mb-2">
+                  <span className="h6">Liste des workouts</span>
+                </div>
+                <div className="badge rounded-pill text-bg-light text-primary mb-2">
+                  <span className="h6">Total : {workouts.length}</span>
+                </div>
+              </div>
+              <Suspense fallback={<LoaderSpinner />}>
+                <ul className="list-group">
+                  {currentWorkouts.map((workout, index) => (
+                    <WorkoutDetails key={index} workout={workout} />
+                  ))}
+                </ul>
+                <WorkoutPagination
+                  workouts={workouts}
+                  setCurrentWorkouts={setCurrentWorkouts}
+                />
+              </Suspense>
             </div>
           </div>
-
-          <Suspense fallback={<LoaderSpinner />}>
-            <ul className="list-group">
-              {currentWorkouts.map((workout, index) => (
-                <WorkoutDetails key={index} workout={workout} />
-              ))}
-            </ul>
-            <WorkoutPagination
-              workouts={workouts}
-              setCurrentWorkouts={setCurrentWorkouts}
-            />
-          </Suspense>
         </div>
+
         <div className="col">
-          <WorkoutForm />
+          <div className="card">
+            <div className="card-body">
+              <WorkoutForm />
+            </div>
+          </div>
         </div>
       </div>
     </div>
