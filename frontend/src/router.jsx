@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
@@ -7,12 +8,12 @@ import GuestLayout from "./layouts/GuestLayout";
 
 import LoaderSpinner from "./components/ui/LoaderSpinner";
 
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Workouts from "./pages/Workouts";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Profile from "./pages/Profile";
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Workouts = lazy(() => import("./pages/Workouts"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Profile = lazy(() => import("./pages/Profile"));
 
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
@@ -48,19 +49,46 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <Suspense>
+            <Home />
+          </Suspense>
+        ),
       },
       {
         path: "/about",
-        element: <About />,
+        element: (
+          <Suspense>
+            <About />
+          </Suspense>
+        ),
       },
       {
         path: "/workouts",
-        element: <ProtectedRoute element={<Workouts />} />,
+        element: (
+          <Suspense>
+            <Workouts />
+          </Suspense>
+          // <ProtectedRoute
+          //   element={
+          //     <Suspense>
+          //       <Workouts />
+          //     </Suspense>
+          //   }
+          // />
+        ),
       },
       {
         path: "/profile",
-        element: <ProtectedRoute element={<Profile />} />,
+        element: (
+          <ProtectedRoute
+            element={
+              <Suspense>
+                <Profile />
+              </Suspense>
+            }
+          />
+        ),
       },
     ],
   },
@@ -70,11 +98,27 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/login",
-        element: <GuestRoute element={<Login />} />,
+        element: (
+          <GuestRoute
+            element={
+              <Suspense>
+                <Login />
+              </Suspense>
+            }
+          />
+        ),
       },
       {
         path: "/signup",
-        element: <GuestRoute element={<Signup />} />,
+        element: (
+          <GuestRoute
+            element={
+              <Suspense>
+                <Signup />
+              </Suspense>
+            }
+          />
+        ),
       },
     ],
   },
