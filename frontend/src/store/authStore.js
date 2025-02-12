@@ -1,8 +1,6 @@
 import { create } from "zustand";
-// import { devtools } from "zustand/middleware"
 
-export const useAuthStore = create((set, get) => ({
-    // user: JSON.parse(localStorage.getItem("user")) || null,
+const useAuthStore = create((set, get) => ({
     user: null,
     loading: true,
 
@@ -12,17 +10,14 @@ export const useAuthStore = create((set, get) => ({
     },
 
     login: (currentUser) => {
-        // console.log("login du store Zustand:", currentUser);
         set({ user: currentUser, loading: false });
     },
 
     logout: () => {
         const currentUser = get().user;
-        // console.log("logout du store Zustand:", currentUser);
         set({ user: null, loading: false });
-
-        // remove user from storage
         localStorage.removeItem("user");
     },
-})
-)
+}));
+
+export default useAuthStore;

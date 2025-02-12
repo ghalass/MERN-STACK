@@ -10,7 +10,7 @@ import { apiRequest } from "../utils/apiRequest";
 
 // Store
 import { useWorkoutsStore } from "../store/workoutStore";
-import { useAuthStore } from "../store/authStore";
+import useAuthStore from "../store/authStore";
 
 const Workouts = () => {
   const workouts = useWorkoutsStore((state) => state.workouts);

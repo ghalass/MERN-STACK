@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthStore } from "../../store/authStore";
+import useAuthStore from "../../store/authStore";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import { API } from "../../utils/constants";
 import { closeModal } from "../../utils/utils";

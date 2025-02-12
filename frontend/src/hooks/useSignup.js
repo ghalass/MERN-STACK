@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { API } from "../utils/constants";
 
-import { useAuthStore } from "../store/authStore";
+import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 

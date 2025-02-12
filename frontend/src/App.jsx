@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAuthStore } from "./store/authStore";
+import useAuthStore from "./store/authStore";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {

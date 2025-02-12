@@ -1,7 +1,7 @@
 // import { useState } from "react";
 // import { useWorkoutsStore } from "../../store/workoutStore";
 // import Error from "../Error";
-// import { useAuthStore } from "../../store/authStore";
+// import useAuthStore from "../../store/authStore";
 // import toast from "react-hot-toast";
 
 // import { useForm } from "react-hook-form";
@@ -102,7 +102,7 @@
 import { useState, useEffect } from "react";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import Error from "../Error";
-import { useAuthStore } from "../../store/authStore";
+import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
 
 import { useForm } from "react-hook-form";

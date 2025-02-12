@@ -1,21 +1,32 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import GuestLayout from "./layouts/GuestLayout";
-import DefaultLayout from "./layouts/DefaultLayout";
-
-// import Register from "./pages/auth/Register";
-// import Login from "./pages/auth/Login";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Workouts from "./pages/Workouts";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import { useAuthStore } from "./store/authStore";
+import useAuthStore from "./store/authStore";
 import { isTokenExpired } from "./utils/authUtils";
-import toast from "react-hot-toast";
-// import Sites from "./pages/sites/Sites";
-// import Typeparcs from "./pages/typeparcs/Typeparcs";
 
-// 🔒 Route protégée pour les utilisateurs connectés
+// Lazy load pages and layouts
+const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
+const GuestLayout = lazy(() => import("./layouts/GuestLayout"));
+
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Workouts = lazy(() => import("./pages/Workouts"));
+
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+
+const LoaderSpinner = () => {
+  return (
+    <div className="text-center mt-5">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Chargement...</span>
+      </div>
+      <p>Chargement ...</p>
+      <p className="text-primary">Veuillez patienter</p>
+    </div>
+  );
+};
+
+// 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
   const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
@@ -29,50 +40,79 @@ const ProtectedRoute = ({ element }) => {
     console.warn(
       "Token expiré ou utilisateur non authentifié. Redirection vers /login."
     );
-
-    // remove user from global state
     logout();
-
-    // toast.error("Votre session est expirée, veuillez connecter à nouveau!");
-
     return <Navigate to="/login" replace />;
   }
 
   return element;
 };
 
-// 🚫 Route accessible uniquement aux invités (empêche les utilisateurs connectés d'accéder à /login et /signup)
+// 🚫 Guest Route
 const GuestRoute = ({ element }) => {
   const user = useAuthStore((state) => state.user);
   return user ? <Navigate to="/" replace /> : element;
 };
 
-// 🔀 Configuration des routes
+// 🔀 Router Configuration with Suspense
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DefaultLayout />,
+    element: (
+      <Suspense fallback={<LoaderSpinner />}>
+        <DefaultLayout />
+      </Suspense>
+    ),
     children: [
-      { path: "/", element: <Home /> },
-      { path: "/about", element: <About /> },
-      { path: "/workouts", element: <ProtectedRoute element={<Workouts />} /> }, // Protégé
-
-      // {
-      //   path: "/configs/sites",
-      //   element: <Sites />,
-      // },
-      // {
-      //   path: "/configs/typeparcs",
-      //   element: <Typeparcs />,
-      // },
+      {
+        path: "/",
+        element: (
+          <Suspense fallback={<LoaderSpinner />}>
+            <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/about",
+        element: (
+          <Suspense fallback={<LoaderSpinner />}>
+            <About />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/workouts",
+        element: (
+          <Suspense fallback={<LoaderSpinner />}>
+            <ProtectedRoute element={<Workouts />} />
+          </Suspense>
+        ),
+      },
     ],
   },
   {
     path: "/",
-    element: <GuestLayout />,
+    element: (
+      <Suspense fallback={<LoaderSpinner />}>
+        <GuestLayout />
+      </Suspense>
+    ),
     children: [
-      { path: "/login", element: <GuestRoute element={<Login />} /> }, // Protégé pour les invités
-      { path: "/signup", element: <GuestRoute element={<Signup />} /> }, // Protégé pour les invités
+      {
+        path: "/login",
+        element: (
+          <Suspense fallback={<LoaderSpinner />}>
+            <GuestRoute element={<Login />} />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <Suspense fallback={<LoaderSpinner />}>
+            <GuestRoute element={<Signup />} />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);
