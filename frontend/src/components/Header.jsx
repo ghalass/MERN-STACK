@@ -65,11 +65,7 @@ const Header = () => {
                             Profile
                           </Link>
                         </li>
-                        <li>
-                          <a className="dropdown-item" href="#">
-                            Another action
-                          </a>
-                        </li>
+
                         <li>
                           <hr className="dropdown-divider" />
                         </li>
