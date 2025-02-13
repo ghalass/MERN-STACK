@@ -5,16 +5,18 @@ import { isTokenExpired } from "./utils/authUtils";
 
 import DefaultLayout from "./layouts/DefaultLayout";
 import GuestLayout from "./layouts/GuestLayout";
+import ConfigsLayout from "./layouts/ConfigsLayout";
 
 import LoaderSpinner from "./components/ui/LoaderSpinner";
 
 const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
 import Workouts from "./pages/Workouts";
 // const Workouts = lazy(() => import("./pages/Workouts"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Sites = lazy(() => import("./pages/Sites"));
+const Configs = lazy(() => import("./pages/Configs"));
 
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
@@ -57,14 +59,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/about",
-        element: (
-          <Suspense>
-            <About />
-          </Suspense>
-        ),
-      },
-      {
         path: "/workouts",
         element: <ProtectedRoute element={<Workouts />} />,
       },
@@ -79,6 +73,28 @@ const router = createBrowserRouter([
             }
           />
         ),
+      },
+      {
+        path: "/configs",
+        element: <ConfigsLayout />,
+        children: [
+          {
+            path: "/configs",
+            element: (
+              <Suspense>
+                <Configs />
+              </Suspense>
+            ),
+          },
+          {
+            path: "/configs/sites",
+            element: (
+              <Suspense>
+                <Sites />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },

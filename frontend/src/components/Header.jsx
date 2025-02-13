@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import { useLogout } from "../hooks/useLogout";
 
@@ -10,26 +10,42 @@ import Button from "react-bootstrap/esm/Button";
 
 function Header() {
   const user = useAuthStore((state) => state.user);
-
+  const location = useLocation(); // Get current route
   const { logoutUser } = useLogout();
   return (
     <Navbar expand="md" className="bg-body-tertiary">
       <Container fluid>
         <Navbar.Brand>
-          <Nav.Link as={Link} to="/">
+          <Nav.Link
+            as={Link}
+            to="/"
+            className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+          >
             APP
           </Nav.Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to={"/workouts"} className="nav-link">
+            <Nav.Link
+              as={Link}
+              to="/workouts"
+              className={`nav-link ${
+                location.pathname === "/workouts" ? "active" : ""
+              }`}
+            >
               Workouts
-            </Link>
+            </Nav.Link>
 
-            <Link to={"/about"} className="nav-link">
-              About
-            </Link>
+            <Nav.Link
+              as={Link}
+              to="/configs"
+              className={`nav-link ${
+                location.pathname === "/configs" ? "active" : ""
+              }`}
+            >
+              Configs
+            </Nav.Link>
           </Nav>
 
           {/*  */}
