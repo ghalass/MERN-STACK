@@ -1,6 +1,10 @@
-const SubmitButton = ({ operation, isProcessing }) => {
-  let title = "No title";
-  let icon = "exclamation-circle";
+const SubmitButton = ({
+  operation = null,
+  isProcessing,
+  text = "No title",
+}) => {
+  let title = text;
+  let icon = "";
   let cls = "primary";
   switch (operation) {
     case "add":

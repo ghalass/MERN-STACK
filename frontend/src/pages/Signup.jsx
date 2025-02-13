@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import Error from "../components/forms/Error";
-import SubmitBtn from "../components/forms/SubmitBtn";
+import SubmitButton from "../components/forms/SubmitButton";
 import FormInput from "../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
@@ -73,8 +73,11 @@ const Signup = () => {
               disabled={isLoading}
             />
 
-            <SubmitBtn isLoading={isLoading} text="Sign Up" />
-
+            <SubmitButton
+              isProcessing={isLoading}
+              text="Sign Up"
+              operation={"Sign Up"}
+            />
             <p className="d-flex gap-1 mt-3">
               You have an account?
               <Link to={"/login"} className="nav-link text-primary fst-italic">

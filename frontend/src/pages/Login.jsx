@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import Error from "../components/forms/Error";
-import SubmitBtn from "../components/forms/SubmitBtn";
+import SubmitButton from "../components/forms/SubmitButton";
 import FormInput from "../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
@@ -53,7 +53,11 @@ const Login = () => {
               disabled={isLoading}
             />
 
-            <SubmitBtn isLoading={isLoading} text="Log In" />
+            <SubmitButton
+              isProcessing={isLoading}
+              text="Log In"
+              operation={"login"}
+            />
 
             <p className="d-flex gap-1 mt-3">
               You don't have an account?
