@@ -5,7 +5,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   const workouts = useWorkoutsStore((state) => state.workouts);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const workoutsPerPage = 2; // Nombre de workouts par page
+  const workoutsPerPage = 5; // Nombre de workouts par page
 
   // 🔹 Met à jour les workouts affichés lorsqu'on change de page
   useEffect(() => {
@@ -25,7 +25,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center mt-3">
+    <div className="d-flex justify-content-center align-items-center mb-2">
       <button
         className="btn btn-sm btn-outline-primary me-2"
         onClick={handlePreviousPage}

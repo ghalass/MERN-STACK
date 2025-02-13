@@ -2,27 +2,41 @@ import { lazy, Suspense } from "react";
 import { formatDateAgo } from "../../utils/func";
 const WorkoutModal = lazy(() => import("./WorkoutModal"));
 
+import Card from "react-bootstrap/Card";
+
 const WorkoutDetails = ({ workout }) => {
   // GLOBAL STATES
 
   return (
-    <>
-      <li className="list-group-item mb-1">
-        <div className="d-flex justify-content-between align-items-center">
-          <h4>{workout.title}</h4>
-        </div>
-        <p>
+    <Card style={{ width: "18rem" }} className="">
+      <Card.Body>
+        <Card.Title>{workout.title.slice(0, 20)}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">
           <strong>Load (Kg): </strong>
           {workout.load}
-        </p>
-        <p>
+        </Card.Subtitle>
+        <Card.Text>
           <strong>Reps: </strong>
           {workout.reps}
-        </p>
-        <div className="d-flex flex-column ">
-          <span>{formatDateAgo(workout.createdAt)}</span>
-          <span>{formatDateAgo(workout.updatedAt)}</span>
+        </Card.Text>
+
+        <div className="d-flex flex-column fw-light">
+          <span>
+            createdAt:{" "}
+            <small className="fst-italic">
+              {formatDateAgo(workout.createdAt)}
+            </small>
+          </span>
+          <span>
+            updatedAt:{" "}
+            <small className="fst-italic">
+              {formatDateAgo(workout.updatedAt)}
+            </small>
+          </span>
         </div>
+      </Card.Body>
+
+      <Card.Footer className="text-muted">
         <div className="d-flex gap-2 justify-content-end">
           <Suspense>
             <WorkoutModal workout={workout} crudOp="update" />
@@ -31,8 +45,8 @@ const WorkoutDetails = ({ workout }) => {
             <WorkoutModal workout={workout} crudOp="delete" />
           </Suspense>
         </div>
-      </li>
-    </>
+      </Card.Footer>
+    </Card>
   );
 };
 
