@@ -4,7 +4,7 @@ const WorkoutModal = lazy(() => import("./WorkoutModal"));
 
 import Card from "react-bootstrap/Card";
 
-const WorkoutDetails = ({ workout }) => {
+const WorkoutItem = ({ workout }) => {
   // GLOBAL STATES
 
   return (
@@ -50,4 +50,4 @@ const WorkoutDetails = ({ workout }) => {
   );
 };
 
-export default WorkoutDetails;
+export default WorkoutItem;

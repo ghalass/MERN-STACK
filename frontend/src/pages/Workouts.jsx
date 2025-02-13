@@ -2,9 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 
 // Components
 import LoaderSpinner from "../components/ui/LoaderSpinner";
-const WorkoutDetails = lazy(() =>
-  import("../components/workout/WorkoutDetails")
-);
+const WorkoutItem = lazy(() => import("../components/workout/WorkoutItem"));
 const WorkoutPagination = lazy(() =>
   import("../components/workout/WorkoutPagination")
 );
@@ -48,7 +46,7 @@ const Workouts = () => {
   return (
     <div className="m-2">
       <div className="row">
-        <div className="col-12 col-sm-6">
+        <div className="col-12 col-md-4">
           <div className="d-flex">
             <div>
               <Suspense>
@@ -61,7 +59,15 @@ const Workouts = () => {
           </div>
         </div>
 
-        <div className="col-12 col-sm-6 d-flex justify-content-end">
+        <div className="col-12 col-md-4 text-center">
+          <input
+            className="form-control form-control-sm my-1 "
+            type="search"
+            placeholder="Chercher..."
+          />
+        </div>
+
+        <div className="col-12 col-md-4 d-flex justify-content-end">
           <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
         </div>
       </div>
@@ -73,7 +79,7 @@ const Workouts = () => {
               key={index}
               className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4"
             >
-              <WorkoutDetails workout={workout} />
+              <WorkoutItem workout={workout} />
             </div>
           ))}
         </Suspense>
