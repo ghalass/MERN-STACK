@@ -8,7 +8,7 @@ const WorkoutDetails = ({ workout }) => {
   // GLOBAL STATES
 
   return (
-    <Card style={{ width: "18rem" }} className="">
+    <Card className="cardItem">
       <Card.Body>
         <Card.Title>{workout.title.slice(0, 20)}</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
@@ -20,7 +20,7 @@ const WorkoutDetails = ({ workout }) => {
           {workout.reps}
         </Card.Text>
 
-        <div className="d-flex flex-column fw-light">
+        <div className="d-flex flex-column fw-light timestamps">
           <span>
             createdAt:{" "}
             <small className="fst-italic">
@@ -36,8 +36,8 @@ const WorkoutDetails = ({ workout }) => {
         </div>
       </Card.Body>
 
-      <Card.Footer className="text-muted">
-        <div className="d-flex gap-2 justify-content-end">
+      <Card.Footer className="text-muted crudOperation">
+        <div className="d-flex gap-2 justify-content-end ">
           <Suspense>
             <WorkoutModal workout={workout} crudOp="update" />
           </Suspense>

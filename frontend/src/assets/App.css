@@ -1,0 +1,31 @@
+/* Cache le CRUD par défaut */
+.crudOperation {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  /* Affiche le CRUD quand on survole la carte */
+  .cardItem:hover .crudOperation {
+    opacity: 1;
+  }
+
+  .cardItem{
+    cursor: pointer;
+    box-shadow: 0cap;
+    height: 100%; /* Garde une hauteur uniforme */
+    display: flex;
+    flex-direction: column;
+  }
+  .cardItem .card-body {
+    flex-grow: 1; /* Remplit l'espace disponible pour un alignement parfait */
+  }
+
+  .cardItem {
+    transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .cardItem:hover {
+    cursor: pointer;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }

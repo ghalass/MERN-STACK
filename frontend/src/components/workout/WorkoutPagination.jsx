@@ -5,7 +5,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   const workouts = useWorkoutsStore((state) => state.workouts);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const workoutsPerPage = 5; // Nombre de workouts par page
+  const workoutsPerPage = 6; // Nombre de workouts par page
 
   // 🔹 Met à jour les workouts affichés lorsqu'on change de page
   useEffect(() => {

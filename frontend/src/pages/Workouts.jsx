@@ -47,24 +47,31 @@ const Workouts = () => {
 
   return (
     <div className="m-2">
-      <div className="container d-flex justify-content-between">
-        <div className="badge rounded-pill text-bg-light text-primary mb-2">
-          <span className="h6">Liste des workouts ({workouts.length})</span>
+      <div className="row">
+        <div className="col-12 col-sm-6">
+          <div className="d-flex">
+            <div>
+              <Suspense>
+                <WorkoutModal crudOp="add" />
+              </Suspense>
+            </div>
+            <div className="badge rounded-pill text-bg-light text-primary mb-2">
+              <span className="h6">Liste des workouts ({workouts.length})</span>
+            </div>
+          </div>
         </div>
 
-        <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
-
-        <Suspense>
-          <WorkoutModal crudOp="add" />
-        </Suspense>
+        <div className="col-12 col-sm-6 d-flex justify-content-end">
+          <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
+        </div>
       </div>
 
-      <div className="row d-flex flex-wrap justify-content-start">
+      <div className="row">
         <Suspense fallback={<LoaderSpinner />}>
           {currentWorkouts.map((workout, index) => (
             <div
               key={index}
-              className="col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center mb-1"
+              className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4"
             >
               <WorkoutDetails workout={workout} />
             </div>
