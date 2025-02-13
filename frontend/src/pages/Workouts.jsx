@@ -20,13 +20,12 @@ import useAuthStore from "../store/authStore";
 const Workouts = () => {
   const workouts = useWorkoutsStore((state) => state.workouts);
   const setWorkouts = useWorkoutsStore((state) => state.setWorkouts);
+
   const isLoading = useWorkoutsStore((state) => state.isLoading);
   const setIsLoading = useWorkoutsStore((state) => state.setIsLoading);
 
   const user = useAuthStore((state) => state.user);
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
-
-  const [operation, setOperation] = useState(null);
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -46,10 +45,6 @@ const Workouts = () => {
     }
   }, [setWorkouts, user]);
 
-  useEffect(() => {
-    console.log("workouts rendred");
-  });
-
   return (
     <div className="m-2">
       <div className="row">
@@ -67,18 +62,10 @@ const Workouts = () => {
               <Suspense fallback={<LoaderSpinner />}>
                 <ul className="list-group">
                   {currentWorkouts.map((workout, index) => (
-                    <WorkoutDetails
-                      key={index}
-                      workout={workout}
-                      operation={operation}
-                      setOperation={setOperation}
-                    />
+                    <WorkoutDetails key={index} workout={workout} />
                   ))}
                 </ul>
-                <WorkoutPagination
-                  workouts={workouts}
-                  setCurrentWorkouts={setCurrentWorkouts}
-                />
+                <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
               </Suspense>
             </div>
           </div>
@@ -87,7 +74,7 @@ const Workouts = () => {
         <div className="col">
           <div className="card">
             <div className="card-body">
-              <WorkoutForm operation={operation} setOperation={setOperation} />
+              <WorkoutForm />
             </div>
           </div>
         </div>

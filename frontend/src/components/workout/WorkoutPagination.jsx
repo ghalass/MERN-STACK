@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { useWorkoutsStore } from "../../store/workoutStore";
 
-const WorkoutPagination = ({ workouts, setCurrentWorkouts }) => {
+const WorkoutPagination = ({ setCurrentWorkouts }) => {
+  const workouts = useWorkoutsStore((state) => state.workouts);
+
   const [currentPage, setCurrentPage] = useState(1);
   const workoutsPerPage = 2; // Nombre de workouts par page
 

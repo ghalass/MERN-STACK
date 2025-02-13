@@ -5,11 +5,13 @@ import { API } from "../../utils/constants";
 import { closeModal } from "../../utils/utils";
 import toast from "react-hot-toast";
 
-const WorkoutDeleteModal = ({ workout, setOperation }) => {
+const WorkoutDeleteModal = ({ workout }) => {
   const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
   const user = useAuthStore((state) => state.user);
 
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const seOp = useWorkoutsStore((state) => state.seOp);
 
   const handleDelete = async () => {
     setIsProcessing(true);
@@ -50,7 +52,7 @@ const WorkoutDeleteModal = ({ workout, setOperation }) => {
             <button
               onClick={() => {
                 closeModal("workoutDeleteModal");
-                setOperation(null);
+                seOp(null);
               }}
               disabled={isProcessing}
               type="button"
@@ -76,7 +78,7 @@ const WorkoutDeleteModal = ({ workout, setOperation }) => {
             <button
               onClick={() => {
                 closeModal("workoutDeleteModal");
-                setOperation(null);
+                seOp(null);
               }}
               disabled={isProcessing}
               type="button"

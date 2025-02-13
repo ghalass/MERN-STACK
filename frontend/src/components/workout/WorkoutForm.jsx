@@ -14,7 +14,7 @@ import { apiRequest } from "../../utils/apiRequest";
 import FormInput from "../../components/forms/FormInput";
 import SubmitButton from "../../components/forms/SubmitButton";
 
-const WorkoutForm = ({ operation, setOperation }) => {
+const WorkoutForm = () => {
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
   const updateWorkout = useWorkoutsStore((state) => state.updateWorkout);
   const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
@@ -63,6 +63,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
       load: 0,
       reps: 0,
     });
+    setOp(null);
   }, []);
 
   const onSubmit = async (data) => {
@@ -75,7 +76,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
 
     try {
       // CREATE
-      if (operation === "add") {
+      if (op === "add") {
         // create
         const response = await apiRequest(
           "/workouts",
@@ -87,8 +88,9 @@ const WorkoutForm = ({ operation, setOperation }) => {
         toast.success("Ajouté avec succès !");
         reset();
         setError(null);
+        setOp(null);
       }
-      if (operation === "update") {
+      if (op === "update") {
         // UPDATE
         const response = await apiRequest(
           `/workouts/${data.id}`,
@@ -105,6 +107,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
           reps: 0,
         });
         setError(null);
+        setOp(null);
       }
     } catch (error) {
       setError(error.error);
@@ -120,15 +123,27 @@ const WorkoutForm = ({ operation, setOperation }) => {
           <span className="h6">Ajouter un nouveau workout </span>
         </div>
 
-        <div>
-          <i
-            onClick={() => {
-              setCurrentWorkout({ id: 0, title: "", load: 0, reps: 0 });
-              setOperation("add");
-            }}
-            role="button"
-            className="bi bi-plus-lg btn btn-sm btn-outline-primary rounded-pill"
-          ></i>
+        <div className="d-flex gap-1">
+          <div>
+            <i
+              onClick={() => {
+                setCurrentWorkout({ id: 0, title: "", load: 0, reps: 0 });
+                setOp("add");
+              }}
+              role="button"
+              className="bi bi-plus-lg btn btn-sm btn-outline-primary rounded-pill"
+            ></i>
+          </div>
+          <div>
+            <i
+              onClick={() => {
+                setCurrentWorkout({ id: 0, title: "", load: 0, reps: 0 });
+                setOp(null);
+              }}
+              role="button"
+              className="bi bi-x-lg btn btn-sm btn-outline-danger rounded-pill"
+            ></i>
+          </div>
         </div>
       </div>
 
@@ -170,7 +185,7 @@ const WorkoutForm = ({ operation, setOperation }) => {
         errors={errors}
       />
 
-      <SubmitButton isProcessing={isLoading} operation={operation} />
+      <SubmitButton isProcessing={isLoading} operation={op} />
       <Error error={error} />
     </form>
   );

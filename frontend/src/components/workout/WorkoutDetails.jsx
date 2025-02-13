@@ -7,10 +7,12 @@ import { openModal } from "../../utils/utils";
 import WorkoutDeleteModal from "../../components/workout/WorkoutDeleteModal";
 import { useWorkoutsStore } from "../../store/workoutStore";
 
-const WorkoutDetails = ({ workout, operation, setOperation }) => {
+const WorkoutDetails = ({ workout }) => {
   const setCurrentWorkout = useWorkoutsStore(
     (state) => state.setCurrentWorkout
   );
+
+  const setOp = useWorkoutsStore((state) => state.setOp);
 
   return (
     <>
@@ -21,7 +23,7 @@ const WorkoutDetails = ({ workout, operation, setOperation }) => {
             <i
               onClick={() => {
                 setCurrentWorkout(workout);
-                setOperation("update");
+                setOp("update");
               }}
               role="button"
               className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill"
@@ -30,7 +32,7 @@ const WorkoutDetails = ({ workout, operation, setOperation }) => {
             <i
               onClick={() => {
                 openModal("workoutDeleteModal");
-                setOperation("delete");
+                setOp("delete");
               }}
               role="button"
               className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill"
@@ -53,7 +55,7 @@ const WorkoutDetails = ({ workout, operation, setOperation }) => {
         </p>
       </li>
 
-      <WorkoutDeleteModal workout={workout} setOperation={setOperation} />
+      <WorkoutDeleteModal workout={workout} />
     </>
   );
 };
