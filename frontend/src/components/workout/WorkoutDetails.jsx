@@ -1,43 +1,15 @@
-import React from "react";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { fr } from "date-fns/locale";
-
-import { openModal } from "../../utils/utils";
-
-import WorkoutDeleteModal from "../../components/workout/WorkoutDeleteModal";
-import { useWorkoutsStore } from "../../store/workoutStore";
+import { lazy, Suspense } from "react";
+import { formatDateAgo } from "../../utils/func";
+const WorkoutModal = lazy(() => import("./WorkoutModal"));
 
 const WorkoutDetails = ({ workout }) => {
-  const setCurrentWorkout = useWorkoutsStore(
-    (state) => state.setCurrentWorkout
-  );
-
-  const setOp = useWorkoutsStore((state) => state.setOp);
+  // GLOBAL STATES
 
   return (
     <>
       <li className="list-group-item mb-1">
         <div className="d-flex justify-content-between align-items-center">
           <h4>{workout.title}</h4>
-          <div className="d-flex gap-2">
-            <i
-              onClick={() => {
-                setCurrentWorkout(workout);
-                setOp("update");
-              }}
-              role="button"
-              className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill"
-            ></i>
-
-            <i
-              onClick={() => {
-                openModal("workoutDeleteModal");
-                setOp("delete");
-              }}
-              role="button"
-              className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill"
-            ></i>
-          </div>
         </div>
         <p>
           <strong>Load (Kg): </strong>
@@ -47,15 +19,19 @@ const WorkoutDetails = ({ workout }) => {
           <strong>Reps: </strong>
           {workout.reps}
         </p>
-        <p>
-          {formatDistanceToNow(new Date(workout.createdAt), {
-            addSuffix: true,
-            locale: fr,
-          })}
-        </p>
+        <div className="d-flex flex-column ">
+          <span>{formatDateAgo(workout.createdAt)}</span>
+          <span>{formatDateAgo(workout.updatedAt)}</span>
+        </div>
+        <div className="d-flex gap-2 justify-content-end">
+          <Suspense>
+            <WorkoutModal workout={workout} crudOp="update" />
+          </Suspense>
+          <Suspense>
+            <WorkoutModal workout={workout} crudOp="delete" />
+          </Suspense>
+        </div>
       </li>
-
-      <WorkoutDeleteModal workout={workout} />
     </>
   );
 };

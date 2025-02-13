@@ -21,6 +21,7 @@ function Header() {
             to="/"
             className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
           >
+            <i className="bi bi-columns-gap  text-primary me-2"></i>
             APP
           </Nav.Link>
         </Navbar.Brand>
@@ -44,6 +45,7 @@ function Header() {
                 location.pathname === "/configs" ? "active" : ""
               }`}
             >
+              <i className="bi bi-gear me-1"></i>
               Configs
             </Nav.Link>
           </Nav>

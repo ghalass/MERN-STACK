@@ -98,6 +98,7 @@ const deleteWorkout = async (req, res) => {
 // update a workout
 const updateWorkout = async (req, res) => {
     const { id } = req.params
+    const { title, load, reps } = req.body
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
@@ -108,13 +109,22 @@ const updateWorkout = async (req, res) => {
             where: { id: parseInt(id) }
         });
 
+        // check if title not already exist
+        const titleExist = await prisma.workout.findFirst({
+            where: { title: title, id: { not: parseInt(id) } },
+
+        });
+        if (titleExist) {
+            return res.status(401).json({ error: "Titre déjà utilisé!" })
+        }
+
         if (!workout) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
         const updatedWorkout = await prisma.workout.update({
             where: { id: parseInt(id) },
-            data: { ...req.body }
+            data: { title, load, reps }
         });
 
         res.status(200).json(updatedWorkout)

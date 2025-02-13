@@ -2,6 +2,7 @@ const SubmitButton = ({
   operation = null,
   isProcessing,
   text = "No title",
+  onClick,
 }) => {
   let title = text;
   let icon = "";
@@ -16,8 +17,6 @@ const SubmitButton = ({
       title = "Supprimer";
       icon = "trash3";
       cls = "danger";
-      // annuler la fonction delete
-      operation = null;
       break;
     case "update":
       title = "Modifier";
@@ -33,11 +32,12 @@ const SubmitButton = ({
       hidden={!operation}
       disabled={isProcessing}
       className={`btn btn-sm btn-outline-${cls} mt-2 w-100`}
+      onClick={onClick}
     >
       <div className="d-flex justify-content-center gap-2 align-items-center">
         {isProcessing && (
           <div className="spinner-border spinner-border-sm " role="status">
-            <span className="visually-hidden">Loading...</span>
+            <span className="visually-hidden">Processing...</span>
           </div>
         )}
         <div>

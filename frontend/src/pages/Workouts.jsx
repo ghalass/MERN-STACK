@@ -2,29 +2,29 @@ import { lazy, Suspense, useEffect, useState } from "react";
 
 // Components
 import LoaderSpinner from "../components/ui/LoaderSpinner";
-import WorkoutForm from "../components/workout/WorkoutForm";
 const WorkoutDetails = lazy(() =>
   import("../components/workout/WorkoutDetails")
 );
 const WorkoutPagination = lazy(() =>
   import("../components/workout/WorkoutPagination")
 );
+const WorkoutModal = lazy(() => import("../components/workout/WorkoutModal"));
 
 // Utils
 import { apiRequest } from "../utils/apiRequest";
 
-// Store
+// Stores
 import { useWorkoutsStore } from "../store/workoutStore";
 import useAuthStore from "../store/authStore";
 
 const Workouts = () => {
+  // GLOBAL STATES
   const workouts = useWorkoutsStore((state) => state.workouts);
   const setWorkouts = useWorkoutsStore((state) => state.setWorkouts);
-
-  const isLoading = useWorkoutsStore((state) => state.isLoading);
   const setIsLoading = useWorkoutsStore((state) => state.setIsLoading);
-
   const user = useAuthStore((state) => state.user);
+
+  // LOCAL STATES
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
 
   useEffect(() => {
@@ -46,38 +46,26 @@ const Workouts = () => {
   }, [setWorkouts, user]);
 
   return (
-    <div className="m-2">
-      <div className="row">
-        <div className="col">
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex justify-content-between">
-                <div className="badge rounded-pill text-bg-light text-primary mb-2">
-                  <span className="h6">Liste des workouts</span>
-                </div>
-                <div className="badge rounded-pill text-bg-light text-primary mb-2">
-                  <span className="h6">Total : {workouts.length}</span>
-                </div>
-              </div>
-              <Suspense fallback={<LoaderSpinner />}>
-                <ul className="list-group">
-                  {currentWorkouts.map((workout, index) => (
-                    <WorkoutDetails key={index} workout={workout} />
-                  ))}
-                </ul>
-                <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
-              </Suspense>
-            </div>
+    <div className="card m-2">
+      <div className="card-body">
+        <div className="d-flex justify-content-between">
+          <div className="badge rounded-pill text-bg-light text-primary mb-2">
+            <span className="h6">Liste des workouts ({workouts.length})</span>
           </div>
+
+          <Suspense>
+            <WorkoutModal crudOp="add" />
+          </Suspense>
         </div>
 
-        <div className="col">
-          <div className="card">
-            <div className="card-body">
-              <WorkoutForm />
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={<LoaderSpinner />}>
+          <ul className="list-group d-flex flex-row gap-2">
+            {currentWorkouts.map((workout, index) => (
+              <WorkoutDetails key={index} workout={workout} />
+            ))}
+          </ul>
+          <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
+        </Suspense>
       </div>
     </div>
   );
