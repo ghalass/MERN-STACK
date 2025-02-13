@@ -1,4 +1,4 @@
-import { openModal } from "../../utils/utils";
+import { openModal } from "../../utils/modal";
 
 const ProfileInfos = ({ userData }) => {
   return (

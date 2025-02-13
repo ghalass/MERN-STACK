@@ -1,5 +1,5 @@
 import { useWorkoutsStore } from "../../store/workoutStore";
-import { closeModal, openModal } from "../../utils/utils";
+import { closeModal, openModal } from "../../utils/modal";
 
 // COMPONENTS
 import { lazy } from "react";

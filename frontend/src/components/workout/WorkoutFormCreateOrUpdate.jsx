@@ -16,7 +16,7 @@ import { useWorkoutsStore } from "../../store/workoutStore";
 import Error from "../forms/Error";
 import FormInput from "../../components/forms/FormInput";
 import SubmitButton from "../forms/SubmitButton";
-import { closeModal } from "../../utils/utils";
+import { closeModal } from "../../utils/modal";
 
 const WorkoutFormCreateOrUpdate = () => {
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);

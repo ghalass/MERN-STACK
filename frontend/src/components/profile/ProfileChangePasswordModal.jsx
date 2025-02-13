@@ -9,7 +9,7 @@ yup.setLocale(fr);
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { closeModal } from "../../utils/utils";
+import { closeModal } from "../../utils/modal";
 
 import toast from "react-hot-toast";
 import FormInput from "../forms/FormInput";

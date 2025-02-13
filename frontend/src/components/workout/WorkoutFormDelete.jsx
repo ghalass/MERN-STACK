@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { API } from "../../utils/constants";
-import { closeModal } from "../../utils/utils";
+import { closeModal } from "../../utils/modal";
 import toast from "react-hot-toast";
 import { apiRequest } from "../../utils/apiRequest";
 
