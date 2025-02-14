@@ -57,7 +57,6 @@ const WorkoutForm = () => {
   }, [currentWorkout, reset]);
 
   const onSubmit = async (data) => {
-    setIsProcessing(true);
     if (!user) {
       setIsProcessing(false);
       toast.error("Vous devez être connecté !");
@@ -65,6 +64,7 @@ const WorkoutForm = () => {
     }
 
     try {
+      setIsProcessing(true);
       // CREATE
       if (op === "add") {
         // create
