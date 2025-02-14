@@ -10,8 +10,8 @@ import ConfigsLayout from "./layouts/ConfigsLayout";
 import LoaderSpinner from "./components/ui/LoaderSpinner";
 
 const Home = lazy(() => import("./pages/Home"));
-import Workouts from "./pages/Workouts";
-// const Workouts = lazy(() => import("./pages/Workouts"));
+// import Workouts from "./pages/Workouts";
+const Workouts = lazy(() => import("./pages/Workouts"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));

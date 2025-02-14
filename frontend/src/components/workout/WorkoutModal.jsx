@@ -3,13 +3,7 @@ import { closeModal, openModal } from "../../utils/modal";
 
 // COMPONENTS
 import { lazy } from "react";
-const WorkoutFormCreateOrUpdate = lazy(() =>
-  import("../../components/workout/WorkoutFormCreateOrUpdate")
-);
-
-const WorkoutFormDelete = lazy(() =>
-  import("../../components/workout/WorkoutFormDelete")
-);
+const WorkoutForm = lazy(() => import("../../components/workout/WorkoutForm"));
 
 const WorkoutModal = ({ workout = null, crudOp }) => {
   // GLOBAL STATES
@@ -70,10 +64,7 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
 
             {/* BODY START */}
             <div className="modal-body">
-              {(op === "add" || op === "update") && (
-                <WorkoutFormCreateOrUpdate />
-              )}
-              {op === "delete" && <WorkoutFormDelete />}
+              <WorkoutForm />
             </div>
           </div>
         </div>

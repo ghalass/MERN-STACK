@@ -18,9 +18,10 @@ import FormInput from "../../components/forms/FormInput";
 import SubmitButton from "../forms/SubmitButton";
 import { closeModal } from "../../utils/modal";
 
-const WorkoutFormCreateOrUpdate = () => {
+const WorkoutForm = () => {
   const createWorkout = useWorkoutsStore((state) => state.createWorkout);
   const updateWorkout = useWorkoutsStore((state) => state.updateWorkout);
+  const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
   const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
   const user = useAuthStore((state) => state.user);
 
@@ -71,10 +72,16 @@ const WorkoutFormCreateOrUpdate = () => {
           "/workouts",
           "POST",
           data,
-          user.token
+          user?.token
         );
-        createWorkout(response);
-        toast.success("Ajouté avec succès !");
+        // check if no error
+        if (!response?.error) {
+          createWorkout(response);
+          toast.success("Ajouté avec succès !");
+        } else {
+          setError(response?.error);
+          return;
+        }
       } else if (op === "update") {
         // UPDATE
         const response = await apiRequest(
@@ -83,18 +90,41 @@ const WorkoutFormCreateOrUpdate = () => {
           data,
           user.token
         );
-        updateWorkout(response);
-        toast.success(`Modifié avec succès!`);
+
+        // check if no error
+        if (!response?.error) {
+          updateWorkout(response);
+          toast.success("Modifié avec succès !");
+        } else {
+          setError(response?.error);
+          return;
+        }
+      } else if (op === "delete") {
+        const response = await apiRequest(
+          `/workouts/${currentWorkout.id}`,
+          "DELETE",
+          null,
+          user.token
+        );
+        // check if no error
+        if (!response?.error) {
+          deleteWorkout(response);
+          toast.success("Supprimé avec succès !");
+        } else {
+          setError(response?.error);
+          return;
+        }
       } else {
         toast.error("Aucune opération n'est choisie !");
       }
 
       setError(null);
-      setIsProcessing(false);
       setOp(null);
       reset();
       closeModal("workoutModal");
     } catch (error) {
+      console.log(error);
+
       setError(error.error);
     } finally {
       setIsProcessing(false);
@@ -103,39 +133,62 @@ const WorkoutFormCreateOrUpdate = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormInput
-          type="text"
-          id="title"
-          label="Title"
-          placeholder="Title"
-          register={register}
-          errors={errors}
-        />
+      {op !== "delete" ? (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormInput
+            type="text"
+            id="title"
+            label="Title"
+            placeholder="Title"
+            register={register}
+            errors={errors}
+          />
 
-        <FormInput
-          type="number"
-          id="load"
-          label="Load (kg)"
-          placeholder="Load"
-          register={register}
-          errors={errors}
-        />
+          <FormInput
+            type="number"
+            id="load"
+            label="Load (kg)"
+            placeholder="Load"
+            register={register}
+            errors={errors}
+          />
 
-        <FormInput
-          type="number"
-          id="reps"
-          label="Reps"
-          placeholder="Reps"
-          register={register}
-          errors={errors}
-        />
+          <FormInput
+            type="number"
+            id="reps"
+            label="Reps"
+            placeholder="Reps"
+            register={register}
+            errors={errors}
+          />
 
-        <SubmitButton isProcessing={isProcessing} operation={op} />
-        <Error error={error} />
-      </form>
+          <SubmitButton isProcessing={isProcessing} operation={op} />
+        </form>
+      ) : (
+        <div>
+          <h5 className="text-danger">
+            <i className="bi bi-exclamation-triangle"></i> Voulez-vous vraiment
+            <span className="badge rounded-pill text-bg-danger mx-1 ">
+              Supprimer
+            </span>
+            ce Workout ?
+          </h5>
+          <div className="text-primary text-center mt-4">
+            <strong>{currentWorkout?.title}</strong>
+          </div>
+
+          <SubmitButton
+            onClick={onSubmit}
+            isProcessing={isProcessing}
+            operation={op}
+          />
+        </div>
+      )}
+
+      {/* ERRORS FROM SERVER */}
+      <Error error={error} />
     </div>
   );
 };
 
-export default WorkoutFormCreateOrUpdate;
+export default WorkoutForm;

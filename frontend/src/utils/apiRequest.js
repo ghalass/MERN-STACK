@@ -28,6 +28,13 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
         }
 
         const response = await fetch(`${API}${endpoint}`, options);
+
+        if (response.status === 404) {
+            return {
+                error: `Endpoint non trouvé : ${endpoint}`
+            };
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -35,7 +42,9 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
         }
 
         return data;
-    } catch (error) {
-        throw error;
+    } catch (err) {
+        console.log(err);
+        return err;
+        // throw err;
     }
 };
