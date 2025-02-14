@@ -124,7 +124,6 @@ const WorkoutForm = () => {
       closeModal("workoutModal");
     } catch (error) {
       console.log(error);
-
       setError(error.error);
     } finally {
       setIsProcessing(false);

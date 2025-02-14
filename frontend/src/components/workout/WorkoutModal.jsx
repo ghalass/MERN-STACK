@@ -2,16 +2,38 @@ import { useWorkoutsStore } from "../../store/workoutStore";
 import { closeModal, openModal } from "../../utils/modal";
 
 // COMPONENTS
-import { lazy } from "react";
+import { lazy, useEffect, useState } from "react";
 const WorkoutForm = lazy(() => import("../../components/workout/WorkoutForm"));
 
 const WorkoutModal = ({ workout = null, crudOp }) => {
   // GLOBAL STATES
-  const op = useWorkoutsStore((state) => state.op);
   const setOp = useWorkoutsStore((state) => state.setOp);
   const setCurrentWorkout = useWorkoutsStore(
     (state) => state.setCurrentWorkout
   );
+
+  // LOCAL STATES
+  const [title, setTitle] = useState("no title");
+  const [btnCls, setBtnCls] = useState("");
+
+  useEffect(() => {
+    switch (crudOp) {
+      case "add":
+        setTitle("Ajout d'un Workout");
+        setBtnCls(`btn btn-sm bi rounded-pill bi-plus-lg btn-outline-success`);
+        break;
+      case "update":
+        setTitle("Modification d'un Workout");
+        setBtnCls(`btn btn-sm bi rounded-pill bi-pencil btn-outline-primary`);
+        break;
+      case "delete":
+        setTitle("Suppression d'un Workout");
+        setBtnCls(`btn btn-sm bi rounded-pill bi-trash3 btn-outline-danger`);
+        break;
+      default:
+        break;
+    }
+  });
 
   return (
     <div>
@@ -22,11 +44,7 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
           setCurrentWorkout(workout);
         }}
         role="button"
-        className={`btn btn-sm bi rounded-pill 
-          ${crudOp == "delete" ? "bi-trash3 btn-outline-danger" : ""}
-          ${crudOp == "update" ? "bi-pencil btn-outline-primary" : ""}
-          ${crudOp == "add" ? "bi-plus-lg btn-outline-success" : ""}
-          `}
+        className={btnCls}
       ></i>
       <div
         className="modal fade"
@@ -43,11 +61,7 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="workoutModalLabel">
                 {/* TITLE */}
-                {`
-                  ${op == "add" ? "Ajout d'un Workout" : ""}
-                  ${op == "update" ? "Modification d'un Workout" : ""}
-                  ${op == "delete" ? "Suppression d'un Workout" : ""}
-                `}
+                {title}
               </h1>
 
               {/* BTN CLOSE */}
