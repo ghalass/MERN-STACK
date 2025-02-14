@@ -158,9 +158,43 @@ const changePassword = async (req, res) => {
     }
 }
 
+// get all users
+const getUsers = async (req, res) => {
+    try {
+
+        // check if email is his email
+        // user can change only his password
+        // verify authentication
+        const { authorization } = req.headers
+        if (!authorization) {
+            return res.status(401).json({ error: 'Authorization token required!' })
+        }
+        const token = authorization.split(' ')[1]
+        const { id } = jwt.verify(token, process.env.SECRET)
+
+        // find role of user how send request
+        const user = await prisma.user.findFirst({
+            where: { id: id },
+            select: { role: true }
+        });
+        // check if role is authorised
+        const allowed = (user.role === 'SUPER_ADMIN') || (user.role === 'ADMIN')
+        // return res.status(200).json({ role: user.role, allowed: allowed });
+        if (!allowed) {
+            return res.status(400).json({ error: "Vous n'êtez pas autoriser." })
+        }
+
+        const users = await prisma.user.findMany();
+        return res.status(200).json(users)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
     getByEmail,
-    changePassword
+    changePassword,
+    getUsers,
 }

@@ -29,9 +29,9 @@ const ProtectedRoute = ({ element }) => {
   }
 
   if (!user || isTokenExpired(user?.token)) {
-    console.warn(
-      "Token expiré ou utilisateur non authentifié. Redirection vers /login."
-    );
+    // console.warn(
+    //   "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+    // );
     logout();
     return <Navigate to="/login" replace />;
   }

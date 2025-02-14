@@ -16,27 +16,34 @@ export const useSignup = () => {
         setIsLoading(true)
         setError(null)
 
-        const response = await fetch(`${API}/user/signup`, {
-            method: 'POST',
-            body: JSON.stringify({ name, email, password }),
-            headers: {
-                "Content-Type": "application/json",
+        try {
+            const response = await fetch(`${API}/user/signup`, {
+                method: 'POST',
+                body: JSON.stringify({ name, email, password }),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            const json = await response.json()
+
+            if (!response.ok) {
+                setIsLoading(false)
+                setError(json.error)
+            } else {
+                // save the user to local storage
+                localStorage.setItem('user', JSON.stringify(json))
+
+                // update useAuthStore
+                login(json)
+                navigate("/");
+                setIsLoading(false)
+                toast.success(`Connecté avec succès!`);
             }
-        })
-        const json = await response.json()
-
-        if (!response.ok) {
-            setIsLoading(false)
-            setError(json.error)
-        } else {
-            // save the user to local storage
-            localStorage.setItem('user', JSON.stringify(json))
-
-            // update useAuthStore
-            login(json)
-            navigate("/");
-            setIsLoading(false)
-            toast.success(`Connecté avec succès!`);
+        } catch (error) {
+            setError(error.error);
+            toast.error(error.error || "Échec de la connexion.");
+        } finally {
+            setIsLoading(false);
         }
     }
 
