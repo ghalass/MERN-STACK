@@ -132,7 +132,8 @@ const WorkoutForm = () => {
 
   return (
     <div>
-      {op !== "delete" ? (
+      {/* ADD Or UPDATE */}
+      {(op === "add" || op === "update") && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormInput
             type="text"
@@ -163,7 +164,10 @@ const WorkoutForm = () => {
 
           <SubmitButton isProcessing={isProcessing} operation={op} />
         </form>
-      ) : (
+      )}
+
+      {/* DELETE */}
+      {op === "delete" && (
         <div>
           <h5 className="text-danger">
             <i className="bi bi-exclamation-triangle"></i> Voulez-vous vraiment
@@ -181,6 +185,19 @@ const WorkoutForm = () => {
             isProcessing={isProcessing}
             operation={op}
           />
+        </div>
+      )}
+
+      {op === "infos" && (
+        <div>
+          <small className="fst-italic">Title</small>
+          <h6>{currentWorkout.title}</h6>
+
+          <small className="fst-italic">Load</small>
+          <h6>{currentWorkout.load}</h6>
+
+          <small className="fst-italic">Reps</small>
+          <h6>{currentWorkout.reps}</h6>
         </div>
       )}
 

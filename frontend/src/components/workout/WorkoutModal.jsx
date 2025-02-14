@@ -8,12 +8,12 @@ const WorkoutForm = lazy(() => import("../../components/workout/WorkoutForm"));
 const WorkoutModal = ({ workout = null, crudOp }) => {
   // GLOBAL STATES
   const setOp = useWorkoutsStore((state) => state.setOp);
+  const op = useWorkoutsStore((state) => state.op);
   const setCurrentWorkout = useWorkoutsStore(
     (state) => state.setCurrentWorkout
   );
 
   // LOCAL STATES
-  const [title, setTitle] = useState("no title");
   const [btnCls, setBtnCls] = useState("");
 
   const btnClsPartOne = "btn btn-sm bi rounded-pill ";
@@ -22,20 +22,16 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   useEffect(() => {
     switch (crudOp) {
       case "add":
-        setTitle("Ajout d'un Workout");
         setBtnCls(`${btnClsPartOne} bi-plus-lg ${btnClsPartTwo}-success`);
         break;
       case "update":
-        setTitle("Modification d'un Workout");
         setBtnCls(`${btnClsPartOne} bi-pencil ${btnClsPartTwo}-primary`);
         break;
       case "delete":
-        setTitle("Suppression d'un Workout");
         setBtnCls(`${btnClsPartOne} bi-trash3 ${btnClsPartTwo}-danger`);
         break;
-      case "show":
-        setTitle("Délails d'un Workout");
-        setBtnCls(`${btnClsPartOne} bi-info-circle ${btnClsPartTwo}-success`);
+      case "infos":
+        setBtnCls(`${btnClsPartOne} bi-info-lg ${btnClsPartTwo}-success`);
         break;
       default:
         break;
@@ -45,8 +41,7 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   return (
     <div>
       <i
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           setOp(crudOp);
           openModal("workoutModal");
           setCurrentWorkout(workout);
@@ -69,7 +64,10 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="workoutModalLabel">
                 {/* TITLE */}
-                {title}
+                {op === "add" && "Ajout d'un Workout"}
+                {op === "update" && "Modification d'un Workout"}
+                {op === "delete" && "Suppression d'un Workout"}
+                {op === "infos" && "Délails d'un Workout"}
               </h1>
 
               {/* BTN CLOSE */}

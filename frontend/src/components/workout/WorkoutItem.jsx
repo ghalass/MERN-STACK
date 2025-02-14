@@ -39,6 +39,9 @@ const WorkoutItem = ({ workout }) => {
       <Card.Footer className="text-muted crudOperation">
         <div className="d-flex gap-2 justify-content-end ">
           <Suspense>
+            <WorkoutModal workout={workout} crudOp="infos" />
+          </Suspense>
+          <Suspense>
             <WorkoutModal workout={workout} crudOp="update" />
           </Suspense>
           <Suspense>
