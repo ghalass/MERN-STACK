@@ -25,9 +25,6 @@ const Workouts = () => {
   // LOCAL STATES
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
 
-  const [searchWorkouts, setSearchWorkouts] = useState([]);
-  const [search, setSearch] = useState("");
-
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
@@ -45,24 +42,11 @@ const Workouts = () => {
     if (user) fetchWorkouts();
   }, [setWorkouts, user]);
 
-  const submitSearch = () => {
-    if (search.trim() !== "") {
-      const r = workouts.filter(
-        (w) =>
-          w.title.toLowerCase().includes(search.toLowerCase()) ||
-          w.load.toString().includes(search) ||
-          w.reps.toString().includes(search)
-      );
-      console.log(r);
-      setCurrentWorkouts(r);
-    }
-  };
-
   return (
     <div className="m-2">
       <div className="row">
         <div className="col-12 col-md-4">
-          <div className="d-flex">
+          <div className="d-flex gap-1">
             <div>
               <Suspense>
                 <WorkoutModal crudOp="add" />
@@ -74,20 +58,8 @@ const Workouts = () => {
           </div>
         </div>
 
-        <div className="col-12 col-md-4 text-center">
-          <input
-            className="form-control form-control-sm my-1 "
-            type="search"
-            placeholder="Chercher..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyUp={submitSearch}
-          />
-        </div>
-
-        <div className="col-12 col-md-4 d-flex justify-content-end">
+        <div className="col-12 col-md-8 d-flex justify-content-end">
           <WorkoutPagination
-            searchWorkouts={searchWorkouts}
             currentWorkouts={currentWorkouts}
             setCurrentWorkouts={setCurrentWorkouts}
           />
@@ -99,7 +71,7 @@ const Workouts = () => {
           {currentWorkouts.map((workout, index) => (
             <div
               key={index}
-              className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4"
+              className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-2"
             >
               <WorkoutItem workout={workout} />
             </div>

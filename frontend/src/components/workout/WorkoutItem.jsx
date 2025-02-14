@@ -21,14 +21,14 @@ const WorkoutItem = ({ workout }) => {
         </Card.Text>
 
         <div className="d-flex flex-column fw-light timestamps">
-          <span>
-            createdAt:{" "}
+          <span className="text-success">
+            <i className="bi bi-plus-lg "></i>{" "}
             <small className="fst-italic">
               {formatDateAgo(workout.createdAt)}
             </small>
           </span>
-          <span>
-            updatedAt:{" "}
+          <span className="text-primary">
+            <i className="bi bi-arrow-clockwise "></i>{" "}
             <small className="fst-italic">
               {formatDateAgo(workout.updatedAt)}
             </small>

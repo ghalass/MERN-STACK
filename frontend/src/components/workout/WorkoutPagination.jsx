@@ -5,7 +5,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   const workouts = useWorkoutsStore((state) => state.workouts);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [workoutsPerPage, setWorkoutsPerPage] = useState(6);
+  const [workoutsPerPage, setWorkoutsPerPage] = useState(8);
   // const workoutsPerPage = 6; // Nombre de workouts par page
 
   // 🔹 Met à jour les workouts affichés lorsqu'on change de page
@@ -25,8 +25,35 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
+  // SEARCH
+  const [searchWorkouts, setSearchWorkouts] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const submitSearch = () => {
+    if (search.trim() !== "") {
+      const r = workouts.filter(
+        (w) =>
+          w.title.toLowerCase().includes(search.toLowerCase()) ||
+          w.load.toString().includes(search) ||
+          w.reps.toString().includes(search)
+      );
+      console.log(r);
+      setCurrentWorkouts(r);
+    }
+  };
+
   return (
-    <div className="d-flex justify-content-center align-items-center mb-2">
+    <div className="d-flex justify-content-end align-items-center mb-2">
+      <input
+        className="form-control form-control-sm"
+        type="search"
+        placeholder="Chercher..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onKeyUp={submitSearch}
+        style={{ width: "200px" }}
+      />
+
       <input
         type="number"
         className="form-control form-control-sm me-1"
@@ -40,7 +67,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
         onClick={handlePreviousPage}
         disabled={currentPage === 1}
       >
-        Précédent
+        <i className="bi bi-skip-backward"></i>
       </button>
 
       <span>
@@ -52,7 +79,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
         onClick={handleNextPage}
         disabled={currentPage >= totalPages}
       >
-        Suivant
+        <i className="bi bi-skip-forward"></i>
       </button>
     </div>
   );

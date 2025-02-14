@@ -33,6 +33,10 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
         setTitle("Suppression d'un Workout");
         setBtnCls(`${btnClsPartOne} bi-trash3 ${btnClsPartTwo}-danger`);
         break;
+      case "show":
+        setTitle("Délails d'un Workout");
+        setBtnCls(`${btnClsPartOne} bi-info-circle ${btnClsPartTwo}-success`);
+        break;
       default:
         break;
     }
@@ -41,7 +45,8 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   return (
     <div>
       <i
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           setOp(crudOp);
           openModal("workoutModal");
           setCurrentWorkout(workout);
