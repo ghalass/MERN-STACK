@@ -25,6 +25,9 @@ const Workouts = () => {
   // LOCAL STATES
   const [currentWorkouts, setCurrentWorkouts] = useState([]);
 
+  const [searchWorkouts, setSearchWorkouts] = useState([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     const fetchWorkouts = async () => {
       setIsLoading(true);
@@ -38,10 +41,22 @@ const Workouts = () => {
       }
     };
 
-    if (user) {
-      fetchWorkouts();
-    }
+    // don't load data if no user connected
+    if (user) fetchWorkouts();
   }, [setWorkouts, user]);
+
+  const submitSearch = () => {
+    if (search.trim() !== "") {
+      const r = workouts.filter(
+        (w) =>
+          w.title.toLowerCase().includes(search.toLowerCase()) ||
+          w.load.toString().includes(search) ||
+          w.reps.toString().includes(search)
+      );
+      console.log(r);
+      setCurrentWorkouts(r);
+    }
+  };
 
   return (
     <div className="m-2">
@@ -64,11 +79,18 @@ const Workouts = () => {
             className="form-control form-control-sm my-1 "
             type="search"
             placeholder="Chercher..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyUp={submitSearch}
           />
         </div>
 
         <div className="col-12 col-md-4 d-flex justify-content-end">
-          <WorkoutPagination setCurrentWorkouts={setCurrentWorkouts} />
+          <WorkoutPagination
+            searchWorkouts={searchWorkouts}
+            currentWorkouts={currentWorkouts}
+            setCurrentWorkouts={setCurrentWorkouts}
+          />
         </div>
       </div>
 
