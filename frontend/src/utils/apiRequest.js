@@ -43,7 +43,6 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
 
         return data;
     } catch (err) {
-        console.log(err);
         return err;
         // throw err;
     }

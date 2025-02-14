@@ -13,22 +13,16 @@ import { closeModal } from "../../utils/modal";
 
 import toast from "react-hot-toast";
 import FormInput from "../forms/FormInput";
-import Error from "../forms/Error";
 import { useState } from "react";
 import useAuthStore from "../../store/authStore";
 
+// COMPONENTS
+import Error from "../forms/Error";
+import SubmitButton from "../../components/forms/SubmitButton";
+
 const newPasswordSchema = yup.object().shape({
   oldPassword: yup.string().min(6).required().label("Mot de passe actuel"),
-  newPassword: yup
-    .string()
-    .min(6)
-    .required()
-    // .oneOf(
-    //   [yup.ref("oldPassword"), null],
-    //   "Les mots de passe doivent correspondre"
-    // )
-
-    .label("Nouveau mot de passe"),
+  newPassword: yup.string().min(6).required().label("Nouveau mot de passe"),
 });
 
 const ProfileChangePasswordModal = ({ userData }) => {
@@ -48,21 +42,37 @@ const ProfileChangePasswordModal = ({ userData }) => {
     defaultValues: {
       newPassword: "",
       oldPassword: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (data) => {
+    if (data.newPassword !== data.confirmPassword) {
+      setError("Mot de passe de confirmation n'est identique au nouveau.");
+      return;
+    }
     const newData = {
       email: userData?.email,
       newPassword: data?.newPassword,
       oldPassword: data?.oldPassword,
     };
-    setIsLoading(true);
     try {
-      await apiRequest(`/user/changePassword`, "POST", newData, user?.token);
-      closeModal("userProfileChangePassword");
-      reset();
-      toast.success("Mot de passe changé avec succès!");
+      setIsLoading(true);
+      const response = await apiRequest(
+        `/user/changePassword`,
+        "POST",
+        newData,
+        user?.token
+      );
+
+      if (!response?.error) {
+        toast.success("Mot de passe modifié avec succès !");
+        closeModal("userProfileChangePassword");
+        reset();
+      } else {
+        setError(response?.error);
+        return;
+      }
     } catch (err) {
       setError(err.error);
       console.error("Erreur lors changement de mot de passe :", err);
@@ -95,6 +105,7 @@ const ProfileChangePasswordModal = ({ userData }) => {
                 onClick={() => {
                   closeModal("userProfileChangePassword");
                   reset();
+                  setError(null);
                 }}
                 disabled={isLoading}
                 type="button"
@@ -122,42 +133,29 @@ const ProfileChangePasswordModal = ({ userData }) => {
                 errors={errors}
               />
 
+              <FormInput
+                type="password"
+                id="confirmPassword"
+                label="Confirmer le nouveau mot de passe"
+                placeholder="Confirmer le nouveau mot de passe"
+                register={register}
+                errors={errors}
+              />
+
               <Error error={error} />
             </div>
 
             <div className="modal-footer">
-              <button
-                onClick={() => {
-                  closeModal("userProfileChangePassword");
-                  reset();
-                  setError(null);
-                }}
-                disabled={isLoading}
-                type="button"
-                className="btn btn-sm btn-outline-secondary"
-                // data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
+              <SubmitButton
                 disabled={isLoading}
                 type="submit"
-                className="btn btn-sm btn-outline-danger"
-              >
-                <div className="d-flex justify-content-center align-items-center gap-2">
-                  {isLoading && (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    >
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  )}
-                  <div>
-                    Modifier <i className="bi bi-upload"></i>
-                  </div>
-                </div>
-              </button>
+                isProcessing={isLoading}
+                text="Modifier"
+                operation={"non"}
+                icon="bi bi-upload"
+                cls="danger"
+                fullWidth={false}
+              />
             </div>
           </div>
         </form>

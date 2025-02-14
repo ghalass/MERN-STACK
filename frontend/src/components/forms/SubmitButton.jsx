@@ -3,23 +3,24 @@ const SubmitButton = ({
   isProcessing,
   text = "No title",
   onClick,
+  type = "submit",
+  icon = null,
+  cls = "primary",
+  fullWidth = true,
 }) => {
-  let title = text;
-  let icon = "";
-  let cls = "primary";
   switch (operation) {
     case "add":
-      title = "Ajouter";
+      text = "Ajouter";
       icon = "plus-circle";
       cls = "primary";
       break;
     case "delete":
-      title = "Supprimer";
+      text = "Supprimer";
       icon = "trash3";
       cls = "danger";
       break;
     case "update":
-      title = "Modifier";
+      text = "Modifier";
       icon = "pencil";
       cls = "success";
       break;
@@ -29,9 +30,12 @@ const SubmitButton = ({
 
   return (
     <button
+      type={type}
       hidden={!operation}
       disabled={isProcessing}
-      className={`btn btn-sm btn-outline-${cls} mt-2 w-100`}
+      className={`btn btn-sm btn-outline-${cls} mt-2 ${
+        fullWidth ? "w-100" : ""
+      }`}
       onClick={onClick}
     >
       <div className="d-flex justify-content-center gap-2 align-items-center">
@@ -41,7 +45,7 @@ const SubmitButton = ({
           </div>
         )}
         <div>
-          <i className={`bi bi-${icon}`}></i> {title}
+          <i className={`bi bi-${icon}`}></i> {text}
         </div>
       </div>
     </button>
