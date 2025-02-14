@@ -16,19 +16,22 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   const [title, setTitle] = useState("no title");
   const [btnCls, setBtnCls] = useState("");
 
+  const btnClsPartOne = "btn btn-sm bi rounded-pill ";
+  const btnClsPartTwo = "btn-outline";
+
   useEffect(() => {
     switch (crudOp) {
       case "add":
         setTitle("Ajout d'un Workout");
-        setBtnCls(`btn btn-sm bi rounded-pill bi-plus-lg btn-outline-success`);
+        setBtnCls(`${btnClsPartOne} bi-plus-lg ${btnClsPartTwo}-success`);
         break;
       case "update":
         setTitle("Modification d'un Workout");
-        setBtnCls(`btn btn-sm bi rounded-pill bi-pencil btn-outline-primary`);
+        setBtnCls(`${btnClsPartOne} bi-pencil ${btnClsPartTwo}-primary`);
         break;
       case "delete":
         setTitle("Suppression d'un Workout");
-        setBtnCls(`btn btn-sm bi rounded-pill bi-trash3 btn-outline-danger`);
+        setBtnCls(`${btnClsPartOne} bi-trash3 ${btnClsPartTwo}-danger`);
         break;
       default:
         break;
