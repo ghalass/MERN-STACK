@@ -8,34 +8,26 @@ const WorkoutPagination = lazy(() =>
 );
 const WorkoutModal = lazy(() => import("../components/workout/WorkoutModal"));
 
-// Utils
-import { apiRequest } from "../utils/apiRequest";
-
 // Stores
 import { useWorkoutsStore } from "../store/workoutStore";
 import useAuthStore from "../store/authStore";
+import { useWorkout } from "../hooks/useWorkout";
 
 const Workouts = () => {
   // GLOBAL STATES
+  const user = useAuthStore((state) => state.user);
   const workouts = useWorkoutsStore((state) => state.workouts);
   const setWorkouts = useWorkoutsStore((state) => state.setWorkouts);
-  const setIsLoading = useWorkoutsStore((state) => state.setIsLoading);
-  const user = useAuthStore((state) => state.user);
+
+  // Custom hook
+  const { getAllWorkouts } = useWorkout({});
 
   // LOCAL STATES
-  const [currentWorkouts, setCurrentWorkouts] = useState([]);
+  const [paginatedWorkouts, setPaginatedWorkouts] = useState([]);
 
   useEffect(() => {
     const fetchWorkouts = async () => {
-      setIsLoading(true);
-      try {
-        const data = await apiRequest(`/workouts`, "GET", null, user?.token);
-        setWorkouts(data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des workouts :", error);
-      } finally {
-        setIsLoading(false);
-      }
+      await getAllWorkouts();
     };
 
     // don't load data if no user connected
@@ -59,16 +51,13 @@ const Workouts = () => {
         </div>
 
         <div className="col-12 col-md-8 d-flex justify-content-end">
-          <WorkoutPagination
-            currentWorkouts={currentWorkouts}
-            setCurrentWorkouts={setCurrentWorkouts}
-          />
+          <WorkoutPagination setPaginatedWorkouts={setPaginatedWorkouts} />
         </div>
       </div>
 
       <div className="row">
         <Suspense fallback={<LoaderSpinner />}>
-          {currentWorkouts.map((workout, index) => (
+          {paginatedWorkouts.map((workout, index) => (
             <div
               key={index}
               className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-2"

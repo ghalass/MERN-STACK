@@ -1,36 +1,24 @@
-import { useState, useEffect, Suspense } from "react";
-import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // Import du schéma de validation et de l'API utilitaire
 import { workoutSchema } from "../../utils/workoutValidation";
-import { apiRequest } from "../../utils/apiRequest";
 
 // GLOBAL STATES
-import useAuthStore from "../../store/authStore";
 import { useWorkoutsStore } from "../../store/workoutStore";
 
 // COMPONENTS
 import Error from "../forms/Error";
 import FormInput from "../../components/forms/FormInput";
 import SubmitButton from "../forms/SubmitButton";
-import { closeModal } from "../../utils/modal";
+import { useWorkout } from "../../hooks/useWorkout";
 
 const WorkoutForm = () => {
-  const createWorkout = useWorkoutsStore((state) => state.createWorkout);
-  const updateWorkout = useWorkoutsStore((state) => state.updateWorkout);
-  const deleteWorkout = useWorkoutsStore((state) => state.deleteWorkout);
-  const currentWorkout = useWorkoutsStore((state) => state.currentWorkout);
-  const user = useAuthStore((state) => state.user);
+  const selectedWorkout = useWorkoutsStore((state) => state.selectedWorkout);
 
   const op = useWorkoutsStore((state) => state.op);
-  const setOp = useWorkoutsStore((state) => state.setOp);
-
-  // LOCAL STATES
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState(null);
 
   const {
     register,
@@ -40,94 +28,28 @@ const WorkoutForm = () => {
   } = useForm({
     resolver: yupResolver(workoutSchema),
     defaultValues: {
-      id: currentWorkout?.id || 0,
-      title: currentWorkout?.title || "",
-      load: currentWorkout?.load || 0,
-      reps: currentWorkout?.reps || 0,
+      id: selectedWorkout?.id || 0,
+      title: selectedWorkout?.title || "",
+      load: selectedWorkout?.load || 0,
+      reps: selectedWorkout?.reps || 0,
     },
   });
 
+  // Custom hook
+  const { error, setError, isProcessing, goWorkout } = useWorkout({ reset });
+
   useEffect(() => {
     reset({
-      id: currentWorkout?.id || 0,
-      title: currentWorkout?.title || "",
-      load: currentWorkout?.load || 0,
-      reps: currentWorkout?.reps || 0,
+      id: selectedWorkout?.id || 0,
+      title: selectedWorkout?.title || "",
+      load: selectedWorkout?.load || 0,
+      reps: selectedWorkout?.reps || 0,
     });
-  }, [currentWorkout, reset]);
+    setError(null);
+  }, [selectedWorkout, reset, setError]);
 
   const onSubmit = async (data) => {
-    if (!user) {
-      setIsProcessing(false);
-      toast.error("Vous devez être connecté !");
-      return;
-    }
-
-    try {
-      setIsProcessing(true);
-      // CREATE
-      if (op === "add") {
-        // create
-        const response = await apiRequest(
-          "/workouts",
-          "POST",
-          data,
-          user?.token
-        );
-        // check if no error
-        if (!response?.error) {
-          createWorkout(response);
-          toast.success("Ajouté avec succès !");
-        } else {
-          setError(response?.error);
-          return;
-        }
-      } else if (op === "update") {
-        // UPDATE
-        const response = await apiRequest(
-          `/workouts/${data.id}`,
-          "PATCH",
-          data,
-          user.token
-        );
-
-        // check if no error
-        if (!response?.error) {
-          updateWorkout(response);
-          toast.success("Modifié avec succès !");
-        } else {
-          setError(response?.error);
-          return;
-        }
-      } else if (op === "delete") {
-        const response = await apiRequest(
-          `/workouts/${currentWorkout.id}`,
-          "DELETE",
-          null,
-          user.token
-        );
-        // check if no error
-        if (!response?.error) {
-          deleteWorkout(response);
-          toast.success("Supprimé avec succès !");
-        } else {
-          setError(response?.error);
-          return;
-        }
-      } else {
-        toast.error("Aucune opération n'est choisie !");
-      }
-
-      setError(null);
-      setOp(null);
-      reset();
-      closeModal("workoutModal");
-    } catch (error) {
-      console.log(error);
-      setError(error.error);
-    } finally {
-      setIsProcessing(false);
-    }
+    await goWorkout(data);
   };
 
   return (
@@ -177,7 +99,7 @@ const WorkoutForm = () => {
             ce Workout ?
           </h5>
           <div className="text-primary text-center mt-4">
-            <strong>{currentWorkout?.title}</strong>
+            <strong>{selectedWorkout?.title}</strong>
           </div>
 
           <SubmitButton
@@ -191,13 +113,13 @@ const WorkoutForm = () => {
       {op === "infos" && (
         <div>
           <small className="fst-italic">Title</small>
-          <h6>{currentWorkout.title}</h6>
+          <h6>{selectedWorkout.title}</h6>
 
           <small className="fst-italic">Load</small>
-          <h6>{currentWorkout.load}</h6>
+          <h6>{selectedWorkout.load}</h6>
 
           <small className="fst-italic">Reps</small>
-          <h6>{currentWorkout.reps}</h6>
+          <h6>{selectedWorkout.reps}</h6>
         </div>
       )}
 

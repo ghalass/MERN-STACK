@@ -2,20 +2,15 @@ import { create } from "zustand";
 
 export const useWorkoutsStore = create((set, get) => ({
     workouts: [],
-    isLoading: false,
-    currentWorkout: null,
+    selectedWorkout: null,
     op: null,
 
     setOp: (newVal) => {
         set(() => ({ op: newVal }));
     },
 
-    setIsLoading: (newVal) => {
-        set(() => ({ isLoading: newVal }));
-    },
-
-    setCurrentWorkout: (newVal) => {
-        set(() => ({ currentWorkout: newVal }));
+    setSelectedWorkout: (newVal) => {
+        set(() => ({ selectedWorkout: newVal }));
     },
 
     setWorkouts: (newWorkouts) => {

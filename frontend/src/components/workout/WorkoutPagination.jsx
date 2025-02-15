@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useWorkoutsStore } from "../../store/workoutStore";
 
-const WorkoutPagination = ({ setCurrentWorkouts }) => {
+const WorkoutPagination = ({ setPaginatedWorkouts }) => {
   const workouts = useWorkoutsStore((state) => state.workouts);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,8 +12,10 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   useEffect(() => {
     const indexOfLastWorkout = currentPage * workoutsPerPage;
     const indexOfFirstWorkout = indexOfLastWorkout - workoutsPerPage;
-    setCurrentWorkouts(workouts.slice(indexOfFirstWorkout, indexOfLastWorkout));
-  }, [currentPage, workouts, setCurrentWorkouts, workoutsPerPage]);
+    setPaginatedWorkouts(
+      workouts.slice(indexOfFirstWorkout, indexOfLastWorkout)
+    );
+  }, [currentPage, workouts, setPaginatedWorkouts, workoutsPerPage]);
 
   const totalPages = Math.ceil(workouts.length / workoutsPerPage);
 
@@ -26,7 +28,6 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
   };
 
   // SEARCH
-  const [searchWorkouts, setSearchWorkouts] = useState([]);
   const [search, setSearch] = useState("");
 
   const submitSearch = () => {
@@ -37,8 +38,7 @@ const WorkoutPagination = ({ setCurrentWorkouts }) => {
           w.load.toString().includes(search) ||
           w.reps.toString().includes(search)
       );
-      console.log(r);
-      setCurrentWorkouts(r);
+      setPaginatedWorkouts(r);
     }
   };
 

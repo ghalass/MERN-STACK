@@ -9,8 +9,8 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   // GLOBAL STATES
   const setOp = useWorkoutsStore((state) => state.setOp);
   const op = useWorkoutsStore((state) => state.op);
-  const setCurrentWorkout = useWorkoutsStore(
-    (state) => state.setCurrentWorkout
+  const setSelectedWorkout = useWorkoutsStore(
+    (state) => state.setSelectedWorkout
   );
 
   // LOCAL STATES
@@ -44,7 +44,7 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
         onClick={() => {
           setOp(crudOp);
           openModal("workoutModal");
-          setCurrentWorkout(workout);
+          setSelectedWorkout(workout);
         }}
         role="button"
         className={btnCls}
