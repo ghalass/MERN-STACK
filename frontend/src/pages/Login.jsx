@@ -6,7 +6,7 @@ import FormInput from "../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../utils/loginValidation"; // ✅ Import du schéma de validation
+import { loginSchema } from "../validations/loginValidation"; // ✅ Import du schéma de validation
 
 const Login = () => {
   // ✅ Utilisation de react-hook-form
@@ -16,6 +16,10 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
+    defaultValues: {
+      email: "mike@email.com",
+      password: "123456",
+    },
   });
 
   const { loginUser, error, isLoading } = useLogin();

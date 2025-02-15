@@ -1,51 +1,21 @@
-import { useEffect, useState } from "react";
-import { apiRequest } from "../utils/apiRequest";
+import { Suspense, useEffect } from "react";
 import useAuthStore from "../store/authStore";
 
 // components
 import ProfileInfos from "../components/profile/ProfileInfos";
-import ProfileChangePasswordModal from "../components/profile/ProfileChangePasswordModal";
-import { openModal } from "../utils/modal";
-import EditUserInfos from "../components/profile/EditUserInfos";
+import { useProfile } from "../hooks/useProfile";
+import ProfileItem from "../components/profile/ProfileItem";
+import LoaderSpinner from "../components/ui/LoaderSpinner";
+import ProfileModal from "../components/profile/ProfileModal";
 
 const Profile = () => {
   const user = useAuthStore((state) => state.user);
 
-  const [userData, setUserData] = useState(null);
-  const [usersList, setUsersList] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const { usersList, getUserProfile, getAllUsers } = useProfile();
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const data = await apiRequest(
-          `/user/getByEmail`,
-          "POST",
-          { email: user?.email },
-          user?.token
-        );
-        setUserData(data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des données :", error);
-      } finally {
-        //
-      }
-    };
-
-    const getAllUsers = async () => {
-      try {
-        const data = await apiRequest(`/user/users`, "GET", null, user?.token);
-        if (!data?.error) setUsersList(data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des utilisateurs :", error);
-      } finally {
-        //
-      }
-      if (user?.role === "SUPER_ADMIN" || user?.role === "ADMIN") getAllUsers();
-    };
-
     if (user) {
-      getUser();
+      getUserProfile();
       getAllUsers();
     }
   }, [user]);
@@ -53,7 +23,7 @@ const Profile = () => {
   return (
     <div className="mt-2 row">
       <div className="col-12 col-md-4">
-        <ProfileInfos userData={userData} />
+        <ProfileInfos />
       </div>
 
       <div className="col-12 col-md-8 ">
@@ -66,41 +36,13 @@ const Profile = () => {
             >
               <span className="text-primary">Liste des utilisateurs</span>
             </div>
-            {usersList.map((u, index) => (
-              <div className="list-group-item " key={index}>
-                <div className="d-flex justify-content-between">
-                  {/*  */}
-
-                  <EditBtn
-                    u={u}
-                    onClick={() => {
-                      setSelectedUser(u);
-                      openModal("editUserInfosModal");
-                    }}
-                  />
-
-                  <div className="fst-italic d-flex gap-3">
-                    <span className="">{u.role.replace("_", " ")}</span>
-
-                    {u.active && (
-                      <i
-                        className="bi bi-toggle-on y ms-1 text-primary"
-                        role="button"
-                      ></i>
-                    )}
-
-                    {!u.active && (
-                      <i
-                        className="bi bi-toggle-off  ms-1 text-secondary"
-                        role="button"
-                      ></i>
-                    )}
-                  </div>
+            <Suspense fallback={<LoaderSpinner />}>
+              {usersList.map((u, index) => (
+                <div className="list-group-item " key={index}>
+                  <ProfileItem profileItem={u} />
                 </div>
-
-                {/*  */}
-              </div>
-            ))}
+              ))}
+            </Suspense>
           </div>
         )}
 
@@ -112,39 +54,7 @@ const Profile = () => {
         )}
       </div>
 
-      <ProfileChangePasswordModal userData={userData} />
-      <EditUserInfos selectedUser={selectedUser} />
-    </div>
-  );
-};
-
-const EditBtn = ({ u, onClick }) => {
-  let icon, cls;
-  switch (u.role) {
-    case "ADMIN":
-      icon = "person-check-fill";
-      cls = "info";
-      break;
-
-    case "SUPER_ADMIN":
-      icon = "person-check-fill";
-      cls = "success";
-      break;
-
-    case "USER":
-      icon = "person";
-      cls = "primary";
-      break;
-
-    default:
-      break;
-  }
-  return (
-    <div className="d-flex gap-1" onClick={onClick}>
-      <span className={`btn btn-sm rounded-pill btn-outline-${cls}`}>
-        <i className={`bi bi-${icon}`}></i>
-      </span>
-      <span>{u.name}</span>
+      <ProfileModal />
     </div>
   );
 };

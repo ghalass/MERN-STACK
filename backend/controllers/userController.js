@@ -96,7 +96,6 @@ const getByEmail = async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: "Utilisateur non trouvé!." })
         }
-
         res.status(200).json(user)
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -106,6 +105,7 @@ const getByEmail = async (req, res) => {
 // signup user
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword, email } = req.body
+
     try {
         // validation inputs
         if (!oldPassword || !newPassword || !email) {
@@ -191,10 +191,48 @@ const getUsers = async (req, res) => {
     }
 }
 
+// update a user
+const updateUser = async (req, res) => {
+    const { id, name, email, role, active } = req.body
+
+    try {
+
+        const selectedUSER = await prisma.user.findFirst({
+            where: { email: email }, omit: { password: true }
+        });
+
+        const newData = {
+            name: name.trim() !== "" ? name : selectedUSER.name,
+            role: role.trim() !== "" ? role : selectedUSER.role,
+            active: active,
+        };
+
+        // check if name is not already exist
+        const nameExist = await prisma.user.findFirst({
+            where: { name: name, id: { not: parseInt(id) } },
+
+        });
+        if (nameExist) {
+            return res.status(401).json({ error: "Ce nom d'utilisateur est déjà utilisé!" })
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: parseInt(id) },
+            data: { name: newData.name, role: newData.role, active: newData.active }
+        });
+
+        res.status(200).json(updatedUser)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
     getByEmail,
     changePassword,
     getUsers,
+    updateUser
 }

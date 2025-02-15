@@ -4,14 +4,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // Import du schéma de validation et de l'API utilitaire
-import { workoutSchema } from "../../utils/workoutValidation";
+import { workoutSchema } from "../../validations/workoutValidation";
 
 // GLOBAL STATES
 import { useWorkoutsStore } from "../../store/workoutStore";
 
 // COMPONENTS
 import Error from "../forms/Error";
-import FormInput from "../../components/forms/FormInput";
+import FormInput from "../forms/FormInput";
 import SubmitButton from "../forms/SubmitButton";
 import { useWorkout } from "../../hooks/useWorkout";
 

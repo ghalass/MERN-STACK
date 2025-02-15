@@ -1,4 +1,8 @@
 import * as yup from "yup";
+import { fr } from "yup-locales";
+
+// Appliquer la localisation française à Yup
+yup.setLocale(fr);
 
 export const loginSchema = yup.object().shape({
     email: yup.string().email("Email invalide").required("L'email est requis"),

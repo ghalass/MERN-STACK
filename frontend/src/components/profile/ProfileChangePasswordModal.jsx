@@ -1,36 +1,22 @@
-import { apiRequest } from "../../utils/apiRequest";
-
-import * as yup from "yup";
-import { fr } from "yup-locales";
-
-// Appliquer la localisation française à Yup
-yup.setLocale(fr);
+import { useEffect } from "react";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { closeModal } from "../../utils/modal";
 
-import toast from "react-hot-toast";
-import FormInput from "../forms/FormInput";
-import { useState } from "react";
-import useAuthStore from "../../store/authStore";
+import { newPasswordSchema } from "../../validations/changePasswordValidation";
 
 // COMPONENTS
 import Error from "../forms/Error";
 import SubmitButton from "../../components/forms/SubmitButton";
+import FormInput from "../forms/FormInput";
 
-const newPasswordSchema = yup.object().shape({
-  oldPassword: yup.string().min(6).required().label("Mot de passe actuel"),
-  newPassword: yup.string().min(6).required().label("Nouveau mot de passe"),
-});
+import { useProfile } from "../../hooks/useProfile";
 
-const ProfileChangePasswordModal = ({ userData }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const user = useAuthStore((state) => state.user);
-
-  const [error, setError] = useState(null);
+const ProfileChangePasswordModal = () => {
+  const { error, setError, isLoading, userProfile, chagePassword } =
+    useProfile();
 
   const {
     register,
@@ -52,34 +38,18 @@ const ProfileChangePasswordModal = ({ userData }) => {
       return;
     }
     const newData = {
-      email: userData?.email,
+      email: userProfile?.email,
       newPassword: data?.newPassword,
       oldPassword: data?.oldPassword,
     };
-    try {
-      setIsLoading(true);
-      const response = await apiRequest(
-        `/user/changePassword`,
-        "POST",
-        newData,
-        user?.token
-      );
 
-      if (!response?.error) {
-        toast.success("Mot de passe modifié avec succès !");
-        closeModal("userProfileChangePassword");
-        reset();
-      } else {
-        setError(response?.error);
-        return;
-      }
-    } catch (err) {
-      setError(err.error);
-      console.error("Erreur lors changement de mot de passe :", err);
-    } finally {
-      setIsLoading(false);
-    }
+    await chagePassword(newData);
   };
+
+  useEffect(() => {
+    setError(null);
+    reset();
+  }, []);
 
   return (
     <div

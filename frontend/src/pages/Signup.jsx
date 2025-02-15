@@ -6,7 +6,7 @@ import FormInput from "../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signupSchema } from "../utils/signupValidation"; // ✅ Import du schéma de validation
+import { signupSchema } from "../validations/signupValidation"; // ✅ Import du schéma de validation
 
 const Signup = () => {
   // ✅ Utilisation de react-hook-form

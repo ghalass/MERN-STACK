@@ -1,7 +1,9 @@
 const express = require('express')
 
 // controller functions
-const { loginUser, signupUser, getByEmail, changePassword, getUsers } = require('../controllers/userController')
+const { loginUser, signupUser, getByEmail, changePassword,
+    getUsers, updateUser
+} = require('../controllers/userController')
 
 const requireAuth = require('../middleware/requireAuth')
 
@@ -24,5 +26,8 @@ router.post('/changePassword', changePassword)
 
 // GET all users
 router.get('/users', getUsers)
+
+// UPDATE an user
+router.patch('/updateUser', updateUser)
 
 module.exports = router
