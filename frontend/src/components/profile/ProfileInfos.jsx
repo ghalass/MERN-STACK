@@ -73,12 +73,6 @@ const ProfileInfos = () => {
             {userProfile?.active ? "Active" : "InActive"}
             <hr className="py-0 my-0 w-50 m-auto text-primary" />
           </div>
-
-          <div>
-            <i className="bi bi-arrow-repeat me-2"></i>
-            {userProfile?.updatedAt && formatDateAgo(userProfile?.updatedAt)}
-            <hr className="py-0 my-0 w-50 m-auto text-primary" />
-          </div>
         </div>
       </div>
 

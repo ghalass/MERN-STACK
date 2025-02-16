@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 const ProfileItem = ({ profileItem }) => {
   const setSelectedUser = useProfileStore((state) => state.setSelectedUser);
 
-  const { userProfile, userCan } = useProfile();
+  const { userCan } = useProfile();
 
   // LOCAL VARS
   const btnClsPartOne = "btn btn-sm bi rounded-pill ";

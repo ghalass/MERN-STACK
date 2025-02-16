@@ -76,9 +76,25 @@ const loginUser = async (req, res) => {
 
         const token = createToken(user.id)
 
+        await setLastViste(email)
+
         res.status(200).json({ email, name: user.name, token })
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+}
+
+// 
+const setLastViste = async (email) => {
+
+    try {
+        await prisma.user.update({
+            where: { email: email },
+            data: { lastVisite: new Date().toISOString() },
+            omit: { password: true }
+        });
+    } catch (error) {
+        return error.message
     }
 }
 
