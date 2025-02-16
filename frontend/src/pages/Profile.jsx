@@ -34,7 +34,9 @@ const Profile = () => {
               className="list-group-item list-group-item-action active bg-body-secondary text-secondary"
               aria-current="true"
             >
-              <span className="text-primary">Liste des utilisateurs</span>
+              <span className="text-primary">
+                Liste des utilisateurs ({usersList?.length})
+              </span>
             </div>
             <Suspense fallback={<LoaderSpinner />}>
               {usersList.map((u, index) => (

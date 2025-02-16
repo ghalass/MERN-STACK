@@ -2,7 +2,7 @@ import { useState } from "react";
 import { apiRequest } from "../utils/apiRequest"; // ✅ Import de la fonction API utilitaire
 import useAuthStore from "../store/authStore";
 
-export const useProfile = () => {
+export const useModel = () => {
 
     const user = useAuthStore((state) => state.user);
 

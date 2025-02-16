@@ -1,6 +1,7 @@
 import { openModal } from "../../utils/modal";
 import ProfileChangePasswordModal from "../../components/profile/ProfileChangePasswordModal";
 import { useProfileStore } from "../../store/profileStore";
+import { formatDateAgo, getUserRole } from "../../utils/func";
 
 const ProfileInfos = () => {
   const userProfile = useProfileStore((state) => state.userProfile);
@@ -36,11 +37,46 @@ const ProfileInfos = () => {
           </div>
 
           <div className="">
-            <p className="mb-1 fst-italic">
-              {userProfile?.role.replace("_", " ") ?? (
-                <span className="text-secondary">Non défini</span>
-              )}
-            </p>
+            <p className="mb-1 fst-italic">{getUserRole(userProfile)}</p>
+            <hr className="py-0 my-0 w-50 m-auto text-primary" />
+          </div>
+
+          <div>
+            <i
+              className={`me-2 bi bi-${
+                userProfile?.lastVisite
+                  ? "wifi text-success"
+                  : "wifi-off text-danger"
+              }`}
+            ></i>
+            {userProfile?.lastVisite
+              ? formatDateAgo(userProfile?.lastVisite)
+              : "Jamais"}
+            <hr className="py-0 my-0 w-50 m-auto text-primary" />
+          </div>
+
+          <div>
+            <i
+              className="me-2 bi bi-plus-circle-dotted text-success
+          "
+            ></i>
+            {userProfile?.createdAt && formatDateAgo(userProfile?.createdAt)}
+            <hr className="py-0 my-0 w-50 m-auto text-primary" />
+          </div>
+
+          <div>
+            <i
+              className={`me-2 bi bi-toggle-${
+                userProfile?.active ? "on" : "off"
+              }  ms-1 text-${userProfile?.active ? "primary" : "secondary"}`}
+            ></i>
+            {userProfile?.active ? "Active" : "InActive"}
+            <hr className="py-0 my-0 w-50 m-auto text-primary" />
+          </div>
+
+          <div>
+            <i className="bi bi-arrow-repeat me-2"></i>
+            {userProfile?.updatedAt && formatDateAgo(userProfile?.updatedAt)}
             <hr className="py-0 my-0 w-50 m-auto text-primary" />
           </div>
         </div>

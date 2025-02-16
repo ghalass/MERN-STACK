@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+import { useProfile } from "../../hooks/useProfile";
 import { useWorkoutsStore } from "../../store/workoutStore";
 import { closeModal, openModal } from "../../utils/modal";
 
@@ -12,6 +14,8 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
   const setSelectedWorkout = useWorkoutsStore(
     (state) => state.setSelectedWorkout
   );
+
+  const { userCan } = useProfile();
 
   // LOCAL STATES
   const [btnCls, setBtnCls] = useState("");
@@ -43,8 +47,17 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
       <i
         onClick={() => {
           setOp(crudOp);
-          openModal("workoutModal");
           setSelectedWorkout(workout);
+
+          if (crudOp !== "infos") {
+            if (userCan(["SUPER_ADMIN", "ADMIN"])) {
+              openModal("workoutModal");
+            } else {
+              toast.error("Vous n'avez pas l'autorisation.");
+            }
+          } else {
+            openModal("workoutModal");
+          }
         }}
         role="button"
         className={btnCls}

@@ -178,13 +178,21 @@ const getUsers = async (req, res) => {
             select: { role: true }
         });
         // check if role is authorised
-        const allowed = (user.role === 'SUPER_ADMIN') || (user.role === 'ADMIN')
+        // const allowed = (user.role === 'SUPER_ADMIN') || (user.role === 'ADMIN')
+        const allowed = true
         // return res.status(200).json({ role: user.role, allowed: allowed });
         if (!allowed) {
             return res.status(400).json({ error: "Vous n'êtez pas autoriser." })
         }
 
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            orderBy: [
+                { role: 'asc' },
+                { name: 'asc' },
+                { active: 'desc' },
+            ],
+            omit: { password: true }
+        });
         return res.status(200).json(users)
     } catch (error) {
         res.status(500).json({ error: error.message });

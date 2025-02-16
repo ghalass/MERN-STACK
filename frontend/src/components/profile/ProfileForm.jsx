@@ -3,12 +3,14 @@ import { useProfile } from "../../hooks/useProfile";
 import { useProfileStore } from "../../store/profileStore";
 
 import Error from "../forms/Error";
+import SubmitButton from "../../components/forms/SubmitButton";
 
 const ProfileForm = () => {
   const selectedUser = useProfileStore((state) => state.selectedUser);
+  const { userProfile } = useProfile();
 
   // Custom hook
-  const { error, saveProfileChange } = useProfile();
+  const { isLoading, error, saveProfileChange } = useProfile();
 
   const [formData, setFormData] = useState({
     id: selectedUser?.id || 0,
@@ -38,10 +40,6 @@ const ProfileForm = () => {
       active: selectedUser?.active || false,
     });
   }, [selectedUser]);
-
-  const handleChange = () => {
-    //
-  };
 
   return (
     <div>
@@ -75,6 +73,7 @@ const ProfileForm = () => {
 
         <div className="form-floating mb-2">
           <input
+            disabled={isLoading}
             type="text"
             value={formData.name}
             className={`form-control`}
@@ -86,6 +85,7 @@ const ProfileForm = () => {
 
         <div className="form-check form-switch mb-2">
           <input
+            disabled={isLoading}
             className="form-check-input"
             type="checkbox"
             role="switch"
@@ -105,6 +105,13 @@ const ProfileForm = () => {
 
         <div className="form-floating mb-2">
           <select
+            disabled={
+              isLoading ||
+              !(
+                userProfile?.role === "ADMIN" ||
+                userProfile?.role === "SUPER_ADMIN"
+              )
+            }
             className="form-select"
             id="floatingSelect"
             aria-label="Floating label select example"
@@ -120,12 +127,13 @@ const ProfileForm = () => {
           <label htmlFor="floatingSelect">Rôle</label>
         </div>
 
-        <button
+        {/* <button
           type="submit"
           className="mt-2 btn btn-sm btn-outline-primary w-100"
         >
           Submit
-        </button>
+        </button> */}
+        <SubmitButton isProcessing={isLoading} operation={"update"} />
       </form>
 
       {/* ERRORS FROM SERVER */}

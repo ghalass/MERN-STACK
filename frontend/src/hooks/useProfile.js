@@ -19,8 +19,6 @@ export const useProfile = () => {
 
     const updateUsersList = useProfileStore((state) => state.updateUsersList);
 
-
-
     const getUserProfile = async () => {
         setIsLoading(true);
         setError(null);
@@ -83,6 +81,7 @@ export const useProfile = () => {
 
     const saveProfileChange = async (data) => {
         try {
+            setIsLoading(true);
             // UPDATE
             const response = await apiRequest(`/user/updateUser`, "PATCH", data, user.token);
 
@@ -100,11 +99,20 @@ export const useProfile = () => {
         } catch (error) {
             toast.error(error.error || "Échec de la connexion.");
         } finally {
-            // setIsLoading(false);
+            setIsLoading(false);
         }
 
     }
 
-    return { error, setError, isLoading, userProfile, usersList, getUserProfile, getAllUsers, chagePassword, saveProfileChange }
+    const userCan = (roles = []) => {
+        if (roles.includes(userProfile?.role)) return true;
+        else return false;
+    }
+
+    return {
+        error, setError, isLoading, userProfile,
+        usersList, getUserProfile, getAllUsers,
+        chagePassword, saveProfileChange, userCan,
+    }
 }
 
