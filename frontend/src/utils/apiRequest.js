@@ -93,7 +93,7 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
         }
 
         if (!response.ok) {
-            throw new Error(data?.message || "Une erreur est survenue lors de la requête.");
+            throw new Error(data?.error || "Une erreur est survenue lors de la requête.");
         }
 
         return data;
