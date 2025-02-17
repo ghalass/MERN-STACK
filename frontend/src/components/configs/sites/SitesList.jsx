@@ -5,8 +5,11 @@ import SiteItem from "./SiteItem";
 import Error from "../../forms/Error";
 import SitesModal from "./SitesModal";
 import { openModal } from "../../../utils/modal";
+import { useSitesStore } from "../../../store/siteStore";
 
 const SitesList = () => {
+  const setOp = useSitesStore((state) => state.setOp);
+
   const { getAll } = useSite({});
 
   const {
@@ -28,7 +31,10 @@ const SitesList = () => {
           <span>Sites ({sites?.length})</span>
           <span>
             <i
-              onClick={() => openModal("sitesModal")}
+              onClick={() => {
+                openModal("sitesModal");
+                setOp("add");
+              }}
               className="bi bi-plus-lg btn btn-sm btn-outline-success rounded-circle me-1"
             ></i>
           </span>

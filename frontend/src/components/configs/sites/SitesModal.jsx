@@ -1,46 +1,13 @@
-import React from "react";
 import { closeModal } from "../../../utils/modal";
-import FormInput from "../../forms/FormInput";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSite } from "../../../hooks/useSite";
-import Error from "../../forms/Error";
 
-import { siteValidation } from "../../../validations/siteValidation";
+import SiteCreate from "./SiteCreate";
+import SiteUpdate from "./SiteUpdate";
+import SiteDelele from "./SiteDelete";
+
+import { useSitesStore } from "../../../store/siteStore";
 
 const SitesModal = () => {
-  const queryClient = useQueryClient();
-
-  const { create } = useSite();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(siteValidation),
-    defaultValues: {
-      name: "",
-    },
-  });
-
-  // Mutations;
-  const mutation = useMutation({
-    mutationFn: create,
-    onSuccess: () => {
-      reset(); // ✅ Reset form after submission
-      closeModal("sitesModal"); // ✅ Close modal after success
-
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["sitesList"] });
-    },
-  });
-
-  const onSubmit = async (data) => {
-    mutation.mutate({ name: data.name });
-  };
+  const op = useSitesStore((state) => state.op);
 
   return (
     <div
@@ -66,37 +33,11 @@ const SitesModal = () => {
             ></button>
           </div>
           <div className="modal-body">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <FormInput
-                type="text"
-                id="name"
-                label="Nom du site"
-                placeholder="Nom du site"
-                register={register}
-                errors={errors}
-              />
+            {op === "add" && <SiteCreate />}
 
-              <button
-                type="submit"
-                disabled={mutation.isPending}
-                className="btn btn-sm btn-outline-success w-100"
-              >
-                {mutation.isPending ? "Saving..." : "Save"}
-              </button>
+            {op === "update" && <SiteUpdate />}
 
-              {/* <SubmitButton
-                disabled={isLoading}
-                type="submit"
-                isProcessing={isLoading}
-                text="Modifier"
-                operation={"non"}
-                icon="bi bi-upload"
-                cls="danger"
-                fullWidth={false}
-              /> */}
-            </form>
-
-            <Error error={mutation.isError ? mutation.error.message : ""} />
+            {op === "delete" && <SiteDelele />}
           </div>
         </div>
       </div>

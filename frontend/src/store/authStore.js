@@ -14,7 +14,6 @@ const useAuthStore = create((set, get) => ({
     },
 
     logout: () => {
-        const currentUser = get().user;
         set({ user: null, loading: false });
         localStorage.removeItem("user");
     },
