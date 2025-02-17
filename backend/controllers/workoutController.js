@@ -7,7 +7,10 @@ const getWorkouts = async (req, res) => {
             .findMany({
                 orderBy: { createdAt: 'desc' }
             });
-        res.status(200).json(workouts)
+        setTimeout(() => {
+
+            res.status(200).json(workouts)
+        }, 500);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

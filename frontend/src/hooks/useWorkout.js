@@ -86,17 +86,19 @@ export const useWorkout = ({ reset }) => {
         try {
             const response = await apiRequest(`/workouts`, "GET", null, user?.token);
 
-            // check if no error
-            if (!response?.error) {
-                setWorkouts(response);
-            } else {
-                toast.error(response?.error);
+            if (!response || !Array.isArray(response)) {
+                throw new Error("Format de réponse inattendu du serveur.");
             }
 
+            setWorkouts(response);
+            return response;
         } catch (error) {
-            console.error("Erreur lors du chargement des workouts :", error);
+            // console.error("Erreur lors du chargement des workouts :", error);
+            throw new Error("Le serveur n'est pas disponible. Veuillez réessayer plus tard.");
         }
-    }
+    };
+
+
 
     return { isProcessing, error, setError, goWorkout, getAllWorkouts }
 }

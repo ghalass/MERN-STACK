@@ -48,7 +48,6 @@ const WorkoutModal = ({ workout = null, crudOp }) => {
         onClick={() => {
           setOp(crudOp);
           setSelectedWorkout(workout);
-
           if (crudOp !== "infos") {
             if (userCan(["SUPER_ADMIN", "ADMIN"])) {
               openModal("workoutModal");
