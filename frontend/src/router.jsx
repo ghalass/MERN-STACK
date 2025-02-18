@@ -81,17 +81,25 @@ const router = createBrowserRouter([
           {
             path: "/configs",
             element: (
-              <Suspense>
-                <Configs />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense>
+                    <Configs />
+                  </Suspense>
+                }
+              />
             ),
           },
           {
             path: "/configs/sites",
             element: (
-              <Suspense>
-                <Sites />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense>
+                    <Sites />
+                  </Suspense>
+                }
+              />
             ),
           },
         ],

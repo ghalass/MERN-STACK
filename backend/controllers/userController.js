@@ -1,3 +1,4 @@
+require('dotenv').config()
 const prisma = require('../prismaClient')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
@@ -43,6 +44,8 @@ const signupUser = async (req, res) => {
 
         res.status(200).json({ email, name, token })
     } catch (error) {
+        console.log(error);
+
         res.status(400).json({ error: error.message });
     }
 }

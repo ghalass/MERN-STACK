@@ -11,6 +11,8 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+
+  shadowDatabaseUrl = "mysql://u250440063_shadow_db:Ghal1986@srv1689.hstgr.io:3306/u250440063_shadow_db"
 }
 
 model User {
