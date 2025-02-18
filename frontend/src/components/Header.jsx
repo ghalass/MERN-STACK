@@ -7,6 +7,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/esm/Button";
+import { isTokenExpired } from "../utils/authUtils";
 
 function Header() {
   const user = useAuthStore((state) => state.user);
@@ -53,7 +54,7 @@ function Header() {
           {/*  */}
           {/*  */}
           <Nav className="ms-auto">
-            {user && (
+            {user && !isTokenExpired(user?.token) ? (
               <NavDropdown
                 align="end"
                 title={
@@ -80,12 +81,7 @@ function Header() {
                   Déconnecter
                 </NavDropdown.Item>
               </NavDropdown>
-            )}
-
-            {/*  */}
-            {/*  */}
-
-            {!user && (
+            ) : (
               <div>
                 <Button
                   as={Link}
