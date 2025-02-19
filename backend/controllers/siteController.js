@@ -16,7 +16,7 @@ const getSites = async (req, res) => {
     }
 }
 
-// get a single workout
+// get a single site
 const getSite = async (req, res) => {
     const { id } = req.params
     try {
@@ -25,21 +25,21 @@ const getSite = async (req, res) => {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" });
         }
 
-        const workout = await prisma.workout.findFirst({
+        const site = await prisma.site.findFirst({
             where: { id: parseInt(id) }
         });
 
-        if (!workout) {
+        if (!site) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        res.status(200).json(workout)
+        res.status(200).json(site)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// create new workout
+// create new site
 const createSite = async (req, res) => {
     const { name } = req.body
 
@@ -71,7 +71,7 @@ const createSite = async (req, res) => {
     }
 }
 
-// delete a workout
+// delete a site
 const deleteSite = async (req, res) => {
     const { id } = req.params
     try {
@@ -80,54 +80,54 @@ const deleteSite = async (req, res) => {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
-        const workout = await prisma.workout.findFirst({
+        const site = await prisma.site.findFirst({
             where: { id: parseInt(id) }
         });
 
-        if (!workout) {
+        if (!site) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        await prisma.workout.delete({
+        await prisma.site.delete({
             where: { id: parseInt(id) }
         });
 
-        res.status(200).json(workout)
+        res.status(200).json(site)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// update a workout
+// update a site
 const updateSite = async (req, res) => {
     const { id } = req.params
-    const { title, load, reps } = req.body
+    const { name } = req.body
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
-        const workout = await prisma.workout.findFirst({
+        const site = await prisma.site.findFirst({
             where: { id: parseInt(id) }
         });
 
-        // check if title not already exist
-        const titleExist = await prisma.workout.findFirst({
-            where: { title: title, id: { not: parseInt(id) } },
+        // check if name not already exist
+        const nameExist = await prisma.site.findFirst({
+            where: { name: name, id: { not: parseInt(id) } },
 
         });
-        if (titleExist) {
+        if (nameExist) {
             return res.status(401).json({ error: "Titre déjà utilisé!" })
         }
 
-        if (!workout) {
+        if (!site) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        const updatedWorkout = await prisma.workout.update({
+        const updatedWorkout = await prisma.site.update({
             where: { id: parseInt(id) },
-            data: { title, load, reps }
+            data: { name }
         });
 
         res.status(200).json(updatedWorkout)

@@ -1,7 +1,8 @@
 const express = require('express')
 
 // controller functions
-const { createSite,
+const {
+    createSite,
     getSites,
     getSite,
     deleteSite,
@@ -15,10 +16,53 @@ const router = express.Router()
 // require auth for all routes bellow
 router.use(requireAuth)
 
-// GET all 
+/**
+ * @swagger
+ * /api/sites:
+ *   get:
+ *     summary: Get all sites
+ *     description: Retrieve a list of sites (Authentication Required).
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of sites.
+ */
+// GET all
 router.get('/', getSites)
 
-// CREATE
+/**
+ * @swagger
+ * /api/sites/{id}:
+ *   get:
+ *     summary: Get a single site
+ *     description: Retrieve details of a single site by ID (Authentication Required).
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The site ID
+ *     responses:
+ *       200:
+ *         description: Site details.
+ *       404:
+ *         description: Site not found
+ */
+// GET single workout
+router.get('/:id', getSite)
+
+// POST a new workout
 router.post('/', createSite)
+
+// UPDATE a workout
+router.patch('/:id', updateSite)
+
+// DELETE a workout
+router.delete('/:id', deleteSite)
+
 
 module.exports = router

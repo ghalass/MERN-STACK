@@ -7,6 +7,8 @@ npm install cors
 npm i bcrypt
 npm i jsonwebtoken
 
+npm install swagger-jsdoc swagger-ui-express
+
 # frontend
 
 - npm create vite@latest
