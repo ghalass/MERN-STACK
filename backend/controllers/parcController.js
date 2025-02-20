@@ -80,7 +80,6 @@ const deleteParc = async (req, res) => {
         const parc = await prisma.parc.findFirst({
             where: { id: parseInt(id) }
         });
-
         if (!parc) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
@@ -91,6 +90,8 @@ const deleteParc = async (req, res) => {
 
         res.status(200).json(parc)
     } catch (error) {
+        console.warn(error);
+
         res.status(500).json({ error: error.message });
     }
 }

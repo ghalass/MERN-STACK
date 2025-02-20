@@ -1,25 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../ui/LoaderSmall";
-import TypeparcItem from "./TypeparcItem";
+import EnginItem from "./EnginItem";
 import Error from "../../forms/Error";
-import TypeparcsModal from "./TypeparcsModal";
+import EnginsModal from "./EnginsModal";
 import { openModal } from "../../../utils/modal";
-
 import { useCrud } from "../../../hooks/useCrud";
 import { useCrudStore } from "../../../store/crudStore";
 
-const TypeparcsList = () => {
+const EnginsList = () => {
   const setOp = useCrudStore((state) => state.setOp);
+  const setSelectedItem = useCrudStore((state) => state.setSelectedItem);
 
-  const { getAll } = useCrud("/typeparcs");
+  const { getAll } = useCrud("/engins");
 
   const {
     isLoading,
     error,
-    data: typeparcs,
+    data: engins,
     isError,
   } = useQuery({
-    queryKey: ["typeparcsList"],
+    queryKey: ["enginsList"],
     queryFn: getAll,
     retry: 1, // Reduce retries for faster error detection
     retryDelay: 2000, // Wait before retrying
@@ -29,12 +29,13 @@ const TypeparcsList = () => {
     <div className="card">
       <div className="card-header">
         <div className="d-flex justify-content-between align-items-center">
-          <span>Typeparcs ({typeparcs?.length})</span>
+          <span>Engins ({engins?.length})</span>
           <span>
             <i
               onClick={() => {
-                openModal("typeparcsModal");
                 setOp("add");
+                setSelectedItem(null);
+                openModal("enginsModal");
               }}
               className="bi bi-plus-lg btn btn-sm btn-outline-success rounded-circle me-1"
             ></i>
@@ -42,7 +43,7 @@ const TypeparcsList = () => {
         </div>
       </div>
       <div className="card-body">
-        {!isLoading && !isError && typeparcs?.length === 0 && (
+        {!isLoading && !isError && engins?.length === 0 && (
           <p>Aucune données disponible.</p>
         )}
 
@@ -50,16 +51,14 @@ const TypeparcsList = () => {
 
         {isError && error && <Error error={error.message} />}
 
-        {Array.isArray(typeparcs) &&
-          typeparcs.length > 0 &&
-          typeparcs.map((typeparc, index) => (
-            <TypeparcItem key={index} typeparc={typeparc} />
-          ))}
+        {Array.isArray(engins) &&
+          engins.length > 0 &&
+          engins.map((engin, index) => <EnginItem key={index} engin={engin} />)}
       </div>
 
-      <TypeparcsModal />
+      <EnginsModal />
     </div>
   );
 };
 
-export default TypeparcsList;
+export default EnginsList;

@@ -1,7 +1,7 @@
 import { openModal } from "../../../utils/modal";
 import { useCrudStore } from "../../../store/crudStore";
 
-const TypeparcItem = ({ typeparc }) => {
+const EnginItem = ({ engin }) => {
   const setOp = useCrudStore((state) => state.setOp);
   const setSelectedItem = useCrudStore((state) => state.setSelectedItem);
 
@@ -13,24 +13,24 @@ const TypeparcItem = ({ typeparc }) => {
             className="bi bi-pencil me-1 btn btn-sm btn-outline-secondary rounded-circle"
             onClick={() => {
               setOp("update");
-              setSelectedItem(typeparc);
-              openModal("typeparcsModal");
+              setSelectedItem(engin);
+              openModal("enginsModal");
             }}
           ></i>
           <i
             className="bi bi-trash3 me-1 btn btn-sm btn-outline-danger rounded-circle"
             onClick={() => {
               setOp("delete");
-              setSelectedItem(typeparc);
-              openModal("typeparcsModal");
+              setSelectedItem(engin);
+              openModal("enginsModal");
             }}
           ></i>
         </div>
 
-        {typeparc.name}
+        {engin?.name}
       </div>
     </div>
   );
 };
 
-export default TypeparcItem;
+export default EnginItem;

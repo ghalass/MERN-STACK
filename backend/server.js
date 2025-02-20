@@ -12,6 +12,7 @@ const workoutRoutes = require('./routes/workouts')
 const sitesRoutes = require('./routes/sites');
 const typeparcsRoutes = require('./routes/typeparcs');
 const parcsRoutes = require('./routes/parcs');
+const enginsRoutes = require('./routes/engins');
 
 // express app
 const app = express()
@@ -35,6 +36,7 @@ app.use('/workouts', workoutRoutes)
 app.use('/sites', sitesRoutes)
 app.use('/typeparcs', typeparcsRoutes)
 app.use('/parcs', parcsRoutes)
+app.use('/engins', enginsRoutes)
 
 // PRISMA & RUN SERVER
 prisma

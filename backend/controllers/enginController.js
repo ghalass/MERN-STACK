@@ -1,20 +1,20 @@
 const prisma = require('../prismaClient')
 
 // get all
-const getTypeparcs = async (req, res) => {
+const getEngins = async (req, res) => {
     try {
-        const typeparcs = await prisma.typeparc
+        const engins = await prisma.engin
             .findMany({
                 orderBy: { createdAt: 'desc' }
             });
-        res.status(200).json(typeparcs)
+        res.status(200).json(engins)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// get a single typeparc
-const getTypeparc = async (req, res) => {
+// get a single engin
+const getEngin = async (req, res) => {
     const { id } = req.params
     try {
 
@@ -22,52 +22,54 @@ const getTypeparc = async (req, res) => {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" });
         }
 
-        const typeparc = await prisma.typeparc.findFirst({
+        const engin = await prisma.engin.findFirst({
             where: { id: parseInt(id) }
         });
 
-        if (!typeparc) {
+        if (!engin) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        res.status(200).json(typeparc)
+        res.status(200).json(engin)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// create new typeparc
-const createTypeparc = async (req, res) => {
-    const { name } = req.body
-
-    let emptyFields = [];
-
-    if (!name) emptyFields.push('name')
-
-    if (emptyFields.length > 0) {
-        return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
-    }
-
+// create new engin
+const createEngin = async (req, res) => {
+    // return res.status(201).json(req.body)
     try {
-        const exists = await prisma.typeparc.findFirst({
-            where: { name: name }
+        const { name, typeenginId } = req.body
+
+        let emptyFields = [];
+
+        if (!name) emptyFields.push('name')
+        if (!typeenginId) emptyFields.push('typeenginId')
+
+        if (emptyFields.length > 0) {
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+        }
+
+        const exists = await prisma.engin.findFirst({
+            where: { name }
         });
 
         if (exists) {
-            return res.status(400).json({ error: 'Typeparc déjà utilisé' })
+            return res.status(400).json({ error: 'Engin déjà utilisé' })
         }
 
-        const typeparc = await prisma.typeparc.create({
-            data: { name }
+        const engin = await prisma.engin.create({
+            data: { name, typeenginId: parseInt(typeenginId) }
         })
-        res.status(201).json(typeparc)
+        res.status(201).json(engin)
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
 }
 
-// delete a typeparc
-const deleteTypeparc = async (req, res) => {
+// delete a engin
+const deleteEngin = async (req, res) => {
     const { id } = req.params
     try {
 
@@ -75,36 +77,29 @@ const deleteTypeparc = async (req, res) => {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
-        const typeparc = await prisma.typeparc.findFirst({
+        const engin = await prisma.engin.findFirst({
             where: { id: parseInt(id) }
         });
-
-        if (!typeparc) {
+        if (!engin) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        // check if typeparc has parcs
-        const parc = await prisma.parc.findFirst({
-            where: { typeparcId: parseInt(id) }
-        });
-        if (parc) {
-            return res.status(405).json({ error: "Impossible de supprimer cet élément car il est référencé ailleurs." })
-        }
-
-        await prisma.typeparc.delete({
+        await prisma.engin.delete({
             where: { id: parseInt(id) }
         });
 
-        res.status(200).json(typeparc)
+        res.status(200).json(engin)
     } catch (error) {
+        console.warn(error);
+
         res.status(500).json({ error: error.message });
     }
 }
 
-// update a typeparc
-const updateTypeparc = async (req, res) => {
+// update a engin
+const updateEngin = async (req, res) => {
     const { id } = req.params
-    const { name } = req.body
+    const { name, typeenginId } = req.body
 
     try {
 
@@ -112,26 +107,26 @@ const updateTypeparc = async (req, res) => {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
-        const typeparc = await prisma.typeparc.findFirst({
+        const engin = await prisma.engin.findFirst({
             where: { id: parseInt(id) }
         });
 
         // check if name not already exist
-        const nameExist = await prisma.typeparc.findFirst({
-            where: { name: name, id: { not: parseInt(id) } },
+        const nameExist = await prisma.engin.findFirst({
+            where: { name, id: { not: parseInt(id) } },
 
         });
         if (nameExist) {
             return res.status(401).json({ error: "Nom déjà utilisé!" })
         }
 
-        if (!typeparc) {
+        if (!engin) {
             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
         }
 
-        const updatedWorkout = await prisma.typeparc.update({
+        const updatedWorkout = await prisma.engin.update({
             where: { id: parseInt(id) },
-            data: { name }
+            data: { name, typeenginId: parseInt(typeenginId) }
         });
 
         res.status(200).json(updatedWorkout)
@@ -142,9 +137,9 @@ const updateTypeparc = async (req, res) => {
 }
 
 module.exports = {
-    createTypeparc,
-    getTypeparcs,
-    getTypeparc,
-    deleteTypeparc,
-    updateTypeparc
+    createEngin,
+    getEngins,
+    getEngin,
+    deleteEngin,
+    updateEngin
 }

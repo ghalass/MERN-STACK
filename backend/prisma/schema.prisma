@@ -60,7 +60,7 @@ model Parc {
   typeparcId Int?
   engins     Engin[]
   //
-  Typeparc   Typeparc? @relation(fields: [typeparcId], references: [id], onDelete: Cascade)
+  Typeparc   Typeparc? @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
 }
 
 model Engin {
@@ -72,8 +72,8 @@ model Engin {
   parcId           Int?
   siteId           Int?
   //
-  Parc             Parc?              @relation(fields: [parcId], references: [id], onDelete: Cascade)
-  Site             Site?              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  Parc             Parc?              @relation(fields: [parcId], references: [id], onDelete: Restrict)
+  Site             Site?              @relation(fields: [siteId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
 }
 
@@ -92,7 +92,7 @@ model Lubrifiant {
   updatedAt        DateTime           @updatedAt
   typelubrifiantId Int?
   //
-  Typelubrifiant   Typelubrifiant?    @relation(fields: [typelubrifiantId], references: [id], onDelete: Cascade)
+  Typelubrifiant   Typelubrifiant?    @relation(fields: [typelubrifiantId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
 }
 
@@ -107,8 +107,8 @@ model Saisielubrifiant {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   //
-  Engin        Engin?      @relation(fields: [enginId], references: [id], onDelete: Cascade)
-  Lubrifiant   Lubrifiant? @relation(fields: [lubrifiantId], references: [id], onDelete: Cascade)
+  Engin        Engin?      @relation(fields: [enginId], references: [id], onDelete: Restrict)
+  Lubrifiant   Lubrifiant? @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
 }
 
 enum UserRoleType {

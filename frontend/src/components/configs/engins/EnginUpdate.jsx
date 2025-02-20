@@ -16,12 +16,12 @@ const ParcUpdate = () => {
 
   const queryClient = useQueryClient();
 
-  const { update } = useCrud("/parcs");
+  const { update } = useCrud("/engins");
 
-  const { getAll } = useCrud("/typeparcs");
+  const { getAll } = useCrud("/parcs");
 
-  const { data: typeparcs } = useQuery({
-    queryKey: ["typeparcsList"],
+  const { data: parcs } = useQuery({
+    queryKey: ["parcsList"],
     queryFn: getAll,
     retry: 1, // Reduce retries for faster error detection
     retryDelay: 2000, // Wait before retrying
@@ -37,6 +37,7 @@ const ParcUpdate = () => {
     defaultValues: {
       id: selectedItem.id,
       name: selectedItem.name,
+      parcId: selectedItem.parcId,
     },
   });
 
@@ -45,7 +46,7 @@ const ParcUpdate = () => {
       reset({
         id: selectedItem.id,
         name: selectedItem.name,
-        typeparcId: selectedItem.typeparcId,
+        parcId: selectedItem.parcId,
       });
     }
   }, [selectedItem, reset]); // Déclenche reset() à chaque changement de selectedItem
@@ -55,10 +56,10 @@ const ParcUpdate = () => {
     mutationFn: update,
     onSuccess: () => {
       reset(); // ✅ Reset form after submission
-      closeModal("parcsModal"); // ✅ Close modal after success
+      closeModal("enginsModal"); // ✅ Close modal after success
 
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["parcsList"] });
+      queryClient.invalidateQueries({ queryKey: ["enginsList"] });
     },
   });
 
@@ -79,12 +80,12 @@ const ParcUpdate = () => {
         />
 
         <FormSelect
-          id="typeparcId"
-          label="Type de parc"
+          id="parcId"
+          label="Parc"
           register={register}
           errors={errors}
-          options={typeparcs}
-          text="Choisir un type de parc"
+          options={parcs}
+          text="Choisir un parc"
         />
 
         <FormInput

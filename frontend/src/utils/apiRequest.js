@@ -56,7 +56,6 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
 
         return data;
     } catch (error) {
-        // console.error("Erreur lors de la requête API :", error);
         throw new Error(error.message || "Une erreur s'est produite. Veuillez réessayer plus tard.");
     }
 };
