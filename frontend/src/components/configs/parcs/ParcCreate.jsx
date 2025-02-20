@@ -1,17 +1,27 @@
 import FormInput from "../../forms/FormInput";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCrud } from "../../../hooks/useCrud";
-import { siteValidation } from "../../../validations/siteValidation";
+import { parcValidation } from "../../../validations/parcValidation";
 import Error from "../../forms/Error";
 import { closeModal } from "../../../utils/modal";
 import SubmitButton from "../../forms/SubmitButton";
+import FormSelect from "../../forms/FormSelect";
 
 const ParcCreate = () => {
   const queryClient = useQueryClient();
 
   const { create } = useCrud("/parcs");
+
+  const { getAll } = useCrud("/typeparcs");
+
+  const { data: typeparcs } = useQuery({
+    queryKey: ["typeparcsList"],
+    queryFn: getAll,
+    retry: 1, // Reduce retries for faster error detection
+    retryDelay: 2000, // Wait before retrying
+  });
 
   const {
     register,
@@ -19,52 +29,64 @@ const ParcCreate = () => {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(siteValidation),
+    resolver: yupResolver(parcValidation),
     defaultValues: {
       name: "",
+      typeparcId: "",
     },
   });
 
   // Mutations;
-  const mutation = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: create,
     onSuccess: () => {
       reset(); // ✅ Reset form after submission
-      closeModal("sitesModal"); // ✅ Close modal after success
+      closeModal("parcsModal"); // ✅ Close modal after success
 
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["sitesList"] });
+      queryClient.invalidateQueries({ queryKey: ["parcsList"] });
     },
   });
 
   const onSubmit = async (data) => {
-    mutation.mutate({ name: data.name });
+    mutate({ name: data.name, typeparcId: data.typeparcId });
   };
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <FormSelect
+          id="typeparcId"
+          label="Type de parc"
+          register={register}
+          errors={errors}
+          options={typeparcs}
+          text="Choisir un type de parc"
+        />
+
         <FormInput
           type="text"
           id="name"
-          label="Nom du site"
-          placeholder="Nom du site"
+          label="Nom du parc"
+          placeholder="Nom du parc"
           register={register}
           errors={errors}
         />
 
-        <SubmitButton
-          disabled={mutation.isPending}
-          type="submit"
-          isProcessing={mutation.isPending}
-          text="Ajouter"
-          operation={"add"}
-          cls="success"
-          icon={null}
-          fullWidth={true}
-        />
+        <div className="d-flex justify-content-end">
+          <SubmitButton
+            disabled={isPending}
+            type="submit"
+            isProcessing={isPending}
+            text="Ajouter"
+            operation={"add"}
+            cls="success"
+            icon={null}
+            fullWidth={false}
+          />
+        </div>
       </form>
 
-      <Error error={mutation.isError ? mutation.error.message : ""} />
+      <Error error={isError ? error.message : ""} />
     </div>
   );
 };

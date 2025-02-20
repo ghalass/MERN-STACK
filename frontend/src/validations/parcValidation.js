@@ -10,4 +10,5 @@ yup.setLocale(fr);
 
 export const parcValidation = yup.object().shape({
     name: yup.string().min(2).required().label("Nom du parc"),
+    typeparcId: yup.string().required().label('Type de parc')
 });

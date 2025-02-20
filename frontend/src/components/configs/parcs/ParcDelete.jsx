@@ -13,7 +13,7 @@ const ParcDelete = () => {
   const { destroy } = useCrud("/parcs");
 
   // Mutations;
-  const { mutate, isPending, data, isError, error } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: destroy,
     onSuccess: () => {
       closeModal("parcsModal"); // ✅ Close modal after success
@@ -34,7 +34,7 @@ const ParcDelete = () => {
           <span className="badge rounded-pill text-bg-danger mx-1 ">
             Supprimer
           </span>
-          ce Site ?
+          ce Parc ?
         </h5>
         <div className="text-primary text-center mt-4">
           <strong>{selectedItem?.name}</strong>
