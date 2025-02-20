@@ -18,8 +18,6 @@ const SiteDelete = () => {
     mutationFn: destroy,
     onSuccess: () => {
       closeModal("sitesModal"); // ✅ Close modal after success
-      console.log(data);
-
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["sitesList"] });
     },

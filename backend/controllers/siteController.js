@@ -63,9 +63,7 @@ const createSite = async (req, res) => {
         const site = await prisma.site.create({
             data: { name }
         })
-        setTimeout(() => {
-            res.status(201).json(site)
-        }, 3000);
+        res.status(201).json(site)
     } catch (error) {
         res.status(400).json({ error: error.message })
     }

@@ -31,7 +31,6 @@ export const useSite = () => {
             const response = await apiRequest(`/sites`, "POST", data, user?.token);
 
             if (!response) {
-                console.log(response);
                 throw new Error("Format de réponse inattendu du serveur.");
             }
 
@@ -46,8 +45,6 @@ export const useSite = () => {
 
     const update = async (data) => {
         try {
-            console.log(data);
-
             const response = await apiRequest(`/sites/${data.id}`, "PATCH", data, user.token);
             // check if no error
             if (!response?.error) {

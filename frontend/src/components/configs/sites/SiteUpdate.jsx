@@ -40,7 +40,7 @@ const SiteUpdate = () => {
   }, [selectedSite, reset]); // Déclenche reset() à chaque changement de selectedSite
 
   // Mutations;
-  const mutation = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: update,
     onSuccess: () => {
       reset(); // ✅ Reset form after submission
@@ -52,14 +52,13 @@ const SiteUpdate = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-
-    mutation.mutate(data);
+    mutate(data);
   };
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormInput
+          hidden
           type="number"
           id="id"
           label="Id"
@@ -78,9 +77,9 @@ const SiteUpdate = () => {
         />
 
         <SubmitButton
-          disabled={mutation.isPending}
+          disabled={isPending}
           type="submit"
-          isProcessing={mutation.isPending}
+          isProcessing={isPending}
           text="Ajouter"
           operation={"update"}
           cls="success"
@@ -89,7 +88,7 @@ const SiteUpdate = () => {
         />
       </form>
 
-      <Error error={mutation.isError ? mutation.error.message : ""} />
+      <Error error={isError ? error.message : ""} />
     </div>
   );
 };
