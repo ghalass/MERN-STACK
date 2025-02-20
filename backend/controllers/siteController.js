@@ -102,6 +102,7 @@ const deleteSite = async (req, res) => {
 const updateSite = async (req, res) => {
     const { id } = req.params
     const { name } = req.body
+
     try {
 
         if (isNaN(id) || parseInt(id) != id) {
