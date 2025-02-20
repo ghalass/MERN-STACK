@@ -4,18 +4,18 @@ import FormInput from "../../forms/FormInput";
 import SubmitButton from "../../forms/SubmitButton";
 import Error from "../../forms/Error";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { siteValidation } from "../../../validations/siteValidation";
+import { parcValidation } from "../../../validations/parcValidation";
 import { closeModal } from "../../../utils/modal";
 import { useEffect } from "react";
 import { useCrudStore } from "../../../store/crudStore";
 import { useCrud } from "../../../hooks/useCrud";
 
-const SiteUpdate = () => {
+const ParcUpdate = () => {
   const selectedItem = useCrudStore((state) => state.selectedItem);
 
   const queryClient = useQueryClient();
 
-  const { update } = useCrud("/sites");
+  const { update } = useCrud("/parcs");
 
   const {
     register,
@@ -23,7 +23,7 @@ const SiteUpdate = () => {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(siteValidation),
+    resolver: yupResolver(parcValidation),
     defaultValues: {
       id: selectedItem.id,
       name: selectedItem.name,
@@ -44,10 +44,10 @@ const SiteUpdate = () => {
     mutationFn: update,
     onSuccess: () => {
       reset(); // ✅ Reset form after submission
-      closeModal("sitesModal"); // ✅ Close modal after success
+      closeModal("parcsModal"); // ✅ Close modal after success
 
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["sitesList"] });
+      queryClient.invalidateQueries({ queryKey: ["parcsList"] });
     },
   });
 
@@ -70,8 +70,8 @@ const SiteUpdate = () => {
         <FormInput
           type="text"
           id="name"
-          label="Nom du site"
-          placeholder="Nom du site"
+          label="Nom du parc"
+          placeholder="Nom du parc"
           register={register}
           errors={errors}
         />
@@ -93,4 +93,4 @@ const SiteUpdate = () => {
   );
 };
 
-export default SiteUpdate;
+export default ParcUpdate;

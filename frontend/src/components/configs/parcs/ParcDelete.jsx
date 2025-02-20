@@ -5,20 +5,20 @@ import { closeModal } from "../../../utils/modal";
 import { useCrudStore } from "../../../store/crudStore";
 import Error from "../../forms/Error";
 
-const SiteDelete = () => {
+const ParcDelete = () => {
   const queryClient = useQueryClient();
 
   const selectedItem = useCrudStore((state) => state.selectedItem);
 
-  const { destroy } = useCrud("/sites");
+  const { destroy } = useCrud("/parcs");
 
   // Mutations;
   const { mutate, isPending, data, isError, error } = useMutation({
     mutationFn: destroy,
     onSuccess: () => {
-      closeModal("sitesModal"); // ✅ Close modal after success
+      closeModal("parcsModal"); // ✅ Close modal after success
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["sitesList"] });
+      queryClient.invalidateQueries({ queryKey: ["parcsList"] });
     },
   });
 
@@ -50,4 +50,4 @@ const SiteDelete = () => {
   );
 };
 
-export default SiteDelete;
+export default ParcDelete;

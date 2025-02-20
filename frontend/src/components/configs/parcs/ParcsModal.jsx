@@ -1,31 +1,31 @@
 import { closeModal } from "../../../utils/modal";
 
-import SiteCreate from "./SiteCreate";
-import SiteUpdate from "./SiteUpdate";
-import SiteDelele from "./SiteDelete";
+import ParcCreate from "./ParcCreate";
+import ParcUpdate from "./ParcUpdate";
+import ParcDelele from "./ParcDelete";
 
 import { useCrudStore } from "../../../store/crudStore";
 
-const SitesModal = () => {
+const ParcsModal = () => {
   const op = useCrudStore((state) => state.op);
 
   return (
     <div
       className="modal fade"
-      id="sitesModal"
+      id="parcsModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabIndex="-1"
-      aria-labelledby="sitesModalLabel"
+      aria-labelledby="parcsModalLabel"
       aria-hidden="true"
     >
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h1 className="modal-title fs-5">Gestion du site</h1>
+            <h1 className="modal-title fs-5">Gestion du parc</h1>
             <button
               onClick={() => {
-                closeModal("sitesModal");
+                closeModal("parcsModal");
               }}
               type="button"
               className="btn-close"
@@ -33,11 +33,11 @@ const SitesModal = () => {
             ></button>
           </div>
           <div className="modal-body">
-            {op === "add" && <SiteCreate />}
+            {op === "add" && <ParcCreate />}
 
-            {op === "update" && <SiteUpdate />}
+            {op === "update" && <ParcUpdate />}
 
-            {op === "delete" && <SiteDelele />}
+            {op === "delete" && <ParcDelele />}
           </div>
         </div>
       </div>
@@ -45,4 +45,4 @@ const SitesModal = () => {
   );
 };
 
-export default SitesModal;
+export default ParcsModal;

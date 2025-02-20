@@ -1,16 +1,16 @@
-import { useSite } from "../../../hooks/useSite";
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../ui/LoaderSmall";
 import SiteItem from "./SiteItem";
 import Error from "../../forms/Error";
 import SitesModal from "./SitesModal";
 import { openModal } from "../../../utils/modal";
-import { useSitesStore } from "../../../store/siteStore";
+import { useCrud } from "../../../hooks/useCrud";
+import { useCrudStore } from "../../../store/crudStore";
 
 const SitesList = () => {
-  const setOp = useSitesStore((state) => state.setOp);
+  const setOp = useCrudStore((state) => state.setOp);
 
-  const { getAll } = useSite({});
+  const { getAll } = useCrud("/sites");
 
   const {
     isLoading,

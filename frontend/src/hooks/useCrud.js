@@ -20,8 +20,8 @@ export const useCrud = (path) => {
 
             return response;
         } catch (error) {
-            // console.error("Erreur lors du chargement des workouts :", error);
-            throw new Error("Le serveur n'est pas disponible. Veuillez réessayer plus tard.");
+            console.error("Erreur lors du chargement des workouts :", error);
+            throw new Error(error);
         }
     };
 

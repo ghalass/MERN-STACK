@@ -8,10 +8,10 @@ import Error from "../../forms/Error";
 import { closeModal } from "../../../utils/modal";
 import SubmitButton from "../../forms/SubmitButton";
 
-const SiteCreate = () => {
+const ParcCreate = () => {
   const queryClient = useQueryClient();
 
-  const { create } = useCrud("/sites");
+  const { create } = useCrud("/parcs");
 
   const {
     register,
@@ -69,4 +69,4 @@ const SiteCreate = () => {
   );
 };
 
-export default SiteCreate;
+export default ParcCreate;

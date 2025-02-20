@@ -1,7 +1,7 @@
 import { openModal } from "../../../utils/modal";
 import { useCrudStore } from "../../../store/crudStore";
 
-const SiteItem = ({ site }) => {
+const ParcItem = ({ parc }) => {
   const setOp = useCrudStore((state) => state.setOp);
   const setSelectedItem = useCrudStore((state) => state.setSelectedItem);
 
@@ -13,24 +13,24 @@ const SiteItem = ({ site }) => {
             className="bi bi-pencil me-1 btn btn-sm btn-outline-secondary rounded-circle"
             onClick={() => {
               setOp("update");
-              setSelectedItem(site);
-              openModal("sitesModal");
+              setSelectedItem(parc);
+              openModal("parcsModal");
             }}
           ></i>
           <i
             className="bi bi-trash3 me-1 btn btn-sm btn-outline-danger rounded-circle"
             onClick={() => {
               setOp("delete");
-              setSelectedItem(site);
-              openModal("sitesModal");
+              setSelectedItem(parc);
+              openModal("parcsModal");
             }}
           ></i>
         </div>
 
-        {site.name}
+        {parc.name}
       </div>
     </div>
   );
 };
 
-export default SiteItem;
+export default ParcItem;

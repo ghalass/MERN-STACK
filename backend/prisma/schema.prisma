@@ -39,15 +39,76 @@ model Workout {
 model Site {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  engins    Engin[]
 }
 
 model Typeparc {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parcs     Parc[]
+}
+
+model Parc {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  typeparcId Int?
+  engins     Engin[]
+  //
+  Typeparc   Typeparc? @relation(fields: [typeparcId], references: [id], onDelete: Cascade)
+}
+
+model Engin {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  active           Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  parcId           Int?
+  siteId           Int?
+  //
+  Parc             Parc?              @relation(fields: [parcId], references: [id], onDelete: Cascade)
+  Site             Site?              @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  Saisielubrifiant Saisielubrifiant[]
+}
+
+model Typelubrifiant {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  lubrifiants Lubrifiant[]
+}
+
+model Lubrifiant {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  typelubrifiantId Int?
+  //
+  Typelubrifiant   Typelubrifiant?    @relation(fields: [typelubrifiantId], references: [id], onDelete: Cascade)
+  Saisielubrifiant Saisielubrifiant[]
+}
+
+model Saisielubrifiant {
+  id           Int         @id @default(autoincrement())
+  du           DateTime
+  au           DateTime
+  enginId      Int
+  lubrifiantId Int
+  hrm          Float
+  qte          Float
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  //
+  Engin        Engin?      @relation(fields: [enginId], references: [id], onDelete: Cascade)
+  Lubrifiant   Lubrifiant? @relation(fields: [lubrifiantId], references: [id], onDelete: Cascade)
 }
 
 enum UserRoleType {
