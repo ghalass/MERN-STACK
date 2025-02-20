@@ -10,6 +10,7 @@ const prisma = require("./prismaClient");
 const userRoutes = require('./routes/user')
 const workoutRoutes = require('./routes/workouts')
 const sitesRoutes = require('./routes/sites');
+const typeparcsRoutes = require('./routes/typeparcs');
 
 // express app
 const app = express()
@@ -28,17 +29,12 @@ app.use(async (req, res, next) => {
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec, { explorer: true }));
 
 // routes
-// app.use('/api', (req, res) => {
-//     return res.send('Welcome to API')
-// })
-// app.use('/', (req, res) => {
-//     return res.send('Welcome to API, <br/>Go to /api')
-// })
+app.use('/user', userRoutes)
+app.use('/workouts', workoutRoutes)
+app.use('/sites', sitesRoutes)
+app.use('/typeparcs', typeparcsRoutes)
 
-app.use('/api/user', userRoutes)
-app.use('/api/workouts', workoutRoutes)
-app.use('/api/sites', sitesRoutes)
-
+// PRISMA & RUN SERVER
 prisma
     .$connect()
     .then(() => {
@@ -46,7 +42,7 @@ prisma
         const PORT = process.env.PORT || 5000;
         app.listen(PORT, () => {
             console.log(`connected to db & listening on port ${PORT}`);
-            console.log(`http://localhost:${PORT}/api/`);
+            console.log(`http://localhost:${PORT}/`);
         })
     })
     .catch((error) => {

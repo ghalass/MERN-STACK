@@ -43,6 +43,13 @@ model Site {
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
+model Typeparc {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
+
 enum UserRoleType {
   SUPER_ADMIN
   ADMIN
