@@ -3,6 +3,7 @@ import { useSitesStore } from "../../../store/siteStore";
 
 const SiteItem = ({ site }) => {
   const setOp = useSitesStore((state) => state.setOp);
+  const setSelectedSite = useSitesStore((state) => state.setSelectedSite);
 
   return (
     <div className="d-flex align-items-center">
@@ -11,15 +12,17 @@ const SiteItem = ({ site }) => {
           <i
             className="bi bi-pencil me-1 btn btn-sm btn-outline-secondary rounded-circle"
             onClick={() => {
-              openModal("sitesModal");
               setOp("update");
+              setSelectedSite(site);
+              openModal("sitesModal");
             }}
           ></i>
           <i
             className="bi bi-trash3 me-1 btn btn-sm btn-outline-danger rounded-circle"
             onClick={() => {
-              openModal("sitesModal");
               setOp("delete");
+              setSelectedSite(site);
+              openModal("sitesModal");
             }}
           ></i>
         </div>

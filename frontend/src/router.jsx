@@ -15,7 +15,6 @@ const Workouts = lazy(() => import("./pages/Workouts"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
-const Sites = lazy(() => import("./pages/Sites"));
 const Configs = lazy(() => import("./pages/Configs"));
 
 // 🔒 Protected Route
@@ -85,18 +84,6 @@ const router = createBrowserRouter([
                 element={
                   <Suspense>
                     <Configs />
-                  </Suspense>
-                }
-              />
-            ),
-          },
-          {
-            path: "/configs/sites",
-            element: (
-              <ProtectedRoute
-                element={
-                  <Suspense>
-                    <Sites />
                   </Suspense>
                 }
               />

@@ -1,6 +1,3 @@
-import { Navigate } from "react-router-dom";
-import useAuthStore from "../store/authStore";
-import { isTokenExpired } from "./authUtils";
 import { API } from "./constants";
 
 // /**
@@ -14,15 +11,6 @@ import { API } from "./constants";
 
 export const apiRequest = async (endpoint, method = "GET", body = null, token = null) => {
     try {
-        const user = useAuthStore((state) => state.user);
-        if (!user || isTokenExpired(user?.token)) {
-            // console.warn(
-            //   "Token expiré ou utilisateur non authentifié. Redirection vers /login."
-            // );
-            logout();
-            return <Navigate to="/login" replace />;
-        }
-
         const headers = {
             "Content-Type": "application/json",
         };

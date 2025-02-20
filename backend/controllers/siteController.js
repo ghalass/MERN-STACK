@@ -119,7 +119,7 @@ const updateSite = async (req, res) => {
 
         });
         if (nameExist) {
-            return res.status(401).json({ error: "Titre déjà utilisé!" })
+            return res.status(401).json({ error: "Nom déjà utilisé!" })
         }
 
         if (!site) {
