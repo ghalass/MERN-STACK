@@ -38,19 +38,21 @@ const getParc = async (req, res) => {
 
 // create new parc
 const createParc = async (req, res) => {
-    const { name } = req.body
-
-    let emptyFields = [];
-
-    if (!name) emptyFields.push('name')
-
-    if (emptyFields.length > 0) {
-        return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
-    }
-
+    // return res.status(201).json(req.body)
     try {
+        const { name, typeparcId } = req.body
+
+        let emptyFields = [];
+
+        if (!name) emptyFields.push('name')
+        if (!typeparcId) emptyFields.push('typeparcId')
+
+        if (emptyFields.length > 0) {
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+        }
+
         const exists = await prisma.parc.findFirst({
-            where: { name: name }
+            where: { name }
         });
 
         if (exists) {
@@ -58,7 +60,7 @@ const createParc = async (req, res) => {
         }
 
         const parc = await prisma.parc.create({
-            data: { name }
+            data: { name, typeparcId: parseInt(typeparcId) }
         })
         res.status(201).json(parc)
     } catch (error) {
@@ -96,7 +98,7 @@ const deleteParc = async (req, res) => {
 // update a parc
 const updateParc = async (req, res) => {
     const { id } = req.params
-    const { name } = req.body
+    const { name, typeparcId } = req.body
 
     try {
 
@@ -110,7 +112,7 @@ const updateParc = async (req, res) => {
 
         // check if name not already exist
         const nameExist = await prisma.parc.findFirst({
-            where: { name: name, id: { not: parseInt(id) } },
+            where: { name, id: { not: parseInt(id) } },
 
         });
         if (nameExist) {
@@ -123,7 +125,7 @@ const updateParc = async (req, res) => {
 
         const updatedWorkout = await prisma.parc.update({
             where: { id: parseInt(id) },
-            data: { name }
+            data: { name, typeparcId: parseInt(typeparcId) }
         });
 
         res.status(200).json(updatedWorkout)
