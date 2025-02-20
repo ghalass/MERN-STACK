@@ -55,12 +55,48 @@ router.get('/', getSites)
 // GET single workout
 router.get('/:id', getSite)
 
+/**
+ * @swagger
+ * /api/sites:
+ *   post:
+ *     summary: Get all sites
+ *     description: Create a new Site (Authentication Required).
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of sites.
+ */
 // POST a new workout
 router.post('/', createSite)
 
+/**
+ * @swagger
+ * /api/sites:
+ *   patch:
+ *     summary: Get all sites
+ *     description: Update a Site (Authentication Required).
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of sites.
+ */
 // UPDATE a workout
 router.patch('/:id', updateSite)
 
+/**
+ * @swagger
+ * /api/sites:
+ *   delete:
+ *     summary: Get all sites
+ *     description: Delete a new Site (Authentication Required).
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of sites.
+ */
 // DELETE a workout
 router.delete('/:id', deleteSite)
 
