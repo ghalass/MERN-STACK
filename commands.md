@@ -3,6 +3,7 @@
 npx prisma migrate dev --name update user fields
 npx prisma generate
 
+npm i cookie-parser
 npm install cors
 npm i bcrypt
 npm i jsonwebtoken
