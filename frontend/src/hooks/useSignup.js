@@ -1,11 +1,15 @@
 import { useState } from "react"
-import { API } from "../utils/constants";
 
 import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import Cookies from "js-cookie";
+
 export const useSignup = () => {
+
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
 
@@ -17,12 +21,15 @@ export const useSignup = () => {
         setError(null)
 
         try {
-            const response = await fetch(`${API}/user/signup`, {
+            const path = `${baseUrl}/auth/register`;
+
+            const response = await fetch(path, {
                 method: 'POST',
                 body: JSON.stringify({ name, email, password }),
                 headers: {
                     "Content-Type": "application/json",
-                }
+                },
+                credentials: "include"
             })
             const json = await response.json()
 
@@ -30,6 +37,10 @@ export const useSignup = () => {
                 setIsLoading(false)
                 setError(json.error)
             } else {
+                // save the user to cookie
+                const accessToken = json.accessToken;
+                if (accessToken) Cookies.set("accessToken", accessToken);
+
                 // save the user to local storage
                 localStorage.setItem('user', JSON.stringify(json))
 
@@ -40,6 +51,8 @@ export const useSignup = () => {
                 toast.success(`Connecté avec succès!`);
             }
         } catch (error) {
+            console.log(error);
+
             setError(error.error);
             toast.error(error.error || "Échec de la connexion.");
         } finally {

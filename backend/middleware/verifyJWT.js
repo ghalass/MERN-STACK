@@ -2,6 +2,8 @@ const prisma = require('../prismaClient')
 const jwt = require('jsonwebtoken')
 
 const verifyJWT = async (req, res, next) => {
+    console.log("verifyJWT");
+
     const authHeader = req.headers.authorization || req.headers.Authorization
 
     // check if content token

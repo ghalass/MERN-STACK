@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 
 import { apiRequest } from "../utils/apiRequest"; // ✅ Import de la fonction API utilitaire
 
+import Cookies from "js-cookie";
+
 export const useLogin = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -17,20 +19,25 @@ export const useLogin = () => {
         setError(null);
 
         try {
-            const data = await apiRequest("/user/login", "POST", { email, password });
 
-            if (!data?.error) {
+            const response = await apiRequest(`/auth/login`, "POST", { email, password });
+
+            if (!response?.error) {
+                // save the user to cookie
+                const accessToken = response.accessToken;
+                if (accessToken) Cookies.set("accessToken", accessToken);
+
                 // Sauvegarde de l'utilisateur dans le local storage
-                localStorage.setItem("user", JSON.stringify(data));
+                localStorage.setItem("user", JSON.stringify(response));
 
                 // Mise à jour du store d'authentification
-                login(data);
+                login(response);
 
                 // Redirection après connexion réussie
                 navigate("/");
                 toast.success("Connecté avec succès !");
             } else {
-                setError(data?.error)
+                setError(response?.error)
             }
 
 

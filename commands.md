@@ -14,6 +14,7 @@ npm install swagger-jsdoc swagger-ui-express
 
 - npm create vite@latest
 - npm i react-router-dom
+- npm i js-cookie
 - npm i bootstrap@5.3.3
 - npm install react-bootstrap bootstrap
 - npm install @popperjs/core

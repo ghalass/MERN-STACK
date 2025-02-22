@@ -58,6 +58,7 @@ const register = async (req, res) => {
         });
 
         res.status(200).json({
+            token: accessToken,
             accessToken,
             email: createdUser.email,
             name: createdUser.name
