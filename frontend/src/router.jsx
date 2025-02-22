@@ -17,9 +17,13 @@ const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Configs = lazy(() => import("./pages/Configs"));
 
+import Cookies from "js-cookie";
+
+const accessToken = Cookies.get("accessToken");
+
 // 🔒 Protected Route
 const ProtectedRoute = ({ element }) => {
-  const user = useAuthStore((state) => state.user);
+  // const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
   const logout = useAuthStore((state) => state.logout);
 
@@ -27,13 +31,23 @@ const ProtectedRoute = ({ element }) => {
     return <LoaderSpinner message="Vérification d'authentification..." />; // Or show a Spinner component
   }
 
-  if (!user || isTokenExpired(user?.token)) {
-    // console.warn(
-    //   "Token expiré ou utilisateur non authentifié. Redirection vers /login."
-    // );
+  const accessToken = Cookies.get("accessToken");
+
+  if (!accessToken || isTokenExpired(accessToken)) {
+    console.warn(
+      "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+    );
     logout();
     return <Navigate to="/login" replace />;
   }
+
+  // if (!user || isTokenExpired(user?.token)) {
+  //   console.warn(
+  //     "Token expiré ou utilisateur non authentifié. Redirection vers /login."
+  //   );
+  //   logout();
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return element;
 };
@@ -41,7 +55,8 @@ const ProtectedRoute = ({ element }) => {
 // 🚫 Guest Route
 const GuestRoute = ({ element }) => {
   const user = useAuthStore((state) => state.user);
-  return user ? <Navigate to="/" replace /> : element;
+  // return user ? <Navigate to="/" replace /> : element;
+  return accessToken ? <Navigate to="/" replace /> : element;
 };
 
 const router = createBrowserRouter([

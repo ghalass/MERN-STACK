@@ -94,7 +94,8 @@ export const useWorkout = ({ reset }) => {
             return response;
         } catch (error) {
             // console.error("Erreur lors du chargement des workouts :", error);
-            throw new Error("Le serveur n'est pas disponible. Veuillez réessayer plus tard.");
+            // throw new Error("Le serveur n'est pas disponible. Veuillez réessayer plus tard.");
+            throw new Error(error);
         }
     };
 

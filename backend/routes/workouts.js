@@ -10,7 +10,7 @@ const {
 } = require('../controllers/workoutController')
 
 // middlewares
-const requireAuth = require('../middleware/requireAuth')
+// const requireAuth = require('../middleware/requireAuth')
 const verifyJWT = require('../middleware/verifyJWT')
 
 const router = express.Router()

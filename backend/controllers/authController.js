@@ -57,7 +57,7 @@ const register = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
         });
 
-        res.status(200).json({
+        res.status(201).json({
             token: accessToken,
             accessToken,
             email: createdUser.email,
@@ -95,35 +95,33 @@ const login = async (req, res) => {
 
         await setLastViste(email)
 
-        const accessToken = jwt.sign({
-            UserInfo: {
-                id: foundedUser.id
-            }
-        },
+        const accessToken = jwt.sign(
+            {
+                UserInfo: {
+                    id: foundedUser.id,
+                },
+            },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '15m' }
         );
-
-        const refreshToken = jwt.sign({
-            UserInfo: {
-                id: foundedUser.id
-            }
-        },
+        const refreshToken = jwt.sign(
+            {
+                UserInfo: {
+                    id: foundedUser.id,
+                },
+            },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '7d' }
         );
-
         res.cookie('jwt', refreshToken, {
-            httpOnly: true, // accessible only by web server
-            secure: true, // https
-            sameSite: "None", // cross-site cookie
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
+            httpOnly: true, //accessible only by web server
+            secure: true, //https
+            sameSite: 'None', //cross-site cookie
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
         });
-
-        res.status(200).json({
+        res.json({
             accessToken,
             email: foundedUser.email,
-            name: foundedUser.name
         });
 
     } catch (error) {
