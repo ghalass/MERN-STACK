@@ -34,7 +34,9 @@ const register = async (req, res) => {
 
         const accessToken = jwt.sign({
             UserInfo: {
-                id: createdUser.id
+                id: createdUser.id,
+                name: createdUser.name,
+                email: createdUser.email
             }
         },
             process.env.ACCESS_TOKEN_SECRET,
@@ -43,7 +45,9 @@ const register = async (req, res) => {
 
         const refreshToken = jwt.sign({
             UserInfo: {
-                id: createdUser.id
+                id: createdUser.id,
+                name: createdUser.name,
+                email: createdUser.email
             }
         },
             process.env.REFRESH_TOKEN_SECRET,
@@ -86,19 +90,21 @@ const login = async (req, res) => {
         // check if user exist by email
         const foundedUser = await prisma.user.findFirst({ where: { email } });
         if (!foundedUser) {
-            return res.status(400).json({ error: "E-mail incorrect." })
+            return res.status(401).json({ error: "E-mail incorrect." })
         }
 
         // check if password is correct
         const match = await bcrypt.compare(password, foundedUser.password)
-        if (!match) return res.status(400).json({ error: "Password incorrect." })
+        if (!match) return res.status(401).json({ error: "Password incorrect." })
 
         await setLastViste(email)
 
         const accessToken = jwt.sign(
             {
                 UserInfo: {
-                    id: foundedUser.id,
+                    id: createdUser.id,
+                    name: createdUser.name,
+                    email: createdUser.email
                 },
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -107,7 +113,9 @@ const login = async (req, res) => {
         const refreshToken = jwt.sign(
             {
                 UserInfo: {
-                    id: foundedUser.id,
+                    id: createdUser.id,
+                    name: createdUser.name,
+                    email: createdUser.email
                 },
             },
             process.env.REFRESH_TOKEN_SECRET,
@@ -134,27 +142,32 @@ const refresh = async (req, res) => {
     // check if token exist
     if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
     const refreshToken = cookies.jwt;
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-        if (err) res.status(403).json({ message: "Forbidden" });
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        async (err, decoded) => {
+            if (err) res.status(403).json({ message: "Forbidden" });
 
-        // check if user exist
-        const foundedUser = await prisma.user.findFirst({
-            where: { id: decoded.UserInfo.id }
-        });
-        if (!foundedUser) res.status(401).json({ message: "Unauthorized" });
+            // check if user exist
+            const foundedUser = await prisma.user.findFirst({
+                where: { id: decoded.UserInfo.id }
+            });
+            if (!foundedUser) res.status(401).json({ message: "Unauthorized" });
 
-        const accessToken = jwt.sign({
-            UserInfo: {
-                id: foundedUser.id
-            }
-        },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '15m' }
-        );
+            const accessToken = jwt.sign({
+                UserInfo: {
+                    id: createdUser.id,
+                    name: createdUser.name,
+                    email: createdUser.email
+                }
+            },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '15m' }
+            );
 
-        res.status(200).json({ accessToken });
+            res.status(200).json({ accessToken });
 
-    })
+        })
 }
 
 const logout = (req, res) => {

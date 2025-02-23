@@ -4,7 +4,7 @@ import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 export const useSignup = () => {
 
@@ -21,7 +21,7 @@ export const useSignup = () => {
         setError(null)
 
         try {
-            const path = `${baseUrl}/auth/register`;
+            const path = `${baseUrl}/user/signup`;
 
             const response = await fetch(path, {
                 method: 'POST',
@@ -38,8 +38,8 @@ export const useSignup = () => {
                 setError(json.error)
             } else {
                 // save the user to cookie
-                const accessToken = json.accessToken;
-                if (accessToken) Cookies.set("accessToken", accessToken);
+                // const accessToken = json.accessToken;
+                // if (accessToken) Cookies.set("accessToken", accessToken);
 
                 // save the user to local storage
                 localStorage.setItem('user', JSON.stringify(json))

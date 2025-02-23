@@ -9,14 +9,14 @@ const {
     updateSite
 } = require('../controllers/siteController')
 
-// const requireAuth = require('../middleware/requireAuth')
-const verifyJWT = require('../middleware/verifyJWT')
+const requireAuth = require('../middleware/requireAuth')
+// const verifyJWT = require('../middleware/verifyJWT')
 
 const router = express.Router()
 
 // require auth for all routes bellow
-// router.use(requireAuth)
-router.use(verifyJWT)
+router.use(requireAuth)
+// router.use(verifyJWT)
 
 // GET all
 router.get('/', getSites)

@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const swaggerJSDoc = require("swagger-jsdoc");
 
 const PORT = process.env.PORT || 5000;
@@ -11,7 +13,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: `http://localhost:${PORT}`, // Change this based on your environment
+            url: `${URL}:${PORT}`, // Change this based on your environment
         },
     ],
     components: {

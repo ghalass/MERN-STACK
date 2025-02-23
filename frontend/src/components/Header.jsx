@@ -9,10 +9,10 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/esm/Button";
 import { isTokenExpired } from "../utils/authUtils";
 
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 function Header() {
-  const accessToken = Cookies.get("accessToken");
+  // const accessToken = Cookies.get("accessToken");
 
   const user = useAuthStore((state) => state.user);
 
@@ -61,7 +61,7 @@ function Header() {
           {/*  */}
           <Nav className="ms-auto">
             {/* user && !isTokenExpired(user?.token) */}
-            {accessToken ? (
+            {user && !isTokenExpired(user?.token) ? (
               <NavDropdown
                 align="end"
                 title={

@@ -70,7 +70,7 @@ const ProfileItem = ({ profileItem }) => {
     <div>
       <div className={`d-flex gap-1 justify-content-between`}>
         <div className="d-flex gap-2">
-          <i
+          <button
             onClick={() => {
               setSelectedUser(profileItem);
 
@@ -82,7 +82,8 @@ const ProfileItem = ({ profileItem }) => {
             }}
             role="button"
             className={btnCls()}
-          ></i>
+            disabled={!userCan(["SUPER_ADMIN", "ADMIN"])}
+          ></button>
 
           <div className="d-flex gap-1">
             <span className="text-uppercase">{profileItem?.name}</span>

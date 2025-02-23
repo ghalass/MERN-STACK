@@ -44,7 +44,7 @@ app.use(async (req, res, next) => {
 
 // routes
 app.use('/', require('./routes/root'))
-app.use('/auth', require('./routes/authRoutes'))
+// app.use('/auth', require('./routes/authRoutes'))
 
 app.use('/user', userRoutes)
 app.use('/workouts', workoutRoutes)

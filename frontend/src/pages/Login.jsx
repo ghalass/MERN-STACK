@@ -32,7 +32,6 @@ const Login = () => {
     <div className="d-flex justify-content-center align-items-center mt-2">
       <div className="card">
         <div className="card-body">
-          {" "}
           <form onSubmit={handleSubmit(onSubmit)} style={{ width: "400px" }}>
             <h3 className="text-center mb-3">Log In</h3>
 
