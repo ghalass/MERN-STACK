@@ -1,24 +1,24 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Nav, Container } from "react-bootstrap";
 
-export default function ConfigsLayout() {
+export default function PerformancesLayout() {
   const location = useLocation(); // Get current route
 
   return (
     <Container fluid className="mt-1">
       <Nav variant="tabs" activeKey={location.pathname}>
         <Nav.Item>
-          <Nav.Link as={Link} to="/configs" eventKey="/configs">
-            Configs
+          <Nav.Link as={Link} to="/performances" eventKey="/performances">
+            Performances
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
             as={Link}
-            to="/configs/lubrifiants"
-            eventKey="/configs/lubrifiants"
+            to="/performances/saisierje"
+            eventKey="/performances/saisierje"
           >
-            Lubifiants
+            Saisie
           </Nav.Link>
         </Nav.Item>
       </Nav>

@@ -33,3 +33,35 @@
 
   /* ************************** */
   
+/* Custom Scrollbar */
+.custom-scrollbar {
+    height: 200px;
+    overflow-y: auto;
+    /* border: 1px solid #ccc;
+    padding: 10px; */
+}
+
+/* Webkit (Chrome, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Firefox */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #98a7d7 #f1f1f1;
+}

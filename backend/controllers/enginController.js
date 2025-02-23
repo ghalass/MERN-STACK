@@ -5,7 +5,7 @@ const getEngins = async (req, res) => {
     try {
         const engins = await prisma.engin.findMany({
             include: { Parc: true, Site: true },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { name: 'asc' },
         });
 
         if (!engins.length) {

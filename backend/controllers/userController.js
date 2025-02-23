@@ -37,7 +37,7 @@ const signupUser = async (req, res) => {
         const hash = await bcrypt.hash(password, salt)
 
         const user = await prisma.user.create({
-            data: { name, email, password: hash }
+            data: { name, email, password: hash, lastVisite: new Date().toISOString() }
         });
 
         const token = createToken(user.id)

@@ -55,6 +55,17 @@ function Header() {
               <i className="bi bi-gear me-1"></i>
               Configs
             </Nav.Link>
+
+            <Nav.Link
+              as={Link}
+              to="/performances"
+              className={`nav-link ${
+                location.pathname === "/performances" ? "active" : ""
+              }`}
+            >
+              <i className="bi bi-gear me-1"></i>
+              Performances
+            </Nav.Link>
           </Nav>
 
           {/*  */}

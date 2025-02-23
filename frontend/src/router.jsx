@@ -6,6 +6,7 @@ import { isTokenExpired } from "./utils/authUtils";
 import DefaultLayout from "./layouts/DefaultLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import ConfigsLayout from "./layouts/ConfigsLayout";
+import PerformancesLayout from "./layouts/PerformancesLayout";
 
 import LoaderSpinner from "./components/ui/LoaderSpinner";
 
@@ -14,7 +15,14 @@ const Workouts = lazy(() => import("./pages/Workouts"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Performances = lazy(() => import("./pages/Performances"));
+
 const Configs = lazy(() => import("./pages/Configs"));
+const LubrifiantsList = lazy(() =>
+  import("./components/configs/lubrifiants/LubrifiantsList")
+);
+
+const SaisieRje = lazy(() => import("./components/performances/SaisieRje"));
 
 // import Cookies from "js-cookie";
 
@@ -51,6 +59,12 @@ const GuestRoute = ({ element }) => {
 };
 
 const router = createBrowserRouter([
+  //
+  //
+  //
+  //
+  // DefaultLayout
+
   {
     path: "/",
     element: <DefaultLayout />,
@@ -79,6 +93,12 @@ const router = createBrowserRouter([
           />
         ),
       },
+
+      //
+      //
+      //
+      //
+      // ConfigsLayout
       {
         path: "/configs",
         element: <ConfigsLayout />,
@@ -95,10 +115,65 @@ const router = createBrowserRouter([
               />
             ),
           },
+          {
+            path: "/configs/lubrifiants",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense>
+                    <LubrifiantsList />
+                  </Suspense>
+                }
+              />
+            ),
+          },
+        ],
+      },
+
+      //
+
+      //
+      //
+      //
+      //
+      // PerformancesLayout
+      {
+        path: "/performances",
+        element: <PerformancesLayout />,
+        children: [
+          {
+            path: "/performances",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense>
+                    <Performances />
+                  </Suspense>
+                }
+              />
+            ),
+          },
+          {
+            path: "/performances/saisierje",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense>
+                    <SaisieRje />
+                  </Suspense>
+                }
+              />
+            ),
+          },
         ],
       },
     ],
   },
+  //
+  //
+  //
+  //
+  // GUEST
   {
     path: "/",
     element: <GuestLayout />,

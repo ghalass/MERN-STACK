@@ -5,7 +5,7 @@ const getTypeparcs = async (req, res) => {
     try {
         const typeparcs = await prisma.typeparc
             .findMany({
-                orderBy: { createdAt: 'desc' }
+                orderBy: { name: 'asc' },
             });
         res.status(200).json(typeparcs)
     } catch (error) {

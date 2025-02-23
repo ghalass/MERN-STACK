@@ -5,7 +5,7 @@ const getSites = async (req, res) => {
     try {
         const sites = await prisma.site
             .findMany({
-                orderBy: { createdAt: 'desc' }
+                orderBy: { name: 'asc' },
             });
         setTimeout(() => {
 

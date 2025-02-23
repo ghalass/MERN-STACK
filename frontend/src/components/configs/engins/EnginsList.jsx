@@ -42,7 +42,10 @@ const EnginsList = () => {
           </span>
         </div>
       </div>
-      <div className="card-body">
+      <div
+        className="card-body  overflow-auto custom-scrollbar"
+        style={{ height: "400px" }}
+      >
         {!isLoading && !isError && engins?.length === 0 && (
           <p>Aucune données disponible.</p>
         )}
