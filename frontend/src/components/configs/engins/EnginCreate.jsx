@@ -9,16 +9,24 @@ import { closeModal } from "../../../utils/modal";
 import SubmitButton from "../../forms/SubmitButton";
 import FormSelect from "../../forms/FormSelect";
 
+//
+//
 const EnginCreate = () => {
-  const queryClient = useQueryClient();
-
-  const { create } = useCrud("/engins");
-
-  const { getAll } = useCrud("/parcs");
-
+  //
+  // GET ALL PARCS
+  const { getAll: getParcs } = useCrud("/parcs");
   const { data: parcs } = useQuery({
-    queryKey: ["enginsList"],
-    queryFn: getAll,
+    queryKey: ["parcsList"],
+    queryFn: getParcs,
+    retry: 1, // Reduce retries for faster error detection
+    retryDelay: 2000, // Wait before retrying
+  });
+
+  // GET ALL SITES
+  const { getAll: getSites } = useCrud("/sites");
+  const { data: sites } = useQuery({
+    queryKey: ["sitesList"],
+    queryFn: getSites,
     retry: 1, // Reduce retries for faster error detection
     retryDelay: 2000, // Wait before retrying
   });
@@ -33,23 +41,26 @@ const EnginCreate = () => {
     defaultValues: {
       name: "",
       parcId: "",
+      siteId: "",
     },
   });
 
   // Mutations;
+  const queryClient = useQueryClient();
+  const { create } = useCrud("/engins");
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: create,
     onSuccess: () => {
       reset(); // ✅ Reset form after submission
-      closeModal("parcsModal"); // ✅ Close modal after success
+      closeModal("enginsModal"); // ✅ Close modal after success
 
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["parcsList"] });
+      queryClient.invalidateQueries({ queryKey: ["enginsList"] });
     },
   });
 
   const onSubmit = async (data) => {
-    mutate({ name: data.name, parcId: data.parcId });
+    mutate({ name: data.name, parcId: data.parcId, siteId: data.siteId });
   };
   return (
     <div>
@@ -63,6 +74,15 @@ const EnginCreate = () => {
           text="Choisir un parc"
         />
 
+        <FormSelect
+          id="siteId"
+          label="Site"
+          register={register}
+          errors={errors}
+          options={sites}
+          text="Choisir un site"
+        />
+
         <FormInput
           type="text"
           id="name"
@@ -72,18 +92,15 @@ const EnginCreate = () => {
           errors={errors}
         />
 
-        <div className="d-flex justify-content-end">
-          <SubmitButton
-            disabled={isPending}
-            type="submit"
-            isProcessing={isPending}
-            text="Ajouter"
-            operation={"add"}
-            cls="success"
-            icon={null}
-            fullWidth={false}
-          />
-        </div>
+        <SubmitButton
+          disabled={isPending}
+          type="submit"
+          isProcessing={isPending}
+          operation={"add"}
+          cls="success"
+          icon={null}
+          fullWidth={true}
+        />
       </form>
 
       <Error error={isError ? error.message : ""} />

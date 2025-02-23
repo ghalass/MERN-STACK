@@ -26,8 +26,7 @@ const EnginItem = ({ engin }) => {
             }}
           ></i>
         </div>
-
-        {engin?.name}
+        {engin?.Parc.name} {engin?.name} {engin?.Site.name}
       </div>
     </div>
   );

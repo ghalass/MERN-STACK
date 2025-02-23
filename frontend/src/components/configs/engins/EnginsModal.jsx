@@ -22,7 +22,7 @@ const EnginsModal = () => {
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h1 className="modal-title fs-5">Gestion du parc</h1>
+            <h1 className="modal-title fs-5">Gestion de l'engin</h1>
             <button
               onClick={() => {
                 closeModal("enginsModal");

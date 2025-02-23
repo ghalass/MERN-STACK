@@ -5,6 +5,7 @@ const getParcs = async (req, res) => {
     try {
         const parcs = await prisma.parc
             .findMany({
+                include: { Typeparc: true },
                 orderBy: { createdAt: 'desc' }
             });
         res.status(200).json(parcs)
@@ -23,6 +24,7 @@ const getParc = async (req, res) => {
         }
 
         const parc = await prisma.parc.findFirst({
+            include: { Typeparc: true },
             where: { id: parseInt(id) }
         });
 

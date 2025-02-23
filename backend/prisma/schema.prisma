@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -22,7 +17,7 @@ model User {
   password   String
   role       UserRoleType @default(USER)
   active     Boolean      @default(false)
-  lastVisite DateTime?
+  lastVisite DateTime
   createdAt  DateTime     @default(now()) @db.Timestamp(0)
   updatedAt  DateTime     @default(now()) @updatedAt @db.Timestamp(0)
 }
@@ -53,14 +48,14 @@ model Typeparc {
 }
 
 model Parc {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  typeparcId Int?
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  typeparcId Int
   engins     Engin[]
   //
-  Typeparc   Typeparc? @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
+  Typeparc   Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
 }
 
 model Engin {
@@ -69,11 +64,11 @@ model Engin {
   active           Boolean            @default(true)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
-  parcId           Int?
-  siteId           Int?
+  parcId           Int
+  siteId           Int
   //
-  Parc             Parc?              @relation(fields: [parcId], references: [id], onDelete: Restrict)
-  Site             Site?              @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  Parc             Parc               @relation(fields: [parcId], references: [id], onDelete: Restrict)
+  Site             Site               @relation(fields: [siteId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
 }
 
@@ -90,25 +85,25 @@ model Lubrifiant {
   name             String             @unique
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
-  typelubrifiantId Int?
+  typelubrifiantId Int
   //
-  Typelubrifiant   Typelubrifiant?    @relation(fields: [typelubrifiantId], references: [id], onDelete: Restrict)
+  Typelubrifiant   Typelubrifiant     @relation(fields: [typelubrifiantId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
 }
 
 model Saisielubrifiant {
-  id           Int         @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   du           DateTime
   au           DateTime
   enginId      Int
   lubrifiantId Int
   hrm          Float
   qte          Float
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   //
-  Engin        Engin?      @relation(fields: [enginId], references: [id], onDelete: Restrict)
-  Lubrifiant   Lubrifiant? @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
+  Engin        Engin      @relation(fields: [enginId], references: [id], onDelete: Restrict)
+  Lubrifiant   Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
 }
 
 enum UserRoleType {

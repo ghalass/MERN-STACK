@@ -6,7 +6,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NOT NULL,
     `role` ENUM('SUPER_ADMIN', 'ADMIN', 'USER', 'UNASSIGNED') NOT NULL DEFAULT 'USER',
     `active` BOOLEAN NOT NULL DEFAULT false,
-    `lastVisite` DATETIME(3) NULL,
+    `lastVisite` DATETIME(3) NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `updatedAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -55,7 +55,7 @@ CREATE TABLE `Parc` (
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `typeparcId` INTEGER NULL,
+    `typeparcId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Parc_name_key`(`name`),
     PRIMARY KEY (`id`)
@@ -68,8 +68,8 @@ CREATE TABLE `Engin` (
     `active` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `parcId` INTEGER NULL,
-    `siteId` INTEGER NULL,
+    `parcId` INTEGER NOT NULL,
+    `siteId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Engin_name_key`(`name`),
     PRIMARY KEY (`id`)
@@ -92,7 +92,7 @@ CREATE TABLE `Lubrifiant` (
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `typelubrifiantId` INTEGER NULL,
+    `typelubrifiantId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Lubrifiant_name_key`(`name`),
     PRIMARY KEY (`id`)
