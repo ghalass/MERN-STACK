@@ -13,10 +13,6 @@ import { useCrud } from "../../../hooks/useCrud";
 const SiteUpdate = () => {
   const selectedItem = useCrudStore((state) => state.selectedItem);
 
-  const queryClient = useQueryClient();
-
-  const { update } = useCrud("/sites");
-
   const {
     register,
     handleSubmit,
@@ -40,6 +36,8 @@ const SiteUpdate = () => {
   }, [selectedItem, reset]); // Déclenche reset() à chaque changement de selectedItem
 
   // Mutations;
+  const queryClient = useQueryClient();
+  const { update } = useCrud("/sites");
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: update,
     onSuccess: () => {

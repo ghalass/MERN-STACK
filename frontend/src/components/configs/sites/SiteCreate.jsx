@@ -9,10 +9,6 @@ import { closeModal } from "../../../utils/modal";
 import SubmitButton from "../../forms/SubmitButton";
 
 const SiteCreate = () => {
-  const queryClient = useQueryClient();
-
-  const { create } = useCrud("/sites");
-
   const {
     register,
     handleSubmit,
@@ -26,6 +22,8 @@ const SiteCreate = () => {
   });
 
   // Mutations;
+  const queryClient = useQueryClient();
+  const { create } = useCrud("/sites");
   const mutation = useMutation({
     mutationFn: create,
     onSuccess: () => {

@@ -26,7 +26,7 @@ const ParcItem = ({ parc }) => {
             }}
           ></i>
         </div>
-        {parc.Typeparc.name} {parc.name}
+        {parc.name}
       </div>
     </div>
   );
