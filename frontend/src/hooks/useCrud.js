@@ -9,8 +9,22 @@ export const useCrud = (path) => {
 
     const selectedItem = useCrudStore((state) => state.selectedItem);
 
-
     const getAll = async () => {
+        try {
+            const response = await apiRequest(`${path}`, "GET", null, user?.token);
+
+            if (!response || !Array.isArray(response)) {
+                throw new Error("Format de réponse inattendu du serveur.");
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Erreur lors du chargement des workouts :", error);
+            throw new Error(error);
+        }
+    };
+
+    const getOne = async () => {
         try {
             const response = await apiRequest(`${path}`, "GET", null, user?.token);
 
@@ -74,6 +88,6 @@ export const useCrud = (path) => {
         }
     }
 
-    return { getAll, create, update, destroy }
+    return { getAll, create, update, destroy, getOne }
 }
 

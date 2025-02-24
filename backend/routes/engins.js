@@ -6,7 +6,8 @@ const {
     getEngins,
     getEngin,
     deleteEngin,
-    updateEngin
+    updateEngin,
+    getEnginByParcId
 } = require('../controllers/enginController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -20,6 +21,9 @@ router.get('/', getEngins)
 
 // GET single workout
 router.get('/:id', getEngin)
+
+// GET single workout
+router.get('/byparcid/:id', getEnginByParcId)
 
 // POST a new workout
 router.post('/', createEngin)

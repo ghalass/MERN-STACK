@@ -44,6 +44,29 @@ const getEngin = async (req, res) => {
     }
 }
 
+// get a single engin by parcId
+const getEnginByParcId = async (req, res) => {
+    const { id } = req.params
+    try {
+
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" });
+        }
+
+        const engin = await prisma.engin.findMany({
+            where: { parcId: parseInt(id) }
+        });
+
+        if (!engin) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
+
+        res.status(200).json(engin)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // create new engin
 const createEngin = async (req, res) => {
     try {
@@ -147,5 +170,6 @@ module.exports = {
     getEngins,
     getEngin,
     deleteEngin,
-    updateEngin
+    updateEngin,
+    getEnginByParcId,
 }

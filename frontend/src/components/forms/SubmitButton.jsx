@@ -1,7 +1,7 @@
 const SubmitButton = ({
   operation = null,
   isProcessing,
-  text = "No title",
+  text = null,
   onClick,
   type = "submit",
   icon = null,

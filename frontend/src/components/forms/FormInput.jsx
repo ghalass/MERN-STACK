@@ -9,6 +9,7 @@ const FormInput = ({
   onChange,
   disabled = false,
   hidden = false, // ✅ Ajout de la prop hidden
+  ...rest // 📌 Ajout de `...rest` pour accepter d'autres props non listés
 }) => {
   // Vérifier si on utilise react-hook-form ou un input classique
   const inputProps = register
@@ -17,7 +18,7 @@ const FormInput = ({
 
   // 📌 Si l'input est caché, on retourne seulement l'input sans label ni div
   if (hidden) {
-    return <input type="hidden" id={id} {...inputProps} />;
+    return <input type="hidden" id={id} {...inputProps} {...rest} />;
   }
 
   return (
@@ -29,6 +30,7 @@ const FormInput = ({
         placeholder={placeholder}
         disabled={disabled}
         {...inputProps}
+        {...rest} // 📌 Ajout des props supplémentaires ici
       />
       <label htmlFor={id}>{label}</label>
       {errors[id] && (

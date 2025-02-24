@@ -28,7 +28,7 @@ const FormSelect = ({
         disabled={disabled}
         {...selectProps}
       >
-        <option value="">{text}</option>
+        <option value="0">{text}</option>
         {options.map((option, index) => (
           <option key={index} value={option.id}>
             {option.name}

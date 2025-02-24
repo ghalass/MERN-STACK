@@ -36,7 +36,10 @@ model Site {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
   engins    Engin[]
+  Saisiehrm Saisiehrm[]
 }
 
 model Typeparc {
@@ -44,7 +47,9 @@ model Typeparc {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  parcs     Parc[]
+
+  // Relations
+  parcs Parc[]
 }
 
 model Parc {
@@ -54,56 +59,121 @@ model Parc {
   updatedAt  DateTime @updatedAt
   typeparcId Int
   engins     Engin[]
-  //
-  Typeparc   Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
+
+  // Relations
+  Typeparc Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
 }
 
 model Engin {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  active           Boolean            @default(true)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  parcId           Int
-  siteId           Int
-  //
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  parcId    Int
+  siteId    Int
+
+  // Relations
   Parc             Parc               @relation(fields: [parcId], references: [id], onDelete: Restrict)
   Site             Site               @relation(fields: [siteId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
+  Saisiehrm        Saisiehrm[]
+  Saisiehim        Saisiehim[]
+}
+
+model Typepanne {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  pannes Panne[]
+}
+
+model Panne {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  Typepanne   Typepanne   @relation(fields: [typepanneId], references: [id])
+  typepanneId Int
+  Saisiehim   Saisiehim[]
+}
+
+model Saisiehrm {
+  id        Int      @id @default(autoincrement())
+  du        DateTime
+  enginId   Int
+  siteId    Int
+  hrm       Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  Engin     Engin       @relation(fields: [enginId], references: [id], onDelete: Restrict)
+  Site      Site        @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  Saisiehim Saisiehim[]
+
+  @@unique([du, enginId])
+}
+
+model Saisiehim {
+  id          Int      @id @default(autoincrement())
+  panneId     Int
+  him         Float
+  ni          Int
+  saisiehrmId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  Panne     Panne     @relation(fields: [panneId], references: [id], onDelete: Restrict)
+  Saisiehrm Saisiehrm @relation(fields: [saisiehrmId], references: [id], onDelete: Restrict)
+  Engin     Engin?    @relation(fields: [enginId], references: [id])
+  enginId   Int?
+
+  @@unique([panneId, saisiehrmId])
 }
 
 model Typelubrifiant {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
   lubrifiants Lubrifiant[]
 }
 
 model Lubrifiant {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
   typelubrifiantId Int
-  //
+
+  // Relations
   Typelubrifiant   Typelubrifiant     @relation(fields: [typelubrifiantId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
 }
 
 model Saisielubrifiant {
-  id           Int        @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   du           DateTime
   au           DateTime
   enginId      Int
   lubrifiantId Int
   hrm          Float
   qte          Float
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  //
-  Engin        Engin      @relation(fields: [enginId], references: [id], onDelete: Restrict)
-  Lubrifiant   Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  Engin      Engin      @relation(fields: [enginId], references: [id], onDelete: Restrict)
+  Lubrifiant Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
 }
 
 enum UserRoleType {
