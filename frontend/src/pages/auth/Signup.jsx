@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { useSignup } from "../hooks/useSignup";
-import Error from "../components/forms/Error";
-import SubmitButton from "../components/forms/SubmitButton";
-import FormInput from "../components/forms/FormInput";
+import { useSignup } from "../../hooks/useSignup";
+import Error from "../../components/forms/Error";
+import SubmitButton from "../../components/forms/SubmitButton";
+import FormInput from "../../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signupSchema } from "../validations/signupValidation"; // ✅ Import du schéma de validation
+import { signupSchema } from "../../validations/signupValidation"; // ✅ Import du schéma de validation
 
 const Signup = () => {
   // ✅ Utilisation de react-hook-form

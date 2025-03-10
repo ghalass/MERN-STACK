@@ -1,3 +1,7 @@
+body{
+  /* background-color: #eee; */
+}
+
 /* Cache le CRUD par défaut */
 .crudOperation {
     opacity: 0;

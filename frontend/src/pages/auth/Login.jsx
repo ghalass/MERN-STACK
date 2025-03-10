@@ -1,14 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // import { useLogin } from "../hooks/useLogin";
-import Error from "../components/forms/Error";
-import SubmitButton from "../components/forms/SubmitButton";
-import FormInput from "../components/forms/FormInput";
+import Error from "../../components/forms/Error";
+import SubmitButton from "../../components/forms/SubmitButton";
+import FormInput from "../../components/forms/FormInput";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../validations/loginValidation"; // ✅ Import du schéma de validation
-import { apiRequest } from "../utils/apiRequest";
-import { useAuth } from "../context/Auth";
+import { loginSchema } from "../../validations/loginValidation"; // ✅ Import du schéma de validation
+import { apiRequest } from "../../utils/apiRequest";
+import { useAuth } from "../../context/Auth";
 
 import Cookies from "universal-cookie";
 

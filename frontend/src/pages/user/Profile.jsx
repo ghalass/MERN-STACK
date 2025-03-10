@@ -1,12 +1,12 @@
 import { Suspense, useEffect } from "react";
-import useAuthStore from "../store/authStore";
+import useAuthStore from "../../store/authStore";
 
 // components
-import ProfileInfos from "../components/profile/ProfileInfos";
-import { useProfile } from "../hooks/useProfile";
-import ProfileItem from "../components/profile/ProfileItem";
-import LoaderSpinner from "../components/ui/LoaderSpinner";
-import ProfileModal from "../components/profile/ProfileModal";
+import ProfileInfos from "../../components/profile/ProfileInfos";
+import { useProfile } from "../../hooks/useProfile";
+import ProfileItem from "../../components/profile/ProfileItem";
+import LoaderSpinner from "../../components/ui/LoaderSpinner";
+import ProfileModal from "../../components/profile/ProfileModal";
 
 const Profile = () => {
   const user = useAuthStore((state) => state.user);
