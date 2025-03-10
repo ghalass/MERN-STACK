@@ -16,8 +16,8 @@ const AdminLayout = ({ children }) => {
                   onClick={() => navigate(item.link)}
                   className={`btn btn-sm ${
                     location.pathname === item.link
-                      ? "btn-success"
-                      : "btn-outline-success"
+                      ? "btn-primary"
+                      : "btn-outline-primary"
                   } w-100 text-start`}
                 >
                   <i className={`bi ${item?.icon} me-2`}></i>
@@ -29,7 +29,11 @@ const AdminLayout = ({ children }) => {
         </div>
       </div>
 
-      <div className="col-md-8 col-lg-9  col-xl-10">{children}</div>
+      <div className="col-md-8 col-lg-9  col-xl-10">
+        <div className="card">
+          <div className="card-body">{children}</div>
+        </div>
+      </div>
     </div>
   );
 };
