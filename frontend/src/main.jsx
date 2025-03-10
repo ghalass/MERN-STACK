@@ -1,8 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { RouterProvider } from "react-router-dom";
-import router from "./router.jsx";
+// import { RouterProvider } from "react-router-dom";
+// import router from "./router.jsx";
+// import { BrowserRouter } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -17,8 +18,10 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
+      {/* <BrowserRouter> */}
       <App />
-      <RouterProvider router={router} />
+      {/* </BrowserRouter> */}
+      {/* <RouterProvider router={router} /> */}
     </QueryClientProvider>
   </StrictMode>
 );

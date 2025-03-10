@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useLogin } from "../hooks/useLogin";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+// import { useLogin } from "../hooks/useLogin";
 import Error from "../components/forms/Error";
 import SubmitButton from "../components/forms/SubmitButton";
 import FormInput from "../components/forms/FormInput";
@@ -7,6 +7,10 @@ import FormInput from "../components/forms/FormInput";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../validations/loginValidation"; // ✅ Import du schéma de validation
+import { apiRequest } from "../utils/apiRequest";
+import { useAuth } from "../context/Auth";
+
+import Cookies from "universal-cookie";
 
 const Login = () => {
   // ✅ Utilisation de react-hook-form
@@ -22,10 +26,29 @@ const Login = () => {
     },
   });
 
-  const { loginUser, error, isLoading } = useLogin();
+  // const { loginUser, error, isLoading } = useLogin();
+
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.path || "/";
 
   const onSubmit = async (data) => {
-    await loginUser(data.email, data.password);
+    // await loginUser(data.email, data.password);
+    const response = await apiRequest(`/user/login`, "POST", {
+      email: data.email,
+      password: data.password,
+    });
+    const token = response.token;
+    // save token in cookie
+    const cookie = new Cookies();
+    cookie.set("Bearer", token);
+    // save token & user in context
+    const userInfo = { name: response.name, email: response.email };
+    auth.login(userInfo);
+    auth.setToken(token);
+    // redirect to wanted page & avoid user to back to the prevus page in browser
+    navigate(redirectPath, { replace: true });
   };
 
   return (
@@ -43,7 +66,7 @@ const Login = () => {
               placeholder="Enter your email"
               register={register}
               errors={errors}
-              disabled={isLoading}
+              // disabled={isLoading}
             />
 
             <FormInput
@@ -53,11 +76,11 @@ const Login = () => {
               placeholder="Enter your password"
               register={register}
               errors={errors}
-              disabled={isLoading}
+              // disabled={isLoading}
             />
 
             <SubmitButton
-              isProcessing={isLoading}
+              // isProcessing={isLoading}
               text="Log In"
               operation={"login"}
             />
@@ -76,7 +99,7 @@ const Login = () => {
               </Link>
             </p>
 
-            <Error error={error} />
+            {/* <Error error={error} /> */}
           </form>
         </div>
       </div>

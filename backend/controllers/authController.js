@@ -43,23 +43,23 @@ const register = async (req, res) => {
             { expiresIn: '15m' }
         );
 
-        const refreshToken = jwt.sign({
-            UserInfo: {
-                id: createdUser.id,
-                name: createdUser.name,
-                email: createdUser.email
-            }
-        },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '7d' }
-        );
+        // const refreshToken = jwt.sign({
+        //     UserInfo: {
+        //         id: createdUser.id,
+        //         name: createdUser.name,
+        //         email: createdUser.email
+        //     }
+        // },
+        //     process.env.REFRESH_TOKEN_SECRET,
+        //     { expiresIn: '7d' }
+        // );
 
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true, // accessible only by web server
-            secure: true, // https
-            sameSite: "None", // cross-site cookie
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
-        });
+        // res.cookie('jwt', refreshToken, {
+        //     httpOnly: true, // accessible only by web server
+        //     secure: true, // https
+        //     sameSite: "None", // cross-site cookie
+        //     maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
+        // });
 
         res.status(201).json({
             token: accessToken,
@@ -110,23 +110,23 @@ const login = async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '15m' }
         );
-        const refreshToken = jwt.sign(
-            {
-                UserInfo: {
-                    id: createdUser.id,
-                    name: createdUser.name,
-                    email: createdUser.email
-                },
-            },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '7d' }
-        );
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true, //accessible only by web server
-            secure: true, //https
-            sameSite: 'None', //cross-site cookie
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
-        });
+        // const refreshToken = jwt.sign(
+        //     {
+        //         UserInfo: {
+        //             id: createdUser.id,
+        //             name: createdUser.name,
+        //             email: createdUser.email
+        //         },
+        //     },
+        //     process.env.REFRESH_TOKEN_SECRET,
+        //     { expiresIn: '7d' }
+        // );
+        // res.cookie('jwt', refreshToken, {
+        //     httpOnly: true, //accessible only by web server
+        //     secure: true, //https
+        //     sameSite: 'None', //cross-site cookie
+        //     maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
+        // });
         res.json({
             accessToken,
             email: foundedUser.email,

@@ -1,5 +1,7 @@
 // import Cookies from "js-cookie";
 
+import Cookies from "universal-cookie";
+
 
 export const apiRequest = async (endpoint, method = "GET", body = null, token = null) => {
     try {
@@ -7,12 +9,13 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
             "Content-Type": "application/json",
             credentials: "include"
         };
-
+        const cookie = new Cookies()
         // const tokenCookie = Cookies.get('accessToken');
+        // console.log(cookie.get('Bearer'));
 
-        if (token) {
-            headers["Authorization"] = `Bearer ${token}`;
-        }
+        // if (token) {
+        headers["Authorization"] = `Bearer ${cookie.get('Bearer')}`;
+        // }
 
         // if (tokenCookie) {
         //     // headers.set("authorization", `Bearer ${tokenCookie}`);

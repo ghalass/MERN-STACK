@@ -29,3 +29,4 @@ npm install swagger-jsdoc swagger-ui-express
 - npm install @hookform/resolvers
 - npm i yup
 - npm i yup-locales
+- npm i universal-cookie

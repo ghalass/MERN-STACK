@@ -2,7 +2,7 @@ const express = require('express')
 
 // controller functions
 const { loginUser, signupUser, getByEmail, changePassword,
-    getUsers, updateUser
+    getUsers, updateUser, refresh
 } = require('../controllers/userController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -14,6 +14,10 @@ router.post('/login', loginUser)
 
 // signup route
 router.post('/signup', signupUser)
+
+// signup route
+router.post('/refresh', refresh)
+
 
 // require auth for all routes bellow
 router.use(requireAuth)

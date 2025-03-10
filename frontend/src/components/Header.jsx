@@ -1,13 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
-import { useLogout } from "../hooks/useLogout";
+// import { useLogout } from "../hooks/useLogout";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/esm/Button";
-import { isTokenExpired } from "../utils/authUtils";
+// import { isTokenExpired } from "../utils/authUtils";
+import { useAuth } from "../context/Auth";
+import Cookies from "universal-cookie";
 
 // import Cookies from "js-cookie";
 
@@ -17,7 +19,21 @@ function Header() {
   const user = useAuthStore((state) => state.user);
 
   const location = useLocation(); // Get current route
-  const { logoutUser } = useLogout();
+  // const { logoutUser } = useLogout();
+
+  const auth = useAuth();
+  const cookie = new Cookies();
+  const navigate = useNavigate();
+
+  const handlelogout = () => {
+    // remove token from cookie
+    cookie.remove("Bearer");
+    cookie.remove("refreshToken");
+    // remove token from context
+    auth.logout();
+    // redirect to home page
+    navigate("/");
+  };
 
   return (
     <Navbar expand="md" className="bg-body-tertiary">
@@ -72,14 +88,14 @@ function Header() {
           {/*  */}
           <Nav className="ms-auto">
             {/* user && !isTokenExpired(user?.token) */}
-            {user && !isTokenExpired(user?.token) ? (
+            {auth.user ? (
               <NavDropdown
                 align="end"
                 title={
                   <>
                     <span className="me-1">Bienvenue</span>
                     <span className="text-uppercase fw-bold">
-                      {user && user.name}
+                      {auth.user && auth.user?.name}
                     </span>
                   </>
                 }
@@ -90,14 +106,14 @@ function Header() {
                   Profile
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item
-                  as="button"
-                  onClick={logoutUser}
-                  className="text-danger"
+
+                <button
+                  onClick={handlelogout}
+                  className=" btn text-danger dropdown-item"
                 >
                   <i className="bi bi-power me-1"></i>
                   Déconnecter
-                </NavDropdown.Item>
+                </button>
               </NavDropdown>
             ) : (
               <div>

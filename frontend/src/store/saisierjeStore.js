@@ -1,11 +1,23 @@
 import { create } from "zustand";
 
 export const useSaisierjeStore = create((set, get) => ({
-    current: { du: new Date().toISOString().split("T")[0], siteId: null, parcId: null, enginId: null },
-    op: null,
-    saisiehrm: {},
+    hrmSelects: {
+        du: "",
+        enginId: "",
+        siteId: "",
+        hrm: "",
+    },
+    // 
+    saisiehrm: {
+        id: "",
+        du: new Date().toISOString().split("T")[0],
+        enginId: "",
+        siteId: "",
+        hrm: "",
+    },
     saisiehim: [],
     // 
+
     pannesLists: [],
     totalHim: 0,
     totalNi: 0,

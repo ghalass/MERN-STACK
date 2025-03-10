@@ -77,11 +77,41 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ error: "Password incorrect." })
         }
 
-        const token = createToken(user.id)
+        // const token = createToken(user.id)
+
+        const accessToken = jwt.sign(
+            {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: '15m' }
+        );
+
+
+        const refreshToken = jwt.sign(
+            {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            },
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: '7d' }
+        );
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true, //accessible only by web server
+            secure: true, //https
+            sameSite: 'None', //cross-site cookie
+            // maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
+            maxAge: 30 * 1000, // 30 seconds
+        });
+
+
 
         await setLastViste(email)
 
-        res.status(200).json({ email, name: user.name, token })
+        res.status(200).json({ email, name: user.name, token: accessToken })
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -255,11 +285,42 @@ const updateUser = async (req, res) => {
     }
 }
 
+const refresh = async (req, res) => {
+    const cookies = req.cookies;
+    // return res.json({ cookies })
+    // check if token exist
+    if (!cookies?.Bearer) return res.status(401).json({ message: "Unauthorized" });
+    const refreshToken = cookies.refreshToken;
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        async (err, decoded) => {
+            if (err) return res.status(403).json({ message: "Forbidden" });
+            // check if user exist
+            const foundedUser = await prisma.user.findFirst({
+                where: { id: decoded?.id }
+            });
+            if (!foundedUser) res.status(401).json({ message: "Unauthorized" });
+
+            const accessToken = jwt.sign({
+                id: foundedUser.id,
+                name: foundedUser.name,
+                email: foundedUser.email
+            },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '15m' }
+            );
+
+            res.status(200).json({ email: foundedUser.email, name: foundedUser.name, token: accessToken })
+
+        })
+}
+
 module.exports = {
     loginUser,
     signupUser,
     getByEmail,
     changePassword,
     getUsers,
-    updateUser
+    updateUser, refresh
 }
