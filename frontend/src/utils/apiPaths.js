@@ -8,6 +8,7 @@ export const API_PATHS = {
         UPDATE_USER: "/user/updateUser",
         // DETELE_USER: "/user/updateUser",
         GET_USER_INFO: "/user/getUserInfo",
+        GET_ALL_USERS: "/user/users",
 
     },
     DASHBOARD: {

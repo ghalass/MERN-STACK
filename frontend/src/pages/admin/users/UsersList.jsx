@@ -4,15 +4,11 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import UserFormCreate from "./UserFormCreate";
 import Badge from "react-bootstrap/Badge";
-import { apiRequest } from "../../../utils/apiRequest";
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import fecthUsersQueryOptions from "../../../queryOptions/user/fecthUsersQueryOptions";
 
 const UsersList = () => {
-  const getAllUsers = async () => {
-    return await apiRequest(`/user/users`, "GET");
-  };
-
   const {
     isLoading,
     isPending,
@@ -20,10 +16,7 @@ const UsersList = () => {
     error,
     data: users,
     isError,
-  } = useQuery({
-    queryKey: ["usersList"],
-    queryFn: getAllUsers,
-  });
+  } = useQuery(fecthUsersQueryOptions());
 
   const [show, setShow] = useState(false);
 

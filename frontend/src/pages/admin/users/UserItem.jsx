@@ -5,37 +5,23 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import UserFormDelete from "./UserFormDelete";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "../../../utils/apiRequest";
-import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
 import UserFormUpdate from "./UserFormUpdate";
+import deleteUserQueryOptions from "../../../queryOptions/user/deleteUserQueryOptions";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
 
 const UserItem = ({ user }) => {
-  const handleDelete = () => {
-    mutation.mutate();
-  };
-  const handleUpdate = () => {
-    console.log("update", user);
-  };
-
   const [showUpdate, setShowUpdate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
-  const deleteUser = async () => {
-    return await apiRequest(`/user/${user?.id}`, "DELETE");
-  };
+  // DELETE
+  const handleDelete = () => mutationDelete.mutate(user?.id);
+  const mutationDelete = useMutation(deleteUserQueryOptions(setShowDelete));
 
-  // Mutations;
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      setShowDelete(false);
-      toast.success("Supprimé avec succès.");
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["usersList"] });
-    },
-  });
+  // UPDATE
+  const handleUpdate = () => {
+    console.log("update", user);
+  };
 
   return (
     <>
@@ -87,14 +73,24 @@ const UserItem = ({ user }) => {
           <UserFormDelete user={user} />
           <div className="d-flex gap-2 float-end mt-2">
             <Button
+              disabled={mutationDelete.isPending}
               onClick={() => setShowDelete(false)}
               variant="outline-success"
               size="sm"
             >
               Annuler
             </Button>
-            <Button onClick={handleDelete} variant="outline-danger" size="sm">
-              Supprimer
+
+            <Button
+              disabled={mutationDelete.isPending}
+              onClick={handleDelete}
+              variant="outline-danger"
+              size="sm"
+            >
+              <div className="d-flex gap-1 align-items-center justify-content-end">
+                {mutationDelete.isPending && <LoaderSmall />}{" "}
+                <span>Supprimer</span>
+              </div>
             </Button>
           </div>
         </Modal.Body>

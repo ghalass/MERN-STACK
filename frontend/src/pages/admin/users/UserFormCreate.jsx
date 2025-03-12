@@ -2,18 +2,13 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "../../../utils/apiRequest";
-import toast from "react-hot-toast";
-import { API_PATHS } from "../../../utils/apiPaths";
+import { useMutation } from "@tanstack/react-query";
 import Error from "../../../components/forms/Error";
+import createUserQueryOptions from "../../../queryOptions/user/createUserQueryOptions";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
 
 const UserFormCreate = ({ handleClose }) => {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
-
-  const createUser = async (data) => {
-    return await apiRequest(API_PATHS.AUTH.REGISTER, "POST", data);
-  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -22,21 +17,12 @@ const UserFormCreate = ({ handleClose }) => {
       email: user.email,
       password: user.password,
     };
-    mutation.mutate(newUser);
+    mutationCreate.mutate(newUser);
   };
 
-  // Mutations;
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: createUser,
-    onSuccess: () => {
-      setUser({ name: "", email: "", password: "" });
-      handleClose();
-      toast.success("Ajouté avec succès.");
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["usersList"] });
-    },
-  });
+  const mutationCreate = useMutation(
+    createUserQueryOptions(setUser, handleClose)
+  );
 
   return (
     <>
@@ -81,18 +67,21 @@ const UserFormCreate = ({ handleClose }) => {
             />
           </FloatingLabel>
 
-          <div className="d-flex gap-2 float-end mt-2">
+          <div className="d-flex justify-content-end">
             <Button
               type="submit"
               variant="outline-primary"
               size="sm"
               disabled={mutation.isPending}
             >
-              Ajouter
+              <div className="d-flex gap-1 align-items-center justify-content-end">
+                {mutation.isPending && <LoaderSmall />} <span>Ajouter</span>
+              </div>
             </Button>
           </div>
-          <Error error={mutation.isError ? mutation.error.message : ""} />
         </Form.Group>
+
+        <Error error={mutation.isError ? mutation.error.message : ""} />
       </Form>
     </>
   );
