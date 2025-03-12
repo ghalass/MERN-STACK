@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-// import { useLogin } from "../hooks/useLogin";
-import Error from "../../components/forms/Error";
+// import Error from "../../components/forms/Error";
 import SubmitButton from "../../components/forms/SubmitButton";
 import FormInput from "../../components/forms/FormInput";
 
@@ -10,7 +9,7 @@ import { loginSchema } from "../../validations/loginValidation"; // ✅ Import d
 import { apiRequest } from "../../utils/apiRequest";
 import { useAuth } from "../../context/Auth";
 
-import Cookies from "universal-cookie";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const Login = () => {
   // ✅ Utilisation de react-hook-form
@@ -26,26 +25,18 @@ const Login = () => {
     },
   });
 
-  // const { loginUser, error, isLoading } = useLogin();
-
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.path || "/";
 
   const onSubmit = async (data) => {
-    // await loginUser(data.email, data.password);
-    const response = await apiRequest(`/user/login`, "POST", {
+    const response = await apiRequest(API_PATHS.AUTH.LOGIN, "POST", {
       email: data.email,
       password: data.password,
     });
     const token = response.token;
-    // save token in cookie
-    const cookie = new Cookies();
-    cookie.set("Bearer", token);
-    // save token & user in context
-    const userInfo = { name: response.name, email: response.email };
-    auth.login(userInfo);
+    auth.login(response?.user);
     auth.setToken(token);
     // redirect to wanted page & avoid user to back to the prevus page in browser
     navigate(redirectPath, { replace: true });
@@ -85,11 +76,15 @@ const Login = () => {
               operation={"login"}
             />
 
-            <p className="d-flex gap-1 mt-3">
+            {/* <p className="d-flex gap-1 mt-3">
               You don't have an account?
               <Link to={"/signup"} className="nav-link text-primary fst-italic">
                 Sign Up
               </Link>
+            </p> */}
+
+            <p className="d-flex gap-1 mt-3">
+              Vous n'avez pas de compte ? veuillez contacter l'administrateur
             </p>
 
             <p className="d-flex gap-1">

@@ -4,9 +4,10 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 
+const tokenExpireIn = 1; //hour
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '2h' })
+const generateToken = (loggedUser) => {
+    return jwt.sign(loggedUser, process.env.ACCESS_TOKEN_SECRET, { expiresIn: `${tokenExpireIn}h` })
 }
 
 // signup user
@@ -40,9 +41,18 @@ const signupUser = async (req, res) => {
             data: { name, email, password: hash, lastVisite: new Date().toISOString() }
         });
 
-        const token = createToken(user.id)
+        // SELECT USER FIELDS TO SAVE IN TOKEN
+        const createdUser = {
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            role: user?.role,
+        }
+        // GENERATE TOKEN
+        const token = generateToken(createdUser)
 
-        res.status(200).json({ email, name, token })
+        // SEND USER AND TOKEN
+        res.status(200).json({ user: createdUser, token })
     } catch (error) {
         console.log(error);
 
@@ -52,66 +62,54 @@ const signupUser = async (req, res) => {
 
 // login user
 const loginUser = async (req, res) => {
-    const { email, password } = req.body
-
     try {
-        // validation 
-        if (!email || !password) {
-            return res.status(400).json({ error: "Veuillez remplir tout les champs!" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ error: "E-mail invalide!" });
-        }
+        const { email, password } = req.body
+        // FIELDS VALIDATION 
+        if (!email || !password) { return res.status(400).json({ error: "Veuillez remplir tout les champs!" }); }
+        if (!validator.isEmail(email)) { return res.status(400).json({ error: "E-mail invalide!" }); }
 
-        const user = await prisma.user.findFirst({
-            where: { email: email }
-        });
+        // FIND THE USER
+        const user = await prisma.user.findFirst({ where: { email: email } });
 
-        if (!user) {
-            return res.status(400).json({ error: "E-mail incorrect." })
-        }
+        // CHECK IF USER EXIST
+        if (!user) { return res.status(400).json({ error: "E-mail Or Password incorrect." }) }
 
+        // CHECK PASSWORD
         const match = await bcrypt.compare(password, user.password)
+        if (!match) { return res.status(400).json({ error: "E-mail Or Password incorrect." }) }
 
-        if (!match) {
-            return res.status(400).json({ error: "Password incorrect." })
+        // SELECT USER FIELDS TO SAVE IN TOKEN
+        const loggedUser = {
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            role: user?.role,
         }
+        // GENERATE TOKEN
+        const token = generateToken(loggedUser)
 
-        // const token = createToken(user.id)
-
-        const accessToken = jwt.sign(
-            {
-                id: user.id,
-                name: user.name,
-                email: user.email
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '15m' }
-        );
-
-
-        const refreshToken = jwt.sign(
-            {
-                id: user.id,
-                name: user.name,
-                email: user.email
-            },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '7d' }
-        );
-        res.cookie('refreshToken', refreshToken, {
+        res.cookie('jwt', token, {
             httpOnly: true, //accessible only by web server
             secure: true, //https
             sameSite: 'None', //cross-site cookie
-            // maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
-            maxAge: 30 * 1000, // 30 seconds
+            maxAge: tokenExpireIn * 60 * 60 * 1000, // tokenExpireIn * 60 * 60 * 1000 ==> hours
         });
-
-
 
         await setLastViste(email)
 
-        res.status(200).json({ email, name: user.name, token: accessToken })
+        // SEND USER AND TOKEN
+        res.status(200).json({ user: loggedUser, token })
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+// login user
+const logoutUser = async (req, res) => {
+    try {
+        const cookies = req.cookies;
+        res.clearCookie('jwt')
+        res.status(200).json(cookies)
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -187,7 +185,7 @@ const changePassword = async (req, res) => {
             return res.status(401).json({ error: 'Authorization token required!' })
         }
         const token = authorization.split(' ')[1]
-        const { id } = jwt.verify(token, process.env.SECRET)
+        const { id } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
         if (exists.id !== id) {
             return res.status(400).json({ error: "Vous pouvez changer uniquement votre propre mot de passe!" })
         }
@@ -210,30 +208,6 @@ const changePassword = async (req, res) => {
 // get all users
 const getUsers = async (req, res) => {
     try {
-
-        // check if email is his email
-        // user can change only his password
-        // verify authentication
-        const { authorization } = req.headers
-        if (!authorization) {
-            return res.status(401).json({ error: 'Authorization token required!' })
-        }
-        const token = authorization.split(' ')[1]
-        const { id } = jwt.verify(token, process.env.SECRET)
-
-        // find role of user how send request
-        const user = await prisma.user.findFirst({
-            where: { id: id },
-            select: { role: true }
-        });
-        // check if role is authorised
-        // const allowed = (user.role === 'SUPER_ADMIN') || (user.role === 'ADMIN')
-        const allowed = true
-        // return res.status(200).json({ role: user.role, allowed: allowed });
-        if (!allowed) {
-            return res.status(400).json({ error: "Vous n'êtez pas autoriser." })
-        }
-
         const users = await prisma.user.findMany({
             orderBy: [
                 { role: 'asc' },
@@ -250,35 +224,27 @@ const getUsers = async (req, res) => {
 
 // update a user
 const updateUser = async (req, res) => {
-    const { id, name, email, role, active } = req.body
-
     try {
+        const { id } = req.body
 
-        const selectedUSER = await prisma.user.findFirst({
-            where: { email: email }, omit: { password: true }
-        });
+        // CHECK IF USER ID IS PROVIDED
+        if (!req?.body?.id) return res.status(404).json({ error: "YOU MUST PROVID THE USER ID" })
 
-        const newData = {
-            name: name.trim() !== "" ? name : selectedUSER.name,
-            role: role.trim() !== "" ? role : selectedUSER.role,
-            active: active,
-        };
+        // FIND & CHECK IF USER TO UPDATE IS EXIST  
+        const selectedUSER = await prisma.user.findFirst({ where: { id: id } });
+        if (!selectedUSER) return res.status(404).json({ error: "USER NOT FOUND" })
 
-        // check if name is not already exist
-        const nameExist = await prisma.user.findFirst({
-            where: { name: name, id: { not: parseInt(id) } },
+        // CHECK IF EMAIL IS NOT ALREADY USED BY AN OTHER USER
+        if (req?.body?.email && await prisma.user.findFirst({ where: { email: req?.body?.email, id: { not: parseInt(id) } } }))
+            return res.status(401).json({ error: "CET EMAIL D'UTILISATEUR EST DÉJÀ UTILISÉ!" })
 
-        });
-        if (nameExist) {
-            return res.status(401).json({ error: "Ce nom d'utilisateur est déjà utilisé!" })
-        }
+        // UPDATE THE USER
+        const updatedUser = await prisma.user.update({ where: { id: parseInt(id) }, data: req.body });
 
-        const updatedUser = await prisma.user.update({
-            where: { id: parseInt(id) },
-            data: { name: newData.name, role: newData.role, active: newData.active }
-        });
+        // REMOVE PASSWORD BEFORE SEND USER
+        const { password: _, ...updatedUserWithOutPassword } = updatedUser;
 
-        res.status(200).json(updatedUser)
+        res.status(200).json(updatedUserWithOutPassword)
 
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -316,11 +282,76 @@ const refresh = async (req, res) => {
         })
 }
 
+const checkToken = async (req, res, next) => {
+    const cookies = req.cookies;
+
+    // FETCH TOKEN FROM COOKIE
+    const jwtCookie = cookies?.jwt
+
+    // CHECK IF TOKEN EXIST
+    if (!jwtCookie) return res.status(401).json({ error: "UNAUTHORIZED" });
+
+    // VERIFY TOKEN
+    jwt.verify(
+        jwtCookie,
+        process.env.ACCESS_TOKEN_SECRET,
+        async (err, decoded) => {
+            if (err) return res.status(403).json({ error: "FORBIDDEN" });
+
+            // CHECK IF USER EXIST IN DATABASE
+            const foundedUser = await prisma.user.findFirst({ where: { id: decoded?.id } });
+            if (!foundedUser) res.status(401).json({ error: "UNAUTHORIZED" });
+
+            // SELECT USER FIELDS TO SAVE IN TOKEN
+            const loggedUser = {
+                id: foundedUser?.id,
+                name: foundedUser?.name,
+                email: foundedUser?.email,
+                role: foundedUser?.role,
+            }
+
+            // SEND USER AND TOKEN
+            res.status(200).json({ user: loggedUser, jwt: jwtCookie })
+        }
+    )
+}
+
+// delete a user
+const deleteUser = async (req, res) => {
+    const { id } = req.params
+    try {
+
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { id: parseInt(id) }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
+
+        await prisma.user.delete({
+            where: { id: parseInt(id) }
+        });
+
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
     getByEmail,
     changePassword,
     getUsers,
-    updateUser, refresh
+    updateUser,
+    refresh,
+    deleteUser,
+    logoutUser,
+    checkToken
 }

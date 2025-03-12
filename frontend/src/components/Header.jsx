@@ -10,6 +10,8 @@ import Button from "react-bootstrap/esm/Button";
 // import { isTokenExpired } from "../utils/authUtils";
 import { useAuth } from "../context/Auth";
 import Cookies from "universal-cookie";
+import { apiRequest } from "../utils/apiRequest";
+import { API_PATHS } from "../utils/apiPaths";
 
 // import Cookies from "js-cookie";
 
@@ -26,13 +28,20 @@ function Header() {
   const navigate = useNavigate();
 
   const handlelogout = () => {
-    // remove token from cookie
+    /** LOGOUT FROM FRONT END - CONTEXT */
     cookie.remove("Bearer");
-    cookie.remove("refreshToken");
-    // remove token from context
+    // REMOVE TOKEN FROM CONTEXT
     auth.logout();
-    // redirect to home page
-    navigate("/");
+
+    /** LOGOUT FROM SERVER */
+    const logoutApi = async () => {
+      await apiRequest(API_PATHS.AUTH.LOGOUT, "POST");
+    };
+
+    logoutApi();
+
+    // REDIRECT TO LOGIN PAGE
+    navigate("/login");
   };
 
   return (
@@ -51,37 +60,22 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link
-              as={Link}
-              to="/workouts"
-              className={`nav-link ${
-                location.pathname === "/workouts" ? "active" : ""
-              }`}
-            >
-              Workouts
-            </Nav.Link>
-
-            <Nav.Link
-              as={Link}
-              to="/configs"
-              className={`nav-link ${
-                location.pathname === "/configs" ? "active" : ""
-              }`}
-            >
-              <i className="bi bi-gear me-1"></i>
-              Configs
-            </Nav.Link>
-
-            <Nav.Link
-              as={Link}
-              to="/performances"
-              className={`nav-link ${
-                location.pathname === "/performances" ? "active" : ""
-              }`}
-            >
-              <i className="bi bi-gear me-1"></i>
-              Performances
-            </Nav.Link>
+            {auth.user &&
+              (auth.user?.role === "ADMIN" ||
+                auth.user?.role === "SUPER_ADMIN") && (
+                <>
+                  <Nav.Link
+                    as={Link}
+                    to="/performances"
+                    className={`nav-link ${
+                      location.pathname === "/performances" ? "active" : ""
+                    }`}
+                  >
+                    <i className="bi bi-gear me-1"></i>
+                    Performances
+                  </Nav.Link>
+                </>
+              )}
           </Nav>
 
           {/*  */}
@@ -95,16 +89,29 @@ function Header() {
                   <>
                     <span className="me-1">Bienvenue</span>
                     <span className="text-uppercase fw-bold">
-                      {auth.user && auth.user?.name}
+                      <span>{auth.user && auth.user?.name}</span>
+                      <span className="ms-1 text-bg-info rounded-pill px-2">
+                        <small>{auth.user && auth.user?.role}</small>
+                      </span>
                     </span>
                   </>
                 }
                 id="basic-nav-dropdown"
               >
                 <NavDropdown.Item as={Link} to="/profile">
-                  <i className="bi bi-person me-1"></i>
-                  Profile
+                  <i className="bi bi-person me-1"></i>Profile
                 </NavDropdown.Item>
+
+                {auth?.user &&
+                  (auth.user?.role === "ADMIN" ||
+                    auth.user?.role === "SUPER_ADMIN") && (
+                    <>
+                      <NavDropdown.Item as={Link} to="/admin">
+                        <i className="bi bi-gear me-1"></i>Admin
+                      </NavDropdown.Item>
+                    </>
+                  )}
+
                 <NavDropdown.Divider />
 
                 <button
@@ -126,7 +133,7 @@ function Header() {
                   Log In
                 </Button>
 
-                <Button
+                {/* <Button
                   as={Link}
                   to="/signup"
                   variant="outline-primary"
@@ -134,7 +141,7 @@ function Header() {
                   className="ms-2"
                 >
                   Sign Up
-                </Button>
+                </Button> */}
               </div>
             )}
           </Nav>

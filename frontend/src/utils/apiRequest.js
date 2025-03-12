@@ -1,77 +1,28 @@
-// import Cookies from "js-cookie";
 
-import Cookies from "universal-cookie";
-
+const TIME_OUT = 1000; // FOR TEST LOADING TIME
 
 export const apiRequest = async (endpoint, method = "GET", body = null, token = null) => {
     try {
         const headers = {
             "Content-Type": "application/json",
-            credentials: "include"
-        };
-        const cookie = new Cookies()
-        // const tokenCookie = Cookies.get('accessToken');
-        // console.log(cookie.get('Bearer'));
-
-        // if (token) {
-        headers["Authorization"] = `Bearer ${cookie.get('Bearer')}`;
-        // }
-
-        // if (tokenCookie) {
-        //     // headers.set("authorization", `Bearer ${tokenCookie}`);
-        //     headers["Authorization"] = `Bearer ${tokenCookie}`;
-        // }
-
-        const options = {
-            method,
-            headers,
-            credentials: 'include'
         };
 
-        if (body) {
-            options.body = JSON.stringify(body);
-        }
+        const options = { method, headers, credentials: 'include' };
+
+        if (body) options.body = JSON.stringify(body)
 
         const baseUrl = import.meta.env.VITE_BASE_URL;
         const url = `${baseUrl}${endpoint}`;
 
         const response = await fetch(url, options);
 
-        // REFRESH TOKEN START
-        // if (response.status === 403) {
-        //     console.log('sending refresh token');
-        //     // need to call refresh api to get new access token
-        //     const refreshResult = await fetch(`${baseUrl}/auth/refresh`, {
-        //         method: 'GET'
-        //     });
-
-        //     if (refreshResult?.ok) {
-        //         const { accessToken } = await refreshResult.json();
-        //         Cookies.set('accessToken', accessToken);
-        //         response = await fetch(url, options);
-        //     } else {
-        //         if (refreshResult.status === 403) {
-        //             console.log("Your login has expired.");
-        //             throw new Error("Your login has expired.");
-        //         } else {
-        //             throw new Error(refreshResult.statusText);
-        //         }
-        //     }
-        // }
-        // REFRESH TOKEN END
-
         // Vérifier si le serveur ne répond pas du tout
-        if (!response) {
-            throw new Error("Aucune réponse du serveur.");
-        }
+        if (!response) throw new Error("Aucune réponse du serveur.")
 
         // Gérer les erreurs spécifiques HTTP
-        if (response.status === 404) {
-            throw new Error(`Endpoint non trouvé : ${endpoint}`);
-        }
-        if (response.status === 500) {
-            throw new Error("Erreur interne du serveur. Veuillez réessayer plus tard.");
-        }
+        if (response.status === 404) throw new Error(`Endpoint non trouvé : ${endpoint}`);
+
+        if (response.status === 500) throw new Error("Erreur interne du serveur. Veuillez réessayer plus tard.");
 
         let data;
         try {
@@ -80,9 +31,10 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
             throw new Error("Réponse invalide du serveur.");
         }
 
-        if (!response.ok) {
-            throw new Error(data?.error || "Une erreur est survenue lors de la requête.");
-        }
+        if (!response.ok) throw new Error(data?.error || "Une erreur est survenue lors de la requête.");
+
+
+        await new Promise((resolve) => setTimeout(resolve, TIME_OUT))
 
         return data;
     } catch (error) {

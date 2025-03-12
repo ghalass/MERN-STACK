@@ -3,10 +3,11 @@ import Cookies from "universal-cookie";
 import { apiRequest } from "../utils/apiRequest";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { API_PATHS } from "../utils/apiPaths";
+import LoaderSpinner from "./ui/LoaderSpinner";
 
 const PersistLogin = () => {
-  const cookie = new Cookies();
-  // get the cuurent user from context
+  // GET THE CUURENT USER FROM CONTEXT
   const auth = useAuth();
   const token = auth.token;
 
@@ -15,14 +16,10 @@ const PersistLogin = () => {
   useEffect(() => {
     const refreshToken = async () => {
       try {
-        const res = await apiRequest(`/user/refresh`, "POST");
-        // save token in cookie
-        const cookie = new Cookies();
-        cookie.set("Bearer", res.token);
-        // save token & user in context
-        const userInfo = { name: res.name, email: res.email };
-        auth.login(userInfo);
-        auth.setToken(res.token);
+        const response = await apiRequest(API_PATHS.AUTH.CHECK_TOKEN, "GET");
+        // SAVE USER & TOKEN IN THE CONTEXT
+        auth.login(response?.user);
+        auth.setToken(token);
       } catch (error) {
       } finally {
         setisLoading(false);
@@ -31,7 +28,7 @@ const PersistLogin = () => {
     !token ? refreshToken() : setisLoading(false);
   }, []);
 
-  return isLoading ? "Loading ..." : <Outlet />;
+  return isLoading ? <LoaderSpinner /> : <Outlet />;
 };
 
 export default PersistLogin;

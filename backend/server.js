@@ -8,8 +8,6 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 
-const swaggerUI = require("swagger-ui-express");
-const swaggerSpec = require("./swagger");
 const prisma = require("./prismaClient");
 
 const userRoutes = require('./routes/user')
@@ -35,9 +33,6 @@ app.use(cookieParser())
 // allow json data
 app.use(express.json())
 
-// Serve Swagger documentation
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec, { explorer: true }));
-
 // import static files
 app.use('/', express.static(path.join(__dirname, "public")))
 
@@ -56,10 +51,8 @@ app.use('/sites', sitesRoutes)
 app.use('/typeparcs', typeparcsRoutes)
 app.use('/parcs', parcsRoutes)
 app.use('/engins', enginsRoutes)
-
 app.use('/typepannes', typepannesRoutes)
 app.use('/pannes', pannesRoutes)
-
 app.use('/saisiehrm', saisiehrmRoutes)
 
 // 404 route

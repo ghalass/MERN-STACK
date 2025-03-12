@@ -7,10 +7,7 @@ const getSites = async (req, res) => {
             .findMany({
                 orderBy: { name: 'asc' },
             });
-        setTimeout(() => {
-
-            res.status(200).json(sites)
-        }, 500);
+        res.status(200).json(sites)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
