@@ -30,3 +30,4 @@ npm install swagger-jsdoc swagger-ui-express
 - npm i yup
 - npm i yup-locales
 - npm i universal-cookie
+- npm i react-toastify

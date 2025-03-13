@@ -72,16 +72,19 @@ const UserFormCreate = ({ handleClose }) => {
               type="submit"
               variant="outline-primary"
               size="sm"
-              disabled={mutation.isPending}
+              disabled={mutationCreate.isPending}
             >
               <div className="d-flex gap-1 align-items-center justify-content-end">
-                {mutation.isPending && <LoaderSmall />} <span>Ajouter</span>
+                {mutationCreate.isPending && <LoaderSmall />}{" "}
+                <span>Ajouter</span>
               </div>
             </Button>
           </div>
         </Form.Group>
 
-        <Error error={mutation.isError ? mutation.error.message : ""} />
+        <Error
+          error={mutationCreate.isError ? mutationCreate.error.message : ""}
+        />
       </Form>
     </>
   );

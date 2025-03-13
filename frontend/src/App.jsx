@@ -17,9 +17,25 @@ import AdminLayout from "./layouts/AdminLayout";
 import SitesPage from "./pages/admin/sites/SitesPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 
+import { ToastContainer, Bounce } from "react-toastify";
+
 const App = () => {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+
       <Toaster
         position="top-center"
         toastOptions={{

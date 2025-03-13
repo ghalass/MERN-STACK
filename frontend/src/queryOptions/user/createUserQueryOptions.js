@@ -3,6 +3,9 @@ import { apiRequest } from "../../utils/apiRequest";
 import { API_PATHS } from "../../utils/apiPaths";
 import toast from "react-hot-toast";
 
+import { toast as t } from "react-toastify";
+// import { toast as t2 } from "react-hot-toast";
+
 export default function createUserQueryOptions(setUser, handleClose) {
     const queryClient = useQueryClient();
     return queryOptions({
@@ -10,7 +13,8 @@ export default function createUserQueryOptions(setUser, handleClose) {
         onSuccess: () => {
             setUser({ name: "", email: "", password: "" });
             handleClose();
-            toast.success("Ajouté avec succès.");
+            // toast.success("Ajouté avec succès.");
+            t.success("Ajouté avec succès.");
             // Invalidate and refetch
             queryClient.invalidateQueries({ queryKey: ["usersList"] });
         },
