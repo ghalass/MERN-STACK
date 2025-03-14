@@ -1,52 +1,49 @@
-import { Toaster } from "react-hot-toast";
-
 import "./assets/App.css";
+
+import { lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ContextProvider } from "./context/Auth";
-import Home from "./pages/Home";
-import Login from "./pages/auth/Login";
-import DefaultLayout from "./layouts/DefaultLayout";
-import GuestLayout from "./layouts/GuestLayout";
-import Signup from "./pages/auth/Signup";
-import Profile from "./pages/user/Profile";
-import RequireAuth from "./components/RequireAuth";
-import RequireAdmin from "./components/RequireAdmin";
-import PersistLogin from "./components/PersistLogin";
-import Dashboard from "./pages/admin/Dashboard";
-import AdminLayout from "./layouts/AdminLayout";
-import SitesPage from "./pages/admin/sites/SitesPage";
-import UsersPage from "./pages/admin/users/UsersPage";
 
-import { ToastContainer, Bounce } from "react-toastify";
+/*** LAYOUTS */
+const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
+const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
+const GuestLayout = lazy(() => import("./layouts/GuestLayout"));
+
+/*** COMPONENTS */
+import Home from "./pages/Home";
+const Page404 = lazy(() => import("./pages/Page404"));
+const Notification = lazy(() => import("./components/ui/Notification"));
+const Profile = lazy(() => import("./pages/user/Profile"));
+const Login = lazy(() => import("./pages/auth/Login"));
+// ADMIN
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const SitesPage = lazy(() => import("./pages/admin/sites/SitesPage"));
+const UsersPage = lazy(() => import("./pages/admin/users/UsersPage"));
+
+/*** MIDDLEWARES */
+const RequireAuth = lazy(() => import("./components/RequireAuth"));
+const RequireAdmin = lazy(() => import("./components/RequireAdmin"));
+const PersistLogin = lazy(() => import("./components/PersistLogin"));
 
 const App = () => {
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
+      <Notification />
 
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          removeDelay: 1000,
-        }}
-      />
       <ContextProvider>
         <Router>
           <Routes>
             <Route element={<PersistLogin />}>
-              {/* Pages avec Header */}
+              {/* PUBLIC PAGES WITHOUT HEADER */}
+              {PUBLIC_PAGES_WITHOUT_HEADER?.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={<GuestLayout>{route.element}</GuestLayout>}
+                />
+              ))}
+
+              {/* PUBLIC PAGES WITH HEADER */}
               <Route
                 path="/"
                 element={
@@ -56,90 +53,48 @@ const App = () => {
                 }
               />
 
-              {/* ADMIN ******************************************************/}
-              {/* 🔒 Protected Route - Only Authenticated Users Can Access */}
-              <Route element={<RequireAdmin />}>
-                <Route
-                  path="/admin"
-                  element={
-                    <DefaultLayout>
-                      <AdminLayout>
-                        <Dashboard />
-                      </AdminLayout>
-                    </DefaultLayout>
-                  }
-                />
-              </Route>
+              {/* ADMIN PAGES */}
+              {ADIM_PAGES?.map((route, index) => (
+                <Route element={<RequireAdmin />} key={index}>
+                  <Route
+                    path={route.path}
+                    element={
+                      <DefaultLayout>
+                        <AdminLayout>{route.element}</AdminLayout>
+                      </DefaultLayout>
+                    }
+                  />
+                </Route>
+              ))}
 
-              <Route element={<RequireAdmin />}>
-                <Route
-                  path="/admin/users"
-                  element={
-                    <DefaultLayout>
-                      <AdminLayout>
-                        <UsersPage />
-                      </AdminLayout>
-                    </DefaultLayout>
-                  }
-                />
-              </Route>
-
-              <Route element={<RequireAdmin />}>
-                <Route
-                  path="/admin/sites"
-                  element={
-                    <DefaultLayout>
-                      <AdminLayout>
-                        <SitesPage />
-                      </AdminLayout>
-                    </DefaultLayout>
-                  }
-                />
-              </Route>
-
-              <Route element={<RequireAuth />}>
-                <Route
-                  path="/profile"
-                  element={
-                    <DefaultLayout>
-                      <Profile />
-                    </DefaultLayout>
-                  }
-                />
-              </Route>
+              {/* REQUIRE AUTH PAGES */}
+              {REQUIRE_AUTH_PAGES?.map((route, index) => (
+                <Route element={<RequireAuth />} key={index}>
+                  <Route
+                    path={route.path}
+                    element={<DefaultLayout>{route.element}</DefaultLayout>}
+                  />
+                </Route>
+              ))}
             </Route>
-
-            {/* PUBLIC ******************************************************/}
-            {/* PUBLIC */}
-            {/* PUBLIC */}
-            {/* PUBLIC */}
-
-            {/* PUBLIC PAGES WITHOUT HEADER */}
-            <Route
-              path="/login"
-              element={
-                <GuestLayout>
-                  <Login />
-                </GuestLayout>
-              }
-            />
-
-            {/* <Route
-              path="/signup"
-              element={
-                <GuestLayout>
-                  <Signup />
-                </GuestLayout>
-              }
-            /> */}
-
-            {/* 404 Page */}
-            <Route path="*" element={<div>404 - Page Not Found</div>} />
           </Routes>
         </Router>
       </ContextProvider>
     </>
   );
 };
+
+const PUBLIC_PAGES_WITHOUT_HEADER = [
+  { path: "/login", element: <Login /> },
+  { path: "*", element: <Page404 /> },
+];
+
+const REQUIRE_AUTH_PAGES = [{ path: "/profile", element: <Profile /> }];
+
+const ADIM_PAGES = [
+  { path: "/admin", element: <Dashboard /> },
+  { path: "/admin/users", element: <UsersPage /> },
+  { path: "/admin/sites", element: <SitesPage /> },
+];
 
 export default App;

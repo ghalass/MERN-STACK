@@ -1,12 +1,16 @@
-import React, { useState } from "react";
-import UserItem from "./UserItem";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import UserFormCreate from "./UserFormCreate";
-import Badge from "react-bootstrap/Badge";
-import { useQuery } from "@tanstack/react-query";
-import LoaderSmall from "../../../components/ui/LoaderSmall";
+import React, { lazy, useState } from "react";
+
+/*** FUNCTIONS */
 import fecthUsersQueryOptions from "../../../queryOptions/user/fecthUsersQueryOptions";
+import { useQuery } from "@tanstack/react-query";
+
+/*** COMPONENTS */
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
+import CumstomModal from "../../../components/ui/CumstomModal";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
+const UserFormCreate = lazy(() => import("./UserFormCreate"));
+const UserItem = lazy(() => import("./UserItem"));
 
 const UsersList = () => {
   const {
@@ -19,7 +23,6 @@ const UsersList = () => {
   } = useQuery(fecthUsersQueryOptions());
 
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -78,19 +81,13 @@ const UsersList = () => {
         </table>
       </div>
 
-      <Modal
+      <CumstomModal
         show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
+        handleClose={handleClose}
+        title="Ajouter un nouveau Utilisateur"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Ajouter un nouveau Utilisateur</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <UserFormCreate handleClose={handleClose} />
-        </Modal.Body>
-      </Modal>
+        <UserFormCreate handleClose={handleClose} />
+      </CumstomModal>
     </>
   );
 };
