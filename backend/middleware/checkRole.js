@@ -5,7 +5,7 @@ const checkRole = (roles) => {
 
         const allowedRoleInString = roles.reduce((acc, role) => acc + " " + role)
 
-        const msg = `ACCESS DENIED, ALLOWED ONLY : [${allowedRoleInString}], AND YOU ARE ${userROLE}`
+        const msg = `ACCÈS REFUSÉ, AUTORISÉ UNIQUEMENT : [${allowedRoleInString}], ET VOUS ÊTES [${userROLE.replace('_', ' ')}]`
 
         // CHECK IF USER ROLE INCLUDE IN ALLOWRD ROLES
         if (!roles.includes(userROLE)) return res.status(403).send({ error: msg })

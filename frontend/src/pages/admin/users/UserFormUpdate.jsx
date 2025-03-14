@@ -1,47 +1,25 @@
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "../../../utils/apiRequest";
-import toast from "react-hot-toast";
-import { API_PATHS } from "../../../utils/apiPaths";
+import { useMutation } from "@tanstack/react-query";
+import updateUserQueryOptions from "../../../queryOptions/user/updateUserQueryOptions";
+import Error from "../../../components/forms/Error";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
 
-const UserFormUpdate = ({ currentUser }) => {
-  const [user, setUser] = useState({
-    id: currentUser?.id,
-    name: currentUser?.name,
-    email: currentUser?.email,
-    password: currentUser?.password,
-  });
-
-  const updateUser = async (data) => {
-    return await apiRequest(API_PATHS.AUTH.UPDATE_USER, "PATCH", data);
-  };
-
+const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
   const onSubmit = (e) => {
     e.preventDefault();
-    const updatedUser = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      password: user.password,
+    const userToUpdate = {
+      id: currentUser.id,
+      name: currentUser.name,
+      email: currentUser.email,
+      active: currentUser.active,
+      role: currentUser.role,
     };
-    mutation.mutate(updatedUser);
+    mutationUpdate.mutate(userToUpdate);
   };
 
-  // Mutations;
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: updateUser,
-    onSuccess: () => {
-      setUser({ name: "", email: "", password: "" });
-      handleClose();
-      toast.success("Modifié avec succès.");
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["usersList"] });
-    },
-  });
+  const mutationUpdate = useMutation(updateUserQueryOptions(handleClose));
 
   return (
     <div>
@@ -55,8 +33,11 @@ const UserFormUpdate = ({ currentUser }) => {
             <Form.Control
               type="text"
               placeholder="Nom d'utilsateur"
-              value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              value={currentUser.name}
+              onChange={(e) =>
+                setSelectedUser({ ...currentUser, name: e.target.value })
+              }
+              disabled={mutationUpdate.isPending}
             />
           </FloatingLabel>
 
@@ -68,30 +49,60 @@ const UserFormUpdate = ({ currentUser }) => {
             <Form.Control
               type="email"
               placeholder="name@example.com"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              value={currentUser.email}
+              onChange={(e) =>
+                setSelectedUser({ ...currentUser, email: e.target.value })
+              }
+              disabled={mutationUpdate.isPending}
             />
           </FloatingLabel>
+
+          <Form.Check // prettier-ignore
+            type="switch"
+            id="custom-switch"
+            label="Active"
+            className="mb-3"
+            checked={currentUser.active}
+            onChange={(e) =>
+              setSelectedUser({ ...currentUser, active: e.target.checked })
+            }
+            disabled={mutationUpdate.isPending}
+          />
 
           <FloatingLabel
-            controlId="floatingInputPassword"
-            label="Mot de passe"
+            controlId="floatingSelect"
+            label="Choisir un rôle"
             className="mb-3"
           >
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-            />
+            <Form.Select
+              aria-label="Floating label select example"
+              disabled={mutationUpdate.isPending}
+              defaultValue={currentUser.role}
+              onChange={(e) =>
+                setSelectedUser({ ...currentUser, role: e.target.value })
+              }
+            >
+              <option>Liste des rôles</option>
+              <option value="SUPER_ADMIN">SUPER ADMIN</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="USER">USER</option>
+              <option value="UNASSIGNED">VISITEUR</option>
+            </Form.Select>
           </FloatingLabel>
 
-          <div className="d-flex gap-2 float-end mt-2">
+          <div className="d-flex justify-content-end">
             <Button type="submit" variant="outline-primary" size="sm">
-              Modifier
+              <div className="d-flex gap-1 align-items-center justify-content-end">
+                {mutationUpdate.isPending && <LoaderSmall />}{" "}
+                <span>Modifier</span>
+              </div>
             </Button>
           </div>
         </Form.Group>
+
+        <Error
+          error={mutationUpdate.isError ? mutationUpdate.error.message : ""}
+        />
       </Form>
     </div>
   );

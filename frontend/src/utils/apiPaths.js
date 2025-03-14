@@ -2,11 +2,11 @@
 export const API_PATHS = {
     AUTH: {
         LOGIN: "/user/login",
-        REGISTER: "/user/signup",
         LOGOUT: "/user/logout",
         CHECK_TOKEN: "/user/checktoken",
+        REGISTER: "/user/signup",
         UPDATE_USER: "/user/updateUser",
-        // DETELE_USER: "/user/updateUser",
+        DELETE_USER: (userId) => `/user/${userId}`,
         GET_USER_INFO: "/user/getUserInfo",
         GET_ALL_USERS: "/user/users",
 

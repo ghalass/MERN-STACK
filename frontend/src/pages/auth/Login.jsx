@@ -22,10 +22,11 @@ const Login = () => {
   const loginMutation = useMutation(loginQueryOptions());
 
   return (
-    <div className="d-flex justify-content-center align-items-center mt-2">
+    <div className="d-flex justify-content-center align-items-center min-vh-100 w-100">
       <div className="card">
         <div className="card-body">
           <Form onSubmit={onSubmit} style={{ width: "400px" }}>
+            <h3 className="text-center mb-3">Se connecter</h3>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <FloatingLabel
                 controlId="floatingInputEmail"
@@ -37,6 +38,7 @@ const Login = () => {
                   placeholder="name@example.com"
                   value={user.email}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  disabled={loginMutation.isPending}
                 />
               </FloatingLabel>
 
@@ -52,6 +54,7 @@ const Login = () => {
                   onChange={(e) =>
                     setUser({ ...user, password: e.target.value })
                   }
+                  disabled={loginMutation.isPending}
                 />
               </FloatingLabel>
 
@@ -64,7 +67,7 @@ const Login = () => {
                 >
                   <div className="d-flex gap-1 align-items-center justify-content-end">
                     {loginMutation.isPending && <LoaderSmall />}{" "}
-                    <span>Se Connecter</span>
+                    <span>Se connecter</span>
                   </div>
                 </Button>
               </div>

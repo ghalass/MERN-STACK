@@ -5,26 +5,30 @@ import fecthUsersQueryOptions from "../../../queryOptions/user/fecthUsersQueryOp
 import { useQuery } from "@tanstack/react-query";
 
 /*** COMPONENTS */
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
+import { Button, Badge } from "react-bootstrap";
 import CumstomModal from "../../../components/ui/CumstomModal";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import UserFormDelete from "./UserFormDelete";
+import UserFormUpdate from "./UserFormUpdate";
 const UserFormCreate = lazy(() => import("./UserFormCreate"));
 const UserItem = lazy(() => import("./UserItem"));
 
 const UsersList = () => {
-  const {
-    isLoading,
-    isPending,
-    isRefetching,
-    error,
-    data: users,
-    isError,
-  } = useQuery(fecthUsersQueryOptions());
+  const userQuery = useQuery(fecthUsersQueryOptions());
 
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const handleCloseCreateModal = () => setShowCreateModal(false);
+  const handleShowCreateModal = () => setShowCreateModal(true);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const handleCloseEditModal = () => setShowEditModal(false);
+  const handleShowEditModal = () => setShowEditModal(true);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const handleCloseDeleteModal = () => setShowDeleteModal(false);
+  const handleShowDeleteModal = () => setShowDeleteModal(true);
+
+  const [selectedUser, setSelectedUser] = useState(null);
 
   return (
     <>
@@ -33,16 +37,18 @@ const UsersList = () => {
           <div className="d-flex gap-1 align-items-center">
             <div>
               <Badge pill bg="primary">
-                {users?.length}
+                {userQuery.data?.length}
               </Badge>
             </div>
-            {(isLoading || isPending || isRefetching) && <LoaderSmall />}
+            {(userQuery.isLoading ||
+              userQuery.isPending ||
+              userQuery.isRefetching) && <LoaderSmall />}
           </div>
 
           <span className="text-uppercase">Liste des utilisateurs</span>
 
           <Button
-            onClick={handleShow}
+            onClick={handleShowCreateModal}
             variant="outline-primary"
             className="rounded-pill"
             size="sm"
@@ -65,13 +71,21 @@ const UsersList = () => {
               <th>Nom</th>
               <th>Email</th>
               <th>Rôle</th>
-              <th>Active</th>
+              <th className="text-center">Active</th>
               <th className="text-end"></th>
             </tr>
           </thead>
           <tbody>
-            {users && users?.length > 0 ? (
-              users?.map((user, index) => <UserItem key={index} user={user} />)
+            {userQuery.data && userQuery.data?.length > 0 ? (
+              userQuery.data?.map((user, index) => (
+                <UserItem
+                  key={index}
+                  user={user}
+                  setSelectedUser={setSelectedUser}
+                  handleShowEditModal={handleShowEditModal}
+                  handleShowDeleteModal={handleShowDeleteModal}
+                />
+              ))
             ) : (
               <tr className="text-center">
                 <td colSpan={5}>Aucune données n'est trouvées.</td>
@@ -81,12 +95,38 @@ const UsersList = () => {
         </table>
       </div>
 
+      {/* CREATE ********************************************************/}
       <CumstomModal
-        show={show}
-        handleClose={handleClose}
+        show={showCreateModal}
+        handleClose={handleCloseCreateModal}
         title="Ajouter un nouveau Utilisateur"
       >
-        <UserFormCreate handleClose={handleClose} />
+        <UserFormCreate handleClose={handleShowCreateModal} />
+      </CumstomModal>
+
+      {/* UPDATE ********************************************************/}
+      <CumstomModal
+        show={showEditModal}
+        handleClose={handleCloseEditModal}
+        title="Modifier un utilisateur"
+      >
+        <UserFormUpdate
+          handleClose={handleCloseEditModal}
+          currentUser={selectedUser}
+          setSelectedUser={setSelectedUser}
+        />
+      </CumstomModal>
+
+      {/* DELETE ********************************************************/}
+      <CumstomModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        title="Supprimer un utilisateur"
+      >
+        <UserFormDelete
+          handleClose={handleCloseDeleteModal}
+          currentUser={selectedUser}
+        />
       </CumstomModal>
     </>
   );

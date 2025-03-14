@@ -1,10 +1,8 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiRequest";
 import { API_PATHS } from "../../utils/apiPaths";
-import toast from "react-hot-toast";
 
 import { toast as t } from "react-toastify";
-// import { toast as t2 } from "react-hot-toast";
 
 export default function createUserQueryOptions(setUser, handleClose) {
     const queryClient = useQueryClient();

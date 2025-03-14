@@ -1,7 +1,8 @@
-import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 
 const CumstomModal = ({ show, handleClose, children, title }) => {
+  const id = Math.random() * 100 + title.replaceAll(" ", "");
+
   return (
     <div>
       <Modal
@@ -9,7 +10,7 @@ const CumstomModal = ({ show, handleClose, children, title }) => {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
-        id={`${Math.random() * 1000}-${title}`}
+        id={id}
       >
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>

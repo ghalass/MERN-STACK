@@ -37,12 +37,12 @@ router.post('/changePassword', changePassword)
 router.get('/users', getUsers)
 
 // CREATE A NEW ROUTE ==> ONLY ADMIN IS ALLOWRD
-router.post('/signup', checkRole(['ADMIN']), signupUser)
+router.post('/signup', checkRole(['SUPER_ADMIN', 'ADMIN']), signupUser)
 
 // UPDATE AN USER
-router.patch('/updateUser', checkRole(['ADMIN']), updateUser)
+router.patch('/updateUser', checkRole(['SUPER_ADMIN', 'ADMIN']), updateUser)
 
 // DELETE AN USER
-router.delete('/:id', checkRole(['ADMIN']), deleteUser)
+router.delete('/:id', checkRole(['SUPER_ADMIN', 'ADMIN']), deleteUser)
 
 module.exports = router

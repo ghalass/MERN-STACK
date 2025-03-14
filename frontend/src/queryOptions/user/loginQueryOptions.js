@@ -1,11 +1,10 @@
-import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiRequest";
 import { API_PATHS } from "../../utils/apiPaths";
 import { useLocation, useNavigate } from "react-router";
 
 import { toast as t } from "react-toastify";
 import { useAuth } from "../../context/Auth";
-// import { toast as t2 } from "react-hot-toast";
 
 export default function loginQueryOptions() {
     const auth = useAuth();

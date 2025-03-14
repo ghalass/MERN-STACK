@@ -7,8 +7,8 @@ const jwt = require('jsonwebtoken')
 const tokenExpireIn = 1; //hour
 
 const generateToken = (loggedUser) => {
-    return jwt.sign(loggedUser, process.env.ACCESS_TOKEN_SECRET, { expiresIn: `${tokenExpireIn}h` })
-}
+    return jwt.sign(loggedUser, process.env.ACCESS_TOKEN_SECRET, { expiresIn: `${tokenExpireIn}h` });
+};
 
 // signup user
 const signupUser = async (req, res) => {
@@ -87,7 +87,6 @@ const loginUser = async (req, res) => {
         }
         // GENERATE TOKEN
         const token = generateToken(loggedUser)
-
         res.cookie('jwt', token, {
             httpOnly: true, //accessible only by web server
             secure: true, //https
