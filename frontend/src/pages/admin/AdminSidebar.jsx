@@ -1,9 +1,3 @@
-const LIST_SIDEBAR = [
-  { link: "/admin", title: "Dashboard", icon: "bi-speedometer" },
-  { link: "/admin/users", title: "Utilisateurs", icon: "bi-people" },
-  { link: "/admin/sites", title: "Sites", icon: "bi-geo-alt-fill" },
-];
-
 import React, { useState } from "react";
 import { Button, Offcanvas, Nav } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -18,11 +12,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const handleNavLinkClick = () => {
-    // Close the sidebar when a link is clicked on smaller screens
-    if (window.innerWidth < 992) {
-      // 992px corresponds to the 'md' breakpoint in Bootstrap
-      handleClose();
-    }
+    if (window.innerWidth < 992) handleClose();
   };
 
   return (
@@ -44,7 +34,7 @@ const Sidebar = () => {
         responsive="md" // Automatically hide on screens smaller than 'md'
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Sidebar</Offcanvas.Title>
+          <Offcanvas.Title>ADMIN</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Nav defaultActiveKey="/admin" className="flex-column">
@@ -77,3 +67,9 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+const LIST_SIDEBAR = [
+  { link: "/admin", title: "Dashboard", icon: "bi-speedometer" },
+  { link: "/admin/users", title: "Utilisateurs", icon: "bi-people" },
+  { link: "/admin/sites", title: "Sites", icon: "bi-geo-alt-fill" },
+];
