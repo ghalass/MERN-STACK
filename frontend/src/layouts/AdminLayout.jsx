@@ -4,11 +4,7 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="row m-1">
       <div className="col-md-4 col-lg-3 col-xl-2">
-        <div className="card mb-1">
-          <div className="card-body">
-            <AdminSidebar />
-          </div>
-        </div>
+        <AdminSidebar />
       </div>
 
       <div className="col-md-8 col-lg-9  col-xl-10">

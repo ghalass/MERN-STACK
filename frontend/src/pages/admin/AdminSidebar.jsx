@@ -19,7 +19,7 @@ const Sidebar = () => {
     <>
       {/* Button to toggle the sidebar (only visible on smaller screens) */}
       <Button
-        variant="outline-primary"
+        variant="outline-primary mb-1"
         onClick={handleShow}
         className="d-md-none" // Only show the button on smaller screens
       >
@@ -32,34 +32,43 @@ const Sidebar = () => {
         onHide={handleClose}
         placement="start"
         responsive="md" // Automatically hide on screens smaller than 'md'
+        className=""
       >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>ADMIN</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Nav defaultActiveKey="/admin" className="flex-column">
-            {LIST_SIDEBAR.map((item, index) => (
-              <div className="d-flex align-items-center" key={index}>
-                {location.pathname === item.link && (
-                  <i className="bi bi-grip-vertical text-primary "></i>
-                )}
-                <Nav.Link
-                  as={Link}
-                  to={item.link}
-                  onClick={() => {
-                    navigate(item.link);
-                    handleNavLinkClick();
-                  }}
-                  className={`nav-link ${
-                    location.pathname === item.link && "ps-0"
+          <div className="w-100">
+            <Nav defaultActiveKey="/admin" className="flex-column gap-1">
+              {LIST_SIDEBAR.map((item, index) => (
+                <div
+                  className={`d-flex align-items-center ${
+                    location.pathname === item.link &&
+                    "border-bottom border-primary border-2 bg-primary-subtle rounded "
                   }`}
+                  key={index}
                 >
-                  <i className={`bi ${item?.icon} me-2`}></i>
-                  {item.title}
-                </Nav.Link>
-              </div>
-            ))}
-          </Nav>
+                  {location.pathname === item.link && (
+                    <i className="bi bi-grip-vertical text-primary "></i>
+                  )}
+                  <Nav.Link
+                    as={Link}
+                    to={item.link}
+                    onClick={() => {
+                      navigate(item.link);
+                      handleNavLinkClick();
+                    }}
+                    className={` nav-link   ${
+                      location.pathname === item.link && "ps-0"
+                    }`}
+                  >
+                    <i className={`bi ${item?.icon} me-2`}></i>
+                    {item.title}
+                  </Nav.Link>
+                </div>
+              ))}
+            </Nav>
+          </div>
         </Offcanvas.Body>
       </Offcanvas>
     </>
