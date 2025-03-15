@@ -101,7 +101,7 @@ const UsersList = () => {
         handleClose={handleCloseCreateModal}
         title="Ajouter un nouveau Utilisateur"
       >
-        <UserFormCreate handleClose={handleShowCreateModal} />
+        <UserFormCreate handleClose={handleCloseCreateModal} />
       </CumstomModal>
 
       {/* UPDATE ********************************************************/}

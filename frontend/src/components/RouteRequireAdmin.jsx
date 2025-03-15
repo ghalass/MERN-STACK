@@ -1,8 +1,8 @@
-// RequireAdmin.js
+// RouteRequireAdmin.js
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/Auth";
 
-const RequireAdmin = () => {
+const RouteRequireAdmin = () => {
   const { user } = useAuth();
   const location = useLocation();
 
@@ -16,4 +16,4 @@ const RequireAdmin = () => {
   );
 };
 
-export default RequireAdmin;
+export default RouteRequireAdmin;

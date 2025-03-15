@@ -1,4 +1,4 @@
-const checkRole = (roles) => {
+const allowedRoles = (roles) => {
     return (req, res, next) => {
         // GET USER ROLE FROM REQUEST
         const userROLE = req?.user?.role;
@@ -14,4 +14,4 @@ const checkRole = (roles) => {
     }
 }
 
-module.exports = checkRole
+module.exports = allowedRoles

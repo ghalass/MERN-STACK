@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../store/authStore";
 // import { useLogout } from "../hooks/useLogout";
 
 import Container from "react-bootstrap/Container";
@@ -16,10 +15,6 @@ import { API_PATHS } from "../utils/apiPaths";
 // import Cookies from "js-cookie";
 
 function Header() {
-  // const accessToken = Cookies.get("accessToken");
-
-  const user = useAuthStore((state) => state.user);
-
   const location = useLocation(); // Get current route
   // const { logoutUser } = useLogout();
 

@@ -10,8 +10,8 @@ import Error from "../../components/forms/Error";
 
 const Login = () => {
   const [user, setUser] = useState({
-    email: "mike@email.com",
-    password: "123456",
+    email: "ghalass@gmail.com",
+    password: "gh@l@ss@dmin",
   });
 
   const onSubmit = (e) => {

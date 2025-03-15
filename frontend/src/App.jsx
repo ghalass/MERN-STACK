@@ -22,7 +22,7 @@ const UsersPage = lazy(() => import("./pages/admin/users/UsersPage"));
 
 /*** MIDDLEWARES */
 const RequireAuth = lazy(() => import("./components/RequireAuth"));
-const RequireAdmin = lazy(() => import("./components/RequireAdmin"));
+const RouteRequireAdmin = lazy(() => import("./components/RouteRequireAdmin"));
 const PersistLogin = lazy(() => import("./components/PersistLogin"));
 
 const App = () => {
@@ -55,7 +55,7 @@ const App = () => {
 
               {/* ADMIN PAGES */}
               {ADIM_PAGES?.map((route, index) => (
-                <Route element={<RequireAdmin />} key={index}>
+                <Route element={<RouteRequireAdmin />} key={index}>
                   <Route
                     path={route.path}
                     element={

@@ -342,6 +342,35 @@ const deleteUser = async (req, res) => {
     }
 }
 
+// login user
+const createSuperAdmin = async (req, res, next) => {
+    try {
+        const name = 'ghalass'
+        const email = 'ghalass@gmail.com'
+        const password = 'gh@l@ss@dmin'
+        const role = 'SUPER_ADMIN'
+        const active = true
+
+        // CHECK IF USER EXIST IN DATABASE
+        const exists = await prisma.user.findFirst({ where: { email: email } });
+        // IF EXIST RETURN
+        if (exists) return res.status(400).json("SUPER_ADMIN ALREADY CREATED")
+        // IF NOT EXIST RETURN => CREATE HIM
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt)
+
+        const user = await prisma.user.create({
+            data: { name, email, password: hash, role, active, lastVisite: new Date().toISOString() }
+        });
+
+        // CONFIRMATION
+        return res.status(200).json("SUPER_ADMIN CREATED SUCCESSFULLY")
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     loginUser,
     signupUser,
@@ -352,5 +381,6 @@ module.exports = {
     refresh,
     deleteUser,
     logoutUser,
-    checkToken
+    checkToken,
+    createSuperAdmin,
 }

@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import updateUserQueryOptions from "../../../queryOptions/user/updateUserQueryOptions";
 import Error from "../../../components/forms/Error";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import { USER_TYPE } from "../../../utils/types";
 
 const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
   const onSubmit = (e) => {
@@ -83,10 +84,11 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
               }
             >
               <option>Liste des rôles</option>
-              <option value="SUPER_ADMIN">SUPER ADMIN</option>
-              <option value="ADMIN">ADMIN</option>
-              <option value="USER">USER</option>
-              <option value="UNASSIGNED">VISITEUR</option>
+              {USER_TYPE.map((u_type, index) => (
+                <option key={index} value={u_type.value}>
+                  {u_type.title}
+                </option>
+              ))}
             </Form.Select>
           </FloatingLabel>
 
