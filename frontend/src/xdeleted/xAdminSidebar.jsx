@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Offcanvas, Nav } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const AdminSidebar = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -39,28 +39,28 @@ const Sidebar = () => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <div className="w-100">
-            <Nav defaultActiveKey="/admin" className="flex-column gap-1">
+            <Nav defaultActiveKey="/admin" className="flex-column gap-1 ">
               {LIST_SIDEBAR.map((item, index) => (
-                <div
-                  className={`d-flex align-items-center ${
-                    location.pathname === item.link &&
-                    "border-bottom border-primary border-2 bg-primary-subtle rounded "
-                  }`}
-                  key={index}
+                <Nav.Link
+                  as={Link}
+                  to={item.link}
+                  onClick={() => {
+                    navigate(item.link);
+                    handleNavLinkClick();
+                  }}
+                  className={`nav-link p-0`}
                 >
-                  <Nav.Link
-                    as={Link}
-                    to={item.link}
-                    onClick={() => {
-                      navigate(item.link);
-                      handleNavLinkClick();
-                    }}
-                    className={`nav-link`}
+                  <div
+                    className={`p-2 d-flex align-items-center ${
+                      location.pathname === item.link &&
+                      "border-bottom border-primary border-2 bg-primary-subtle rounded-3 "
+                    }`}
+                    key={index}
                   >
                     <i className={`bi ${item?.icon} me-2`}></i>
                     {item.title}
-                  </Nav.Link>
-                </div>
+                  </div>
+                </Nav.Link>
               ))}
             </Nav>
           </div>
@@ -70,7 +70,7 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
 
 const LIST_SIDEBAR = [
   { link: "/admin", title: "Dashboard", icon: "bi-speedometer" },

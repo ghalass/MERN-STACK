@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 // COMPONENTS
 import LoaderSmall from "../../components/ui/LoaderSmall";
 import Error from "../../components/forms/Error";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -58,7 +59,14 @@ const Login = () => {
                 />
               </FloatingLabel>
 
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-between">
+                <div className="d-flex gap-2">
+                  <span> Allez à la</span>
+                  <Link className="nav-link text-primary fst-italic" to={"/"}>
+                    Page d'acceuil
+                  </Link>
+                </div>
+
                 <Button
                   type="submit"
                   variant="outline-primary"
@@ -72,7 +80,6 @@ const Login = () => {
                 </Button>
               </div>
             </Form.Group>
-
             <Error
               error={loginMutation.isError ? loginMutation.error.message : ""}
             />
