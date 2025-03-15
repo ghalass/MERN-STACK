@@ -206,7 +206,7 @@ const getSaisieHrm = async (req, res) => {
                 .json({ error: "Veuillez remplir tous les champs!", missingFields });
         }
         const saisiehrm = await prisma.saisiehrm.findMany({
-            where: { du: new Date(du), enginId },
+            where: { du: new Date(du), enginId: parseInt(enginId) },
             include: {
                 Saisiehim: { include: { Panne: { include: { Typepanne: true } } } },
                 Engin: true,

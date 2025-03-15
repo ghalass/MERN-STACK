@@ -1,7 +1,22 @@
-import React from "react";
+import { useState } from "react";
+import SaisieRjeSelects from "./SaisieRjeSelects";
+import SaisieRjeTable from "./SaisieRjeTable";
 
 const SaisieRje = () => {
-  return <div>SaisieRje</div>;
+  const [saisierje, setSaisierje] = useState([]);
+
+  const [isloading, setIsloading] = useState(false);
+
+  return (
+    <>
+      <SaisieRjeSelects
+        setSaisierje={setSaisierje}
+        setIsloading={setIsloading}
+      />
+
+      <SaisieRjeTable saisierje={saisierje} isloading={isloading} />
+    </>
+  );
 };
 
 export default SaisieRje;

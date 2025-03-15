@@ -59,13 +59,13 @@ const Login = () => {
                 />
               </FloatingLabel>
 
-              <div className="d-flex justify-content-between">
-                <div className="d-flex gap-2">
+              <div className="d-flex justify-content-end">
+                {/* <div className="d-flex gap-2">
                   <span> Allez à la</span>
                   <Link className="nav-link text-primary fst-italic" to={"/"}>
                     Page d'acceuil
                   </Link>
-                </div>
+                </div> */}
 
                 <Button
                   type="submit"

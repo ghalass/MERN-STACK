@@ -89,12 +89,13 @@ const PUBLIC_PAGES_WITHOUT_HEADER = [
   { path: "*", element: <Page404 /> },
 ];
 
-const PUBLIC_PAGES_WITH_HEADER = [
+const PUBLIC_PAGES_WITH_HEADER = [];
+
+const REQUIRE_AUTH_PAGES = [
   { path: "/", element: <Home /> },
   { path: "/saisie_performances", element: <SaisieRje /> },
+  { path: "/profile", element: <Profile /> },
 ];
-
-const REQUIRE_AUTH_PAGES = [{ path: "/profile", element: <Profile /> }];
 
 const ADIM_PAGES = [
   { path: "/admin", element: <Dashboard /> },

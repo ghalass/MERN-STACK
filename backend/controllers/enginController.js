@@ -67,6 +67,41 @@ const getEnginByParcId = async (req, res) => {
     }
 }
 
+const getEnginsByParcIdSiteId = async (req, res) => {
+    try {
+        const { parcId, siteId } = req.params
+        // return res.status(200).json(siteId)
+        let emptyFields = [];
+
+        if (!parcId) emptyFields.push('parcId')
+        if (!siteId) emptyFields.push('siteId')
+
+        if (emptyFields.length > 0) {
+            return res.status(401).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+        }
+
+        if (isNaN(parcId) || parseInt(parcId) != parcId) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" });
+        }
+
+        if (isNaN(siteId) || parseInt(siteId) != siteId) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" });
+        }
+
+        const engin = await prisma.engin.findMany({
+            where: { parcId: parseInt(parcId), siteId: parseInt(siteId) }
+        });
+
+        // if (!engin) {
+        //     return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        // }
+
+        res.status(200).json(engin)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // create new engin
 const createEngin = async (req, res) => {
     try {
@@ -172,4 +207,5 @@ module.exports = {
     deleteEngin,
     updateEngin,
     getEnginByParcId,
+    getEnginsByParcIdSiteId,
 }
