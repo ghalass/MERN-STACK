@@ -48,9 +48,6 @@ const Sidebar = () => {
                   }`}
                   key={index}
                 >
-                  {location.pathname === item.link && (
-                    <i className="bi bi-grip-vertical text-primary "></i>
-                  )}
                   <Nav.Link
                     as={Link}
                     to={item.link}
@@ -58,9 +55,7 @@ const Sidebar = () => {
                       navigate(item.link);
                       handleNavLinkClick();
                     }}
-                    className={` nav-link   ${
-                      location.pathname === item.link && "ps-0"
-                    }`}
+                    className={`nav-link`}
                   >
                     <i className={`bi ${item?.icon} me-2`}></i>
                     {item.title}

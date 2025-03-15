@@ -4,9 +4,14 @@ const Home = () => {
   const auth = useAuth();
 
   return (
-    <div>
-      <h1>Home</h1>
-      <h3>Welcome {auth?.user ? auth.user.name : "in this application"}</h3>
+    <div className="container-fluid">
+      <h1>Page d'acceuil</h1>
+      <h3>
+        Welcome{" "}
+        {auth?.user
+          ? auth.user.name.replace(/^./, (c) => c.toUpperCase())
+          : "in this application"}
+      </h3>
     </div>
   );
 };

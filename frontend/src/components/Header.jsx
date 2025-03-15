@@ -85,7 +85,7 @@ function Header() {
                     <span className="me-1">Bienvenue</span>
                     <span className="text-uppercase fw-bold">
                       <span>{auth.user && auth.user?.name}</span>
-                      <span className="ms-1 text-bg-info rounded-pill px-2">
+                      <span className="ms-1 bg-primary-subtle rounded-pill px-2">
                         <small>
                           {auth.user && auth.user?.role.replace("_", " ")}
                         </small>

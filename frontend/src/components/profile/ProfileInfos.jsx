@@ -1,5 +1,5 @@
-import { openModal } from "../../utils/modal";
-import ProfileChangePasswordModal from "../../components/profile/ProfileChangePasswordModal";
+// import { openModal } from "../../utils/modal";
+// import ProfileChangePasswordModal from "../../components/profile/ProfileChangePasswordModal";
 import { getUserRole } from "../../utils/func";
 import { useAuth } from "../../context/Auth";
 
@@ -12,7 +12,7 @@ const ProfileInfos = () => {
         <div className="card-body text-center">
           <div className="d-flex justify-content-end">
             <button
-              onClick={() => openModal("userProfileChangePassword")}
+              // onClick={() => openModal("userProfileChangePassword")}
               className="btn btn-sm btn-outline-danger rounded rounded-circle"
             >
               <i className="bi bi-key"></i>
@@ -43,7 +43,7 @@ const ProfileInfos = () => {
         </div>
       </div>
 
-      <ProfileChangePasswordModal />
+      {/* <ProfileChangePasswordModal /> */}
     </>
   );
 };

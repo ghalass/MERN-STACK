@@ -22,7 +22,7 @@ const Login = () => {
   const loginMutation = useMutation(loginQueryOptions());
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 w-100">
+    <div className="d-flex justify-content-center align-items-center min-vh-100">
       <div className="card">
         <div className="card-body">
           <Form onSubmit={onSubmit} style={{ width: "400px" }}>

@@ -15,12 +15,12 @@ const UserItem = ({
         <td>{user?.id}</td>
         <td>{user?.name}</td>
         <td>{user?.email}</td>
-        <td>{user?.role?.replace("_", " ")}</td>
+        <td className="d-none d-md-block">{user?.role?.replace("_", " ")}</td>
         <td className="text-center">
           {user?.active ? (
-            <i className="bi bi-toggle2-on text-success"></i>
+            <i className="bi bi-toggle2-on text-primary"></i>
           ) : (
-            <i className="bi bi-toggle2-off text-danger"></i>
+            <i className="bi bi-toggle2-off text-secondary"></i>
           )}
         </td>
         <td className="text-end">
@@ -44,7 +44,7 @@ const UserItem = ({
                         setSelectedUser(user);
                         handleShowEditModal(true);
                       }}
-                      className="bi bi-pencil btn btn-sm btn-outline-success rounded-pill "
+                      className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
                     ></i>
                   </div>
                 </Dropdown.Menu>
@@ -70,7 +70,7 @@ const UserItem = ({
                         setSelectedUser(user);
                         handleShowEditModal(true);
                       }}
-                      className="bi bi-pencil btn btn-sm btn-outline-success rounded-pill "
+                      className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
                     ></i>
                   </div>
                 </Dropdown.Menu>
