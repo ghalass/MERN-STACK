@@ -6,7 +6,8 @@ const {
     getPannes,
     getPanne,
     deletePanne,
-    updatePanne
+    updatePanne,
+    getPannesByParcId
 } = require('../controllers/panneController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -17,6 +18,8 @@ const router = express.Router()
 router.use(requireAuth)
 
 router.get('/', getPannes)
+
+router.get('/parc/:id', getPannesByParcId)
 
 // GET single workout
 router.get('/:id', getPanne)

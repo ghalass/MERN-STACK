@@ -2,10 +2,15 @@ const express = require('express')
 
 // controller functions
 const {
-    saveOrUpdateSaisiehrm,
+    // saveOrUpdateSaisiehrm,
     get_byengin_and_date,
+
     createSaisieHrm,
+    updateSaisieHrm,
+
     createSaisieHim,
+    deleteSaisieHim,
+
     getSaisieHrm
 }
     = require('../controllers/saisiehrmController')
@@ -17,11 +22,14 @@ const router = express.Router()
 // require auth for all routes bellow
 router.use(requireAuth)
 
-router.post('/saveSaisiehrm', saveOrUpdateSaisiehrm)
+// router.post('/saveSaisiehrm', saveOrUpdateSaisiehrm)
 
-router.post('/createSaisieHrm', createSaisieHrm)
-router.post('/createSaisieHim', createSaisieHim)
 router.post('/getSaisieHrm', getSaisieHrm)
+router.post('/createSaisieHrm', createSaisieHrm)
+router.patch('/updateSaisieHrm', updateSaisieHrm)
+
+router.post('/createSaisieHim', createSaisieHim)
+router.delete('/deleteSaisieHim', deleteSaisieHim)
 
 router.post('/byengin_and_date', get_byengin_and_date)
 

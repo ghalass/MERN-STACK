@@ -1,34 +1,16 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { Form } from "react-bootstrap";
 import fecthParcsQueryOptions from "../../../queryOptions/saisie_performances/fecthParcsQueryOptions";
 import fectSitesQueryOptions from "../../../queryOptions/saisie_performances/fecthSitesQueryOptions";
 import fectEnginsQueryOptions from "../../../queryOptions/saisie_performances/fecthEnginsQueryOptions";
-import fecthSaisieRjeQueryOptions from "../../../queryOptions/saisie_performances/fecthSaisieRjeQueryOptions";
 
-const SaisieRjeSelects = ({ setSaisierje, setIsloading }) => {
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [parc, setParc] = useState("");
-  const [site, setSite] = useState("");
-  const [engin, setEngin] = useState("");
-
+const SaisieRjeSelects = ({ selectedFields, setSelectedFields }) => {
   const parcsQuery = useQuery(fecthParcsQueryOptions());
   const sitesQuery = useQuery(fectSitesQueryOptions());
-  const enginsQuery = useQuery(fectEnginsQueryOptions(parc, site));
-
-  const saisieRjeQuery = useQuery(fecthSaisieRjeQueryOptions(date, engin));
-  // setIsloading(saisieRjeQuery.isLoading);
-
-  useEffect(() => {
-    if (saisieRjeQuery.data) {
-      setSaisierje(saisieRjeQuery.data[0]);
-    }
-  }, [saisieRjeQuery.data]);
-
-  useEffect(() => {
-    setIsloading(saisieRjeQuery.isLoading);
-  }, [saisieRjeQuery.isLoading]);
+  const enginsQuery = useQuery(
+    fectEnginsQueryOptions(selectedFields?.parcId, selectedFields?.siteId)
+  );
 
   const isLoading =
     enginsQuery.isLoading || parcsQuery.isLoading || sitesQuery.isLoading;
@@ -43,8 +25,10 @@ const SaisieRjeSelects = ({ setSaisierje, setIsloading }) => {
         <Form.Control
           type="date"
           placeholder="Date de saisie"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={selectedFields?.du}
+          onChange={(e) =>
+            setSelectedFields({ ...selectedFields, du: e.target.value })
+          }
           disabled={isLoading}
         />
       </FloatingLabel>
@@ -56,9 +40,14 @@ const SaisieRjeSelects = ({ setSaisierje, setIsloading }) => {
       >
         <Form.Select
           aria-label="Floating label select example"
-          // disabled={mutationUpdate.isPending}
-          defaultValue={parc}
-          onChange={(e) => setParc(e.target.value)}
+          value={selectedFields?.parcId}
+          onChange={(e) =>
+            setSelectedFields({
+              ...selectedFields,
+              parcId: e.target.value,
+              enginId: "",
+            })
+          }
           disabled={isLoading}
         >
           <option value="">Liste des parcs</option>
@@ -77,9 +66,14 @@ const SaisieRjeSelects = ({ setSaisierje, setIsloading }) => {
       >
         <Form.Select
           aria-label="Floating label select example"
-          // disabled={mutationUpdate.isPending}
-          defaultValue={site}
-          onChange={(e) => setSite(e.target.value)}
+          value={selectedFields?.siteId}
+          onChange={(e) =>
+            setSelectedFields({
+              ...selectedFields,
+              siteId: e.target.value,
+              enginId: "",
+            })
+          }
           disabled={isLoading}
         >
           <option value="">Liste des sites</option>
@@ -98,9 +92,13 @@ const SaisieRjeSelects = ({ setSaisierje, setIsloading }) => {
       >
         <Form.Select
           aria-label="Floating label select example"
-          // disabled={mutationUpdate.isPending}
-          defaultValue={engin}
-          onChange={(e) => setEngin(e.target.value)}
+          value={selectedFields?.enginId}
+          onChange={(e) =>
+            setSelectedFields({
+              ...selectedFields,
+              enginId: e.target.value,
+            })
+          }
           disabled={isLoading}
         >
           <option value="">Liste des engins</option>

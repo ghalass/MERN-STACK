@@ -1,6 +1,12 @@
 import Modal from "react-bootstrap/Modal";
 
-const CumstomModal = ({ show, handleClose, children, title }) => {
+const CumstomModal = ({
+  show,
+  handleClose,
+  children,
+  title,
+  isloading = false,
+}) => {
   const id = Math.random() * 100 + title.replaceAll(" ", "");
 
   return (
@@ -12,7 +18,7 @@ const CumstomModal = ({ show, handleClose, children, title }) => {
         keyboard={false}
         id={id}
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton={!isloading ? true : undefined}>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{children}</Modal.Body>

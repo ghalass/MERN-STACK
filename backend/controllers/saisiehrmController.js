@@ -155,16 +155,63 @@ const createSaisieHrm = async (req, res) => {
                 .status(400)
                 .json({ error: "Veuillez remplir tous les champs!", missingFields });
         }
-
         // check if already exist
         exist = await prisma.saisiehrm.findFirst({
-            where: { du: new Date(du), enginId }
+            where: { du: new Date(du), enginId: parseInt(enginId) }
         });
-        if (exist) return res.status(401).json({ error: "Saisie déjà faite pour cet engin à cette date!", exist });
+
+        if (isNaN(hrm) || hrm > 24 || hrm < 0) return res.status(400).json({ error: `HRM ne doit pas depasser 24h`, hrm });
+
+        if (exist) return res.status(400).json({ error: `Saisie déjà faite pour cet engin à cette date!`, exist });
         const savedSaisie = await prisma.saisiehrm.create({
             data: { du: new Date(du), enginId: parseInt(enginId), siteId: parseInt(siteId), hrm: parseFloat(hrm) }
         })
         return res.status(201).json(savedSaisie)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const updateSaisieHrm = async (req, res) => {
+    try {
+        const { id, hrm } = req.body
+        // Vérification des champs obligatoires
+        const missingFields = ["id", "hrm"].filter((field) => !req.body[field]);
+        if (missingFields.length > 0) {
+            return res
+                .status(400)
+                .json({ error: "Veuillez remplir tous les champs!", missingFields });
+        }
+
+        // check if already exist
+        exist = await prisma.saisiehrm.findFirst({
+            where: { id: parseInt(id) }
+        });
+        if (!exist) return res.status(404).json({ error: "Saisie n'existe pas!", exist });
+
+        // CHECK TOTAL HRM & HIM
+        const totlaHRM = await prisma.saisiehrm.aggregate({
+            _sum: { hrm: true },
+            where: { id: parseInt(id) },
+        });
+        const totlaHIM = await prisma.saisiehim.aggregate({
+            _sum: { him: true },
+            where: { saisiehrmId: parseInt(id) },
+        });
+        const him_hrm_saisie = totlaHIM._sum.him + Number(hrm)
+        let message = `HRM saisie = ${totlaHRM._sum.hrm || 0}\n`;
+        message += `HIM saisie = ${totlaHIM._sum.him || 0}\n`;
+        message += `Nouveau HRM = ${hrm}\n`;
+        message += `Total sera = ${him_hrm_saisie} > 24h\n`;
+        message += `** IMPOSSIBLE de dépasser 24h **`;
+        if (him_hrm_saisie > 24) return res.status(400).json({ error: message });
+
+
+        const HrmToUpdate = await prisma.saisiehrm.update({
+            where: { id: parseInt(id) },
+            data: { hrm: parseFloat(hrm) }
+        })
+        return res.status(201).json(HrmToUpdate)
     } catch (error) {
         console.log(error);
     }
@@ -180,16 +227,64 @@ const createSaisieHim = async (req, res) => {
                 .status(400)
                 .json({ error: "Veuillez remplir tous les champs!", missingFields });
         }
+        // check if panneId exist
+        panneExist = await prisma.panne.findFirst({
+            where: { id: parseInt(panneId) }
+        });
+        if (!panneExist) return res.status(400).json({ error: "Panne n'existe pas", panneId });
 
         // check if already exist
         exist = await prisma.saisiehim.findFirst({
-            where: { panneId, saisiehrmId }
+            where: { panneId: parseInt(panneId), saisiehrmId: parseInt(saisiehrmId) }
         });
-        if (exist) return res.status(401).json({ error: "Saisie déjà faite pour cet engin à cette date!", exist });
+        if (exist) return res.status(400).json({ error: "Saisie déjà faite pour cet engin à cette date!", exist });
+
+        // CHECK TOTAL HRM & HIM
+        const totlaHRM = await prisma.saisiehrm.aggregate({
+            _sum: { hrm: true },
+            where: { id: parseInt(saisiehrmId) },
+        });
+        const totlaHIM = await prisma.saisiehim.aggregate({
+            _sum: { him: true },
+            where: { saisiehrmId: parseInt(saisiehrmId) },
+        });
+        const him_hrm_saisie = totlaHRM._sum.hrm + totlaHIM._sum.him + Number(him)
+        let message = `HRM saisie = ${totlaHRM._sum.hrm || 0}\n`;
+        message += `HIM saisie = ${totlaHIM._sum.him || 0}\n`;
+        message += `Nouveau HIM = ${him || 0}\n`;
+        message += `Total sera = ${him_hrm_saisie} > 24h\n`;
+        message += `** IMPOSSIBLE de dépasser 24h **`;
+        if (him_hrm_saisie > 24) return res.status(400).json({ error: message });
+
         const savedSaisie = await prisma.saisiehim.create({
             data: { panneId: parseInt(panneId), him: parseFloat(him), ni: parseInt(ni), saisiehrmId: parseInt(saisiehrmId) }
         })
         return res.status(201).json(savedSaisie)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteSaisieHim = async (req, res) => {
+    try {
+        const { id } = req.body
+        // Vérification des champs obligatoires
+        const missingFields = ["id"].filter((field) => !req.body[field]);
+        if (missingFields.length > 0) {
+            return res
+                .status(400)
+                .json({ error: "Veuillez remplir tous les champs!", missingFields });
+        }
+        // check if saisiehim exist
+        saisiehimExist = await prisma.saisiehim.findFirst({
+            where: { id: parseInt(id) }
+        });
+        if (!saisiehimExist) return res.status(400).json({ error: "Panne n'existe pas", panneId });
+
+        const saisiehimToDelete = await prisma.saisiehim.delete({
+            where: { id: parseInt(id) }
+        })
+        return res.status(201).json(saisiehimToDelete)
     } catch (error) {
         console.log(error);
     }
@@ -226,6 +321,10 @@ module.exports = {
 
 
     createSaisieHrm,
+    updateSaisieHrm,
+
     createSaisieHim,
+    deleteSaisieHim,
+
     getSaisieHrm
 }

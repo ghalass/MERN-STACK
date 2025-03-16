@@ -38,6 +38,30 @@ const getPanne = async (req, res) => {
     }
 }
 
+// TODO : not completed
+const getPannesByParcId = async (req, res) => {
+    try {
+
+        const { id } = req.params
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" });
+        }
+
+        const panne = await prisma.panne.findFirst({
+            include: { Typepanne: true },
+            where: { Typepanne: parseInt(id) }
+        });
+
+        if (!panne) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
+
+        res.status(200).json(panne)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // create new panne
 const createPanne = async (req, res) => {
     // return res.status(201).json(req.body)
@@ -143,5 +167,6 @@ module.exports = {
     getPannes,
     getPanne,
     deletePanne,
-    updatePanne
+    updatePanne,
+    getPannesByParcId
 }
