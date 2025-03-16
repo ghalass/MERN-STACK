@@ -14,8 +14,7 @@ const SaisieRjeTableHeaderButtons = ({
 
   return (
     <>
-      <hr className="my-1" />
-      <div className="d-flex gap-1 justify-content-between">
+      <div className="d-flex gap-4 justify-content-center ">
         <Button
           onClick={handleShowPanneModal}
           variant="outline-danger"

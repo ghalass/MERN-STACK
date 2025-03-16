@@ -6,7 +6,8 @@ const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
     <>
       <tr className="">
         <td></td>
-        <td>
+        <td></td>
+        <td className="text-center">
           <Badge pill bg="danger">
             {saisieRjeQuery.data?.[0].Saisiehim?.reduce(
               (acc, val) => (acc = acc + val?.him),
@@ -14,7 +15,7 @@ const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
             )}
           </Badge>
         </td>
-        <td>
+        <td className="text-center">
           <Badge pill bg="danger">
             {saisieRjeQuery.data?.[0].Saisiehim?.reduce(
               (acc, val) => (acc = acc + val?.ni),

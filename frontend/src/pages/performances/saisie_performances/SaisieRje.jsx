@@ -28,8 +28,6 @@ const SaisieRje = () => {
   const [showDeletePanneModal, setShowDeletePanneModal] = useState(false);
   const handleCloseDeletePanneModal = () => setShowDeletePanneModal(false);
   const handleShowDeletePanneModal = (p) => {
-    console.log(p);
-
     setShowDeletePanneModal(true);
     setPanneToDelete(p);
   };
@@ -84,7 +82,6 @@ const SaisieRje = () => {
     const data = {
       id: panneToDelete?.id,
     };
-    console.log(data);
 
     mutationDeletePanneHRM.mutate(data);
   };
@@ -99,54 +96,56 @@ const SaisieRje = () => {
         setSelectedFields={setSelectedFields}
       />
 
-      <div className="card">
-        <div className="card-body">
-          <SaisieRjeTableHeaderInfos saisieRjeQuery={saisieRjeQuery} />
+      {/* <div className="card">
+        <div className="card-body"> */}
+      <SaisieRjeTableHeaderInfos saisieRjeQuery={saisieRjeQuery} />
 
-          <SaisieRjeTableHeaderButtons
-            selectedFields={selectedFields}
-            handleShowHRMModal={handleShowHRMModal}
-            handleShowPanneModal={handleShowPanneModal}
-            saisieRjeQuery={saisieRjeQuery}
-          />
+      <hr className="my-2 w-25 mx-auto" />
 
-          <SaisieRjeTable
-            saisieRjeQuery={saisieRjeQuery}
-            handleShowDeletePanneModal={handleShowDeletePanneModal}
-            setPanneToDelete={setPanneToDelete}
-          />
+      <SaisieRjeTableHeaderButtons
+        selectedFields={selectedFields}
+        handleShowHRMModal={handleShowHRMModal}
+        handleShowPanneModal={handleShowPanneModal}
+        saisieRjeQuery={saisieRjeQuery}
+      />
 
-          {/* HRM MODAL *****************************/}
-          <SaisieRjeCreateHrmModal
-            showHRMModal={showHRMModal}
-            handleCloseHRMModal={handleCloseHRMModal}
-            hrm={hrm}
-            setHrm={setHrm}
-            handleUpsetHrm={handleUpsetHrm}
-            mutationUpsetHRM={mutationUpsetHRM}
-            saisieRjeQuery={saisieRjeQuery}
-          />
+      <SaisieRjeTable
+        saisieRjeQuery={saisieRjeQuery}
+        handleShowDeletePanneModal={handleShowDeletePanneModal}
+        setPanneToDelete={setPanneToDelete}
+      />
 
-          {/* PANNE MODAL *****************************/}
-          <SaisieRjeCreatePanneModal
-            showPanneModal={showPanneModal}
-            handleClosePanneModal={handleClosePanneModal}
-            mutationAddPanneHRM={mutationAddPanneHRM}
-            pannes={pannes.data}
-            selectedPanne={selectedPanne}
-            setSelectedPanne={setSelectedPanne}
-            handleAddPanne={handleAddPanne}
-          />
+      {/* HRM MODAL *****************************/}
+      <SaisieRjeCreateHrmModal
+        showHRMModal={showHRMModal}
+        handleCloseHRMModal={handleCloseHRMModal}
+        hrm={hrm}
+        setHrm={setHrm}
+        handleUpsetHrm={handleUpsetHrm}
+        mutationUpsetHRM={mutationUpsetHRM}
+        saisieRjeQuery={saisieRjeQuery}
+      />
 
-          <SaisieRjeDeletePanneModal
-            showDeletePanneModal={showDeletePanneModal}
-            handleCloseDeletePanneModal={handleCloseDeletePanneModal}
-            handleDeletePanne={handleDeletePanne}
-            mutationDeletePanneHRM={mutationDeletePanneHRM}
-            panneToDelete={panneToDelete}
-          />
-        </div>
-      </div>
+      {/* PANNE MODAL *****************************/}
+      <SaisieRjeCreatePanneModal
+        showPanneModal={showPanneModal}
+        handleClosePanneModal={handleClosePanneModal}
+        mutationAddPanneHRM={mutationAddPanneHRM}
+        pannes={pannes.data}
+        selectedPanne={selectedPanne}
+        setSelectedPanne={setSelectedPanne}
+        handleAddPanne={handleAddPanne}
+      />
+
+      <SaisieRjeDeletePanneModal
+        showDeletePanneModal={showDeletePanneModal}
+        handleCloseDeletePanneModal={handleCloseDeletePanneModal}
+        handleDeletePanne={handleDeletePanne}
+        mutationDeletePanneHRM={mutationDeletePanneHRM}
+        panneToDelete={panneToDelete}
+      />
+      {/* </div>
+      </div> */}
     </>
   );
 };

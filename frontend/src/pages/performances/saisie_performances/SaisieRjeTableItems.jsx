@@ -9,17 +9,21 @@ const SaisieRjeTableItems = ({
     <>
       {saisieRjeQuery.data?.[0].Saisiehim?.map((saisie_him, index) => (
         <tr key={index}>
-          <td>{saisie_him?.Panne?.name}</td>
-          <td>{saisie_him?.him}</td>
-          <td>{saisie_him?.ni}</td>
-          <td className="text-end">
+          <td>
             <button
               onClick={() => handleShowDeletePanneModal(saisie_him)}
               className="btn btn-sm btn-outline-danger rounded-pill"
             >
               <i className="bi bi-trash3"></i>
             </button>
+            <span> {saisie_him?.Panne?.name}</span>
           </td>
+          <td>{saisie_him?.Panne?.Typepanne?.name}</td>
+          <td className="text-center">{saisie_him?.him}</td>
+          <td className="text-center">{saisie_him?.ni}</td>
+          {/* <td className="text-end">
+            
+          </td> */}
         </tr>
       ))}
       <SaisieRjeTableTotalRow saisieRjeQuery={saisieRjeQuery} />

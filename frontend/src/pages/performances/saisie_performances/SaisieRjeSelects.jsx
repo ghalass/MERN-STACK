@@ -16,7 +16,7 @@ const SaisieRjeSelects = ({ selectedFields, setSelectedFields }) => {
     enginsQuery.isLoading || parcsQuery.isLoading || sitesQuery.isLoading;
 
   return (
-    <div className="d-flex gap-1">
+    <div className="d-flex gap-1 justify-content-center">
       <FloatingLabel
         controlId="floatingInputDate"
         label="Date de saisie"
