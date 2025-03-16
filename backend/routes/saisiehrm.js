@@ -11,7 +11,9 @@ const {
     createSaisieHim,
     deleteSaisieHim,
 
-    getSaisieHrm
+    getSaisieHrm,
+
+    getRapportRje,
 }
     = require('../controllers/saisiehrmController')
 
@@ -32,6 +34,8 @@ router.post('/createSaisieHim', createSaisieHim)
 router.delete('/deleteSaisieHim', deleteSaisieHim)
 
 router.post('/byengin_and_date', get_byengin_and_date)
+
+router.post('/getRapportRje', getRapportRje)
 
 
 module.exports = router

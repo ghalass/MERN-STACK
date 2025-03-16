@@ -11,7 +11,6 @@ const corsOptions = require('./config/corsOptions');
 const prisma = require("./prismaClient");
 
 const userRoutes = require('./routes/user')
-const workoutRoutes = require('./routes/workouts')
 const sitesRoutes = require('./routes/sites');
 const typeparcsRoutes = require('./routes/typeparcs');
 const parcsRoutes = require('./routes/parcs');
@@ -46,7 +45,6 @@ app.use('/', require('./routes/root'))
 // app.use('/auth', require('./routes/authRoutes'))
 
 app.use('/user', userRoutes)
-app.use('/workouts', workoutRoutes)
 app.use('/sites', sitesRoutes)
 app.use('/typeparcs', typeparcsRoutes)
 app.use('/parcs', parcsRoutes)

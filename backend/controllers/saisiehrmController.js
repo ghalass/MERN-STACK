@@ -315,6 +315,14 @@ const getSaisieHrm = async (req, res) => {
     }
 }
 
+const getRapportRje = async (req, res) => {
+    try {
+        return res.status(200).json(req.body)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     saveOrUpdateSaisiehrm,
     get_byengin_and_date,
@@ -325,6 +333,8 @@ module.exports = {
 
     createSaisieHim,
     deleteSaisieHim,
+
+    getRapportRje,
 
     getSaisieHrm
 }
