@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Offcanvas, Nav } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const AdminSidebar = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -70,19 +70,10 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
 
 const LIST_SIDEBAR = [
-  { link: "/", title: "Acceuil", icon: "bi-speedometer" },
-  {
-    link: "/saisie_performances",
-    title: "Saisie performances",
-    icon: "bi-people",
-  },
-  { link: "/performances", title: "Performances", icon: "bi-people" },
-  {
-    link: "/saisie_lubrifiants",
-    title: "Saisie lubrifiants",
-    icon: "bi-people",
-  },
+  { link: "/admin", title: "Dashboard", icon: "bi-speedometer" },
+  { link: "/admin/users", title: "Utilisateurs", icon: "bi-people" },
+  { link: "/admin/sites", title: "Sites", icon: "bi-geo-alt-fill" },
 ];
