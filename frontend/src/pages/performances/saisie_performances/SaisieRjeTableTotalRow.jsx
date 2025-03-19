@@ -23,7 +23,16 @@ const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
             )}
           </Badge>
         </td>
-        <td></td>
+        <td className="text-center">
+          <Badge pill bg="secondary">
+            0
+          </Badge>
+        </td>
+        <td className="text-center">
+          <Badge pill bg="secondary">
+            0
+          </Badge>
+        </td>
       </tr>
     </>
   );

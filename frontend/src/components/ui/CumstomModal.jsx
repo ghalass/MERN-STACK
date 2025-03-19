@@ -6,6 +6,7 @@ const CumstomModal = ({
   children,
   title,
   isloading = false,
+  ...props
 }) => {
   const id = Math.random() * 100 + title.replaceAll(" ", "");
 
@@ -17,6 +18,7 @@ const CumstomModal = ({
         backdrop="static"
         keyboard={false}
         id={id}
+        {...props}
       >
         <Modal.Header closeButton={!isloading ? true : undefined}>
           <Modal.Title>{title}</Modal.Title>

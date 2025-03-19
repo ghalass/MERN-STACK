@@ -52,77 +52,178 @@ const SaisieRjeCreatePanneModal = ({
         handleClose={handleClosePanneModal}
         title="Panne"
         isloading={mutationAddPanneHRM.isPending}
+        size={"lg"}
       >
         <Form onSubmit={onSubmit}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <div className="d-flex justify-content-between gap-1">
-              <FloatingLabel
-                controlId="floatingSelect"
-                label="Choisir un parc"
-                className="mb-3"
-              >
-                <Form.Select
-                  aria-label="Floating label select example"
-                  value={selectedPanne?.id}
-                  onChange={(e) =>
-                    setSelectedPanne({
-                      ...selectedPanne,
-                      id: e.target.value,
-                    })
-                  }
-                  disabled={mutationAddPanneHRM.isLoading}
-                >
-                  <option value="">Liste des pannes</option>
-                  {pannes?.map((item, index) => (
-                    <option key={index} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Form.Select>
-              </FloatingLabel>
+            <div className="row">
+              <div className="col">
+                <div className="d-flex flex-column justify-content-center gap-1">
+                  <FloatingLabel
+                    controlId="floatingSelect"
+                    label="Choisir un parc"
+                    className="mb-3"
+                  >
+                    <Form.Select
+                      aria-label="Floating label select example"
+                      value={selectedPanne?.id}
+                      onChange={(e) =>
+                        setSelectedPanne({
+                          ...selectedPanne,
+                          id: e.target.value,
+                        })
+                      }
+                      disabled={mutationAddPanneHRM.isLoading}
+                    >
+                      <option value="">Liste des pannes</option>
+                      {pannes?.map((item, index) => (
+                        <option key={index} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </FloatingLabel>
 
-              <FloatingLabel
-                controlId="floatingInputHim"
-                label="HIM"
-                className="mb-3"
-              >
-                <Form.Control
-                  type="number"
-                  step="0.5"
-                  min={0}
-                  max={24}
-                  placeholder="HIM"
-                  value={selectedPanne?.him}
-                  onChange={(e) =>
-                    setSelectedPanne({
-                      ...selectedPanne,
-                      him: e.target.value,
-                    })
-                  }
-                  disabled={mutationAddPanneHRM.isLoading}
-                />
-              </FloatingLabel>
+                  <div className="d-flex gap-1">
+                    <FloatingLabel
+                      controlId="floatingInputHim"
+                      label="HIM"
+                      className="mb-3"
+                    >
+                      <Form.Control
+                        type="number"
+                        step="0.5"
+                        min={0}
+                        max={24}
+                        placeholder="HIM"
+                        value={selectedPanne?.him}
+                        onChange={(e) =>
+                          setSelectedPanne({
+                            ...selectedPanne,
+                            him: e.target.value,
+                          })
+                        }
+                        disabled={mutationAddPanneHRM.isLoading}
+                      />
+                    </FloatingLabel>
 
-              <FloatingLabel
-                controlId="floatingInputNi"
-                label="NI"
-                className="mb-3"
-              >
-                <Form.Control
-                  type="number"
-                  step="1"
-                  min={0}
-                  placeholder="NI"
-                  value={selectedPanne?.ni}
-                  onChange={(e) =>
-                    setSelectedPanne({
-                      ...selectedPanne,
-                      ni: e.target.value,
-                    })
-                  }
-                  disabled={mutationAddPanneHRM.isLoading}
-                />
-              </FloatingLabel>
+                    <FloatingLabel
+                      controlId="floatingInputNi"
+                      label="NI"
+                      className="mb-3"
+                    >
+                      <Form.Control
+                        type="number"
+                        step="1"
+                        min={0}
+                        placeholder="NI"
+                        value={selectedPanne?.ni}
+                        onChange={(e) =>
+                          setSelectedPanne({
+                            ...selectedPanne,
+                            ni: e.target.value,
+                          })
+                        }
+                        disabled={mutationAddPanneHRM.isLoading}
+                      />
+                    </FloatingLabel>
+                  </div>
+                </div>
+              </div>
+              <div className="col">
+                <div className="d-flex flex-column">
+                  <FloatingLabel
+                    controlId="floatingSelect"
+                    label="Choisir un parc"
+                    className="mb-3"
+                  >
+                    <Form.Select
+                      aria-label="Floating label select example"
+                      value={selectedPanne?.id}
+                      onChange={(e) =>
+                        setSelectedPanne({
+                          ...selectedPanne,
+                          id: e.target.value,
+                        })
+                      }
+                      disabled={mutationAddPanneHRM.isLoading}
+                    >
+                      <option value="">Liste des pannes</option>
+                      {pannes?.map((item, index) => (
+                        <option key={index} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </FloatingLabel>
+                  <FloatingLabel
+                    controlId="floatingSelect"
+                    label="Choisir un parc"
+                    className="mb-3"
+                  >
+                    <Form.Select
+                      aria-label="Floating label select example"
+                      value={selectedPanne?.id}
+                      onChange={(e) =>
+                        setSelectedPanne({
+                          ...selectedPanne,
+                          id: e.target.value,
+                        })
+                      }
+                      disabled={mutationAddPanneHRM.isLoading}
+                    >
+                      <option value="">Liste des pannes</option>
+                      {pannes?.map((item, index) => (
+                        <option key={index} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </FloatingLabel>
+
+                  <FloatingLabel
+                    controlId="floatingInputHim"
+                    label="HIM"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="number"
+                      step="0.5"
+                      min={0}
+                      max={24}
+                      placeholder="HIM"
+                      value={selectedPanne?.him}
+                      onChange={(e) =>
+                        setSelectedPanne({
+                          ...selectedPanne,
+                          him: e.target.value,
+                        })
+                      }
+                      disabled={mutationAddPanneHRM.isLoading}
+                    />
+                  </FloatingLabel>
+                </div>
+              </div>
+              <div className="col">
+                <table className="table table-sm table-hover">
+                  <thead>
+                    <tr>
+                      <th>LUB</th>
+                      <th>QTY</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>15W40</td>
+                      <td>50</td>
+                      <td>
+                        <i className="bi bi-trash3 text-danger"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="d-flex justify-content-end">

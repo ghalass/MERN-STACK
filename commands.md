@@ -31,3 +31,4 @@ npm install swagger-jsdoc swagger-ui-express
 - npm i yup-locales
 - npm i universal-cookie
 - npm i react-toastify
+- npm install recharts

@@ -13,6 +13,8 @@ import fecthPannesQueryOptions from "../../../queryOptions/saisie_performances/f
 import addPanneQueryOptions from "../../../queryOptions/saisie_performances/addPanneQueryOptions";
 import SaisieRjeDeletePanneModal from "./SaisieRjeDeletePanneModal";
 import deletePanneQueryOptions from "../../../queryOptions/saisie_performances/deletePanneQueryOptions";
+import SaisieRjeCreateGoModal from "./SaisieRjeCreateGoModal";
+import SaisieRjeCreateHuileModal from "./SaisieRjeCreateHuileModal";
 
 const SaisieRje = () => {
   const [showHRMModal, setShowHRMModal] = useState(false);
@@ -22,6 +24,19 @@ const SaisieRje = () => {
   const [showPanneModal, setShowPanneModal] = useState(false);
   const handleClosePanneModal = () => setShowPanneModal(false);
   const handleShowPanneModal = () => setShowPanneModal(true);
+
+  const [showGOModal, setShowGOModal] = useState(false);
+  const handleCloseGOModal = () => setShowGOModal(false);
+  const handleShowGOModal = () => setShowGOModal(true);
+
+  const [selectedSaisieHim, setSelectedSaisieHim] = useState({});
+  const [showHuileModal, setShowHuileModal] = useState(false);
+  const handleCloseHuileModal = () => setShowHuileModal(false);
+  const handleShowHuileModal = (d) => {
+    console.log(d);
+    setSelectedSaisieHim(d);
+    setShowHuileModal(true);
+  };
 
   const [panneToDelete, setPanneToDelete] = useState(null);
 
@@ -96,8 +111,6 @@ const SaisieRje = () => {
         setSelectedFields={setSelectedFields}
       />
 
-      {/* <div className="card">
-        <div className="card-body"> */}
       <SaisieRjeTableHeaderInfos saisieRjeQuery={saisieRjeQuery} />
 
       <hr className="my-2 w-25 mx-auto" />
@@ -106,6 +119,7 @@ const SaisieRje = () => {
         selectedFields={selectedFields}
         handleShowHRMModal={handleShowHRMModal}
         handleShowPanneModal={handleShowPanneModal}
+        handleShowGOModal={handleShowGOModal}
         saisieRjeQuery={saisieRjeQuery}
       />
 
@@ -113,6 +127,7 @@ const SaisieRje = () => {
         saisieRjeQuery={saisieRjeQuery}
         handleShowDeletePanneModal={handleShowDeletePanneModal}
         setPanneToDelete={setPanneToDelete}
+        handleShowHuileModal={handleShowHuileModal}
       />
 
       {/* HRM MODAL *****************************/}
@@ -144,8 +159,29 @@ const SaisieRje = () => {
         mutationDeletePanneHRM={mutationDeletePanneHRM}
         panneToDelete={panneToDelete}
       />
-      {/* </div>
-      </div> */}
+
+      {/* GO MODAL *****************************/}
+      <SaisieRjeCreateGoModal
+        showGOModal={showGOModal}
+        handleCloseGOModal={handleCloseGOModal}
+        hrm={hrm}
+        setHrm={setHrm}
+        handleUpsetHrm={handleUpsetHrm}
+        mutationUpsetHRM={mutationUpsetHRM}
+        saisieRjeQuery={saisieRjeQuery}
+      />
+
+      {/* GO MODAL *****************************/}
+      <SaisieRjeCreateHuileModal
+        showHuileModal={showHuileModal}
+        handleCloseHuileModal={handleCloseHuileModal}
+        selectedSaisieHim={selectedSaisieHim}
+        hrm={hrm}
+        setHrm={setHrm}
+        handleUpsetHrm={handleUpsetHrm}
+        mutationUpsetHRM={mutationUpsetHRM}
+        saisieRjeQuery={saisieRjeQuery}
+      />
     </>
   );
 };

@@ -15,11 +15,20 @@ model User {
   name       String
   email      String       @unique
   password   String
-  role       UserRoleType @default(UNASSIGNED)
+  role       UserRoleType @default(USER)
   active     Boolean      @default(false)
   lastVisite DateTime
   createdAt  DateTime     @default(now()) @db.Timestamp(0)
   updatedAt  DateTime     @default(now()) @updatedAt @db.Timestamp(0)
+}
+
+model Workout {
+  id        Int      @id @default(autoincrement())
+  title     String   @unique
+  reps      Int
+  load      Int
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
 model Site {
@@ -65,10 +74,11 @@ model Engin {
   siteId    Int
 
   // Relations
-  Parc      Parc        @relation(fields: [parcId], references: [id], onDelete: Restrict)
-  Site      Site        @relation(fields: [siteId], references: [id], onDelete: Restrict)
-  Saisiehrm Saisiehrm[]
-  Saisiehim Saisiehim[]
+  Parc             Parc               @relation(fields: [parcId], references: [id], onDelete: Restrict)
+  Site             Site               @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  Saisielubrifiant Saisielubrifiant[]
+  Saisiehrm        Saisiehrm[]
+  Saisiehim        Saisiehim[]
 }
 
 model Typepanne {
@@ -116,16 +126,14 @@ model Saisiehim {
   him         Float
   ni          Int
   saisiehrmId Int
-  obs         String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  Panne            Panne              @relation(fields: [panneId], references: [id], onDelete: Restrict)
-  Saisiehrm        Saisiehrm          @relation(fields: [saisiehrmId], references: [id], onDelete: Restrict)
-  Saisielubrifiant Saisielubrifiant[]
-  Engin            Engin?             @relation(fields: [enginId], references: [id])
-  enginId          Int?
+  Panne     Panne     @relation(fields: [panneId], references: [id], onDelete: Restrict)
+  Saisiehrm Saisiehrm @relation(fields: [saisiehrmId], references: [id], onDelete: Restrict)
+  Engin     Engin?    @relation(fields: [enginId], references: [id])
+  enginId   Int?
 
   @@unique([panneId, saisiehrmId])
 }
@@ -154,22 +162,70 @@ model Lubrifiant {
 
 model Saisielubrifiant {
   id           Int      @id @default(autoincrement())
+  du           DateTime
+  au           DateTime
+  enginId      Int
   lubrifiantId Int
+  hrm          Float
   qte          Float
-  obs          String?
-  saisiehimId  Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   // Relations
+  Engin      Engin      @relation(fields: [enginId], references: [id], onDelete: Restrict)
   Lubrifiant Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
-  Saisiehim  Saisiehim  @relation(fields: [saisiehimId], references: [id], onDelete: Restrict)
 }
 
 enum UserRoleType {
   SUPER_ADMIN
   ADMIN
-  AGENT_SAISIE
   USER
   UNASSIGNED
 }
+
+
+
+pour une date donnée, faire la requete pour avoir le tableau suivant par engin :
+ // Période journalière
+nho_j,
+dispo_j: dataJ.dispo,
+mtbf_j: dataJ.mtbf,
+tdm_j: dataJ.tdm,
+him_j: dataJ.totalHim,
+hrm_j: dataJ.totalHrm,
+ni_j: dataJ.totalNi,
+
+// Période mensuelle
+nho_m,
+dispo_m: dataM.dispo,
+mtbf_m: dataM.mtbf,
+tdm_m: dataM.tdm,
+him_m: dataM.totalHim,
+hrm_m: dataM.totalHrm,
+ni_m: dataM.totalNi,
+
+// Période annuelle
+nho_a,
+dispo_a: dataA.dispo,
+mtbf_a: dataA.mtbf,
+tdm_a: dataA.tdm,
+him_a: dataA.totalHim,
+hrm_a: dataA.totalHrm,
+ni_a: dataA.totalNi,
+
+
+les formules dispo, mtbf, tdm :
+dispo=(1-him/nho)*100
+mtbf=hrm/ni
+tdm=100*hrm/nho
+
+sachant que j pour journalier (uniquement le jour de la date donnée (du)), m pour mensuelle (du 1er jour du mois de la date donnée (du) jusqu'au jour date donnée (du) du même année, date donnée inclus) , a pour annuelle  (du 1er jour de l'année de la date donnée (du) jusqu'au jour date donnée (du), date donnée inclus). 
+
+prendre en considération l'explication ci-dessus pour calcul de :
+"him_j"= somme des him pour la Période j,
+"him_m"= somme des him pour la Période m,
+"him_a"= somme des him pour la Période a,
+"hrm_j"= somme des hrm pour la Période j,
+"hrm_m"= somme des hrm pour la Période m,
+"hrm_a"= somme des hrm pour la Période a,
+

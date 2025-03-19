@@ -3,6 +3,8 @@ import "./assets/App.css";
 import { lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ContextProvider } from "./context/Auth";
+import PerformancesLayout from "./layouts/PerformancesLayout";
+import RapportRje from "./pages/performances/rapports_performances/RapportRje";
 
 /*** LAYOUTS */
 const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
@@ -95,6 +97,18 @@ const REQUIRE_AUTH_PAGES = [
   { path: "/", element: <Home /> },
   { path: "/saisie_performances", element: <SaisieRje /> },
   { path: "/profile", element: <Profile /> },
+  {
+    path: "/performances",
+    element: <PerformancesLayout />,
+  },
+  {
+    path: "/performances/rapports/rje",
+    element: (
+      <PerformancesLayout>
+        <RapportRje />
+      </PerformancesLayout>
+    ),
+  },
 ];
 
 const ADIM_PAGES = [

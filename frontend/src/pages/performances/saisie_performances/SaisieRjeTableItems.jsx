@@ -1,9 +1,11 @@
 import React from "react";
 import SaisieRjeTableTotalRow from "./SaisieRjeTableTotalRow";
+import { Button } from "react-bootstrap";
 
 const SaisieRjeTableItems = ({
   saisieRjeQuery,
   handleShowDeletePanneModal,
+  handleShowHuileModal,
 }) => {
   return (
     <>
@@ -21,9 +23,30 @@ const SaisieRjeTableItems = ({
           <td>{saisie_him?.Panne?.Typepanne?.name}</td>
           <td className="text-center">{saisie_him?.him}</td>
           <td className="text-center">{saisie_him?.ni}</td>
-          {/* <td className="text-end">
-            
-          </td> */}
+          <td className="text-center">
+            <Button
+              onClick={() => handleShowHuileModal(saisie_him)}
+              // onClick={handleShowPanneModal}
+              variant="outline-secondary"
+              className="rounded-pill"
+              size="sm"
+              // disabled={disableAddPanneButton}
+            >
+              <i className="bi bi-droplet-half"></i>
+            </Button>
+          </td>
+
+          <td className="text-center">
+            <Button
+              // onClick={handleShowPanneModal}
+              variant="outline-secondary"
+              className="rounded-pill"
+              size="sm"
+              // disabled={disableAddPanneButton}
+            >
+              <i className="bi bi-gear-fill"></i>
+            </Button>
+          </td>
         </tr>
       ))}
       <SaisieRjeTableTotalRow saisieRjeQuery={saisieRjeQuery} />

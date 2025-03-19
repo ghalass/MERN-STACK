@@ -1,29 +1,34 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
-import { Nav, Container } from "react-bootstrap";
+import { lazy } from "react";
+import { Tabs, Tab } from "react-bootstrap";
+import ParetosInDispo from "../pages/performances/rapports_performances/ParetosInDispo";
+
+const RapportRje = lazy(() =>
+  import("../pages/performances/rapports_performances/RapportRje")
+);
 
 export default function PerformancesLayout() {
-  const location = useLocation(); // Get current route
-
   return (
-    <Container fluid className="mt-1">
-      <Nav variant="tabs" activeKey={location.pathname}>
-        <Nav.Item>
-          <Nav.Link as={Link} to="/performances" eventKey="/performances">
-            Performances
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link
-            as={Link}
-            to="/performances/saisierje"
-            eventKey="/performances/saisierje"
-          >
-            Saisie
-          </Nav.Link>
-        </Nav.Item>
-      </Nav>
-
-      <Outlet />
-    </Container>
+    <>
+      <Tabs
+        defaultActiveKey="rapportrje"
+        id="uncontrolled-tab-example"
+        className="mb-3"
+      >
+        {TABS_LIST.map((tab, index) => (
+          <Tab key={index} eventKey={tab.eventKey} title={tab.title}>
+            {tab.ele}
+          </Tab>
+        ))}
+      </Tabs>
+    </>
   );
 }
+
+const TABS_LIST = [
+  { eventKey: "rapportrje", title: "Rapport RJE", ele: <RapportRje /> },
+  {
+    eventKey: "paretoindispo",
+    title: "Paretos",
+    ele: <ParetosInDispo />,
+  },
+];

@@ -16,7 +16,7 @@ export const API_PATHS = {
     },
     SITES: {
         GET_ALL_SITES: "/sites",
-        ADD_SITE: "/sites/add",
+        ADD_SITE: "/sites",
         UPDATE_SITE: (siteId) => `/sites/${siteId}`,
         DELETE_SITE: (siteId) => `/sites/${siteId}`,
         DOWNLOAD_SITES: "/sites/downloadexcel",
@@ -53,7 +53,8 @@ export const API_PATHS = {
 
         ADD_SAISIE_RJE_PANNE_HIM: "/saisiehrm/createSaisieHim",
         DELETE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/deleteSaisieHim",
-
-
     },
+    RAPPORTS: {
+        GENERATE_RJE: "/saisiehrm/getRapportRje"
+    }
 };

@@ -5,11 +5,10 @@ const SaisieRjeTable = ({
   saisieRjeQuery,
   handleShowDeletePanneModal,
   setPanneToDelete,
+  handleShowHuileModal,
 }) => {
   return (
     <>
-      {/* <div className="card mt-1">
-        <div className="card-body"> */}
       <div className="d-flex justify-content-center">
         <table className="table table-sm table-hover table-responsive w-auto">
           <thead>
@@ -18,6 +17,8 @@ const SaisieRjeTable = ({
               <th>Type</th>
               <th className="text-center">HIM</th>
               <th className="text-center">NI</th>
+              <th className="text-center">Huile</th>
+              <th className="text-center">Graisse</th>
             </tr>
           </thead>
           <tbody>
@@ -36,12 +37,13 @@ const SaisieRjeTable = ({
                 saisieRjeQuery={saisieRjeQuery}
                 handleShowDeletePanneModal={handleShowDeletePanneModal}
                 setPanneToDelete={setPanneToDelete}
+                handleShowHuileModal={handleShowHuileModal}
               />
             ) : (
               <>
                 {!saisieRjeQuery.isLoading && (
                   <tr>
-                    <td colSpan={4} className="text-center">
+                    <td colSpan={6} className="text-center">
                       <h6 className="text-center">Aucune panne n'ai saisie</h6>
                     </td>
                   </tr>
@@ -51,8 +53,6 @@ const SaisieRjeTable = ({
           </tbody>
         </table>
       </div>
-      {/* </div>
-      </div> */}
     </>
   );
 };
