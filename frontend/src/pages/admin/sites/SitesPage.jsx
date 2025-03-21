@@ -19,6 +19,7 @@ const SiteItem = lazy(() => import("./SiteItem"));
 
 // ICONS
 import { RiFileExcel2Line } from "react-icons/ri";
+import { exportExcel } from "../../../utils/func";
 
 const SitesPage = () => {
   /** START ZUSTAND STORE */
@@ -69,7 +70,7 @@ const SitesPage = () => {
 
   // EXCEL
   const handleExportExcel = () => {
-    console.log("excel export");
+    exportExcel("myTable", "Liste des sites");
   };
 
   return (
@@ -133,7 +134,10 @@ const SitesPage = () => {
           />
         </div>
 
-        <table className="table table-hover table-sm table-responsive">
+        <table
+          id="myTable"
+          className="table table-hover table-sm table-responsive"
+        >
           <thead>
             <tr>
               <th>Nom</th>

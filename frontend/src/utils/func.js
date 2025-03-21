@@ -50,3 +50,15 @@ export function getMultiplesOf10(num) {
 
     return multiples;
 }
+
+
+// EXCEL EXPORT
+import * as XLSX from "xlsx";
+import { format } from 'date-fns';
+export const exportExcel = (tableId, title = "exportedData") => {
+    const dateNow = new Date()
+    const formattedDate = format(dateNow, 'dd_MM_yyyy_HH_mm_ss');
+    const table = document.getElementById(tableId);
+    const workbook = XLSX.utils.table_to_book(table);
+    XLSX.writeFile(workbook, `${title + "_" + formattedDate}.xlsx`);
+};

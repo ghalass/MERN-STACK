@@ -54,25 +54,6 @@ function Header() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {auth.user &&
-              (auth.user?.role === "ADMIN" ||
-                auth.user?.role === "SUPER_ADMIN") && (
-                <>
-                  <Nav.Link
-                    as={Link}
-                    to="/performances"
-                    className={`nav-link ${
-                      location.pathname === "/performances" ? "active" : ""
-                    }`}
-                  >
-                    <i className="bi bi-gear me-1"></i>
-                    Performances
-                  </Nav.Link>
-                </>
-              )}
-          </Nav>
-
           {/*  */}
           {/*  */}
           <Nav className="ms-auto">
