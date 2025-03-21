@@ -1,18 +1,18 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
-import useUserStore from "../../../stores/useUserStore";
-import { deleteUserQuery } from "../../../hooks/useUsers";
 import { toast } from "react-toastify";
+import useSiteStore from "../../../stores/useSiteStore";
+import { useDeleteSite } from "../../../hooks/useSites";
 
-const UserFormDelete = () => {
-  const { selectedUser, closeDeleteModal } = useUserStore();
+const SiteFormDelete = () => {
+  const { selectedSite, closeDeleteModal } = useSiteStore();
 
-  const deleteUserMutation = deleteUserQuery();
+  const deletSiteMutation = useDeleteSite();
 
   const onSubmit = (e) => {
     e.preventDefault();
-    deleteUserMutation.mutate(selectedUser?.id, {
+    deletSiteMutation.mutate(selectedSite, {
       onSuccess: () => {
         closeDeleteModal();
         toast.success("Supprimé avec succès.");
@@ -24,23 +24,21 @@ const UserFormDelete = () => {
     <>
       <div className="text-center">
         <strong className="text-danger">
-          Êtes vous sûres de vouloir supprimer cet utilsateur?
+          Êtes vous sûres de vouloir supprimer ce site?
         </strong>
         <hr />
-        <p> Nom : {selectedUser?.name}</p>
-        <p> Email : {selectedUser?.email}</p>
-        <p> Rôle : {selectedUser?.role}</p>
+        <p> Nom : {selectedSite?.name}</p>
       </div>
 
       <div className="d-flex gap-2 float-end mt-2">
         <Button
-          disabled={deleteUserMutation.isPending}
+          disabled={deletSiteMutation.isPending}
           onClick={onSubmit}
           variant="outline-danger"
           size="sm"
         >
           <div className="d-flex gap-1 align-items-center justify-content-end">
-            {deleteUserMutation.isPending && <LoaderSmall />}{" "}
+            {deletSiteMutation.isPending && <LoaderSmall />}{" "}
             <span>Supprimer</span>
           </div>
         </Button>
@@ -49,4 +47,4 @@ const UserFormDelete = () => {
   );
 };
 
-export default UserFormDelete;
+export default SiteFormDelete;

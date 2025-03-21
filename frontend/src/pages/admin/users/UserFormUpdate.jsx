@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 const UserFormUpdate = () => {
   const { selectedUser, setSelectedUser, closeEditModal } = useUserStore();
 
-  const deleteUserMutation = updateUserQuery(closeEditModal);
+  const deleteUserMutation = updateUserQuery();
 
   const onSubmit = (e) => {
     e.preventDefault();

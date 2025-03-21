@@ -12,7 +12,7 @@ const UserFormCreate = () => {
 
   const { closeCreateModal } = useUserStore();
 
-  const createUserMutation = createUserQuery(setUser, closeCreateModal);
+  const createUserMutation = createUserQuery();
 
   const onSubmit = (e) => {
     e.preventDefault();

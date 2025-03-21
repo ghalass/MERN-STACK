@@ -14,8 +14,10 @@ const Login = () => {
   const loginMutation = loginQuery();
 
   const [user, setUser] = useState({
-    email: "ghalass@gmail.com",
-    password: "gh@l@ss@dmin",
+    email: "med@email.com",
+    password: "123456",
+    // email: "ghalass@gmail.com",
+    // password: "gh@l@ss@dmin",
   });
 
   const auth = useAuth();

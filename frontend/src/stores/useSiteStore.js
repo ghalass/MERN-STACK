@@ -2,11 +2,25 @@
 import { create } from 'zustand';
 
 const useSiteStore = create((set) => ({
-    selectedSite: null, // Site sélectionné pour la mise à jour
-    isModalOpen: false,
+    selectedSite: null,
     setSelectedSite: (site) => set({ selectedSite: site }),
-    openModal: () => set({ isModalOpen: true }),
-    closeModal: () => set({ isModalOpen: false, selectedSite: null }),
+
+    // CREATE
+    isShowCreateModal: false,
+    openCreateModal: () => set({ isShowCreateModal: true }),
+    closeCreateModal: () => set({ isShowCreateModal: false }),
+
+    // EDIT
+    isShowEditMsetSelectedSiteodal: false,
+    openEditModal: () => set({ isShowEditModal: true }),
+    closeEditModal: () => set({ isShowEditModal: false }),
+
+    // DELETE
+    isShowDeleteModal: false,
+    openDeleteModal: () => set({ isShowDeleteModal: true }),
+    closeDeleteModal: () => set({ isShowDeleteModal: false }),
+
+
 }));
 
 export default useSiteStore;

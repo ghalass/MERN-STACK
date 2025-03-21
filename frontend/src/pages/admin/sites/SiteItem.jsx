@@ -2,26 +2,17 @@ import Dropdown from "react-bootstrap/Dropdown";
 import NavItem from "react-bootstrap/NavItem";
 import NavLink from "react-bootstrap/NavLink";
 import DisplayComponentRequireRole from "../../../components/DisplayComponentRequireRole";
-import useUserStore from "../../../stores/useUserStore";
+import useSiteStore from "../../../stores/useSiteStore";
 
-const UserItem = ({ user }) => {
-  const { openEditModal, openDeleteModal, setSelectedUser } = useUserStore();
-
+const SiteItem = ({ item }) => {
+  const { openEditModal, openDeleteModal, setSelectedSite } = useSiteStore();
   return (
     <>
       <tr>
-        <td>{user?.name}</td>
-        <td>{user?.email}</td>
-        <td className="d-none d-md-block">{user?.role?.replace("_", " ")}</td>
-        <td className="text-center">
-          {user?.active ? (
-            <i className="bi bi-toggle2-on text-primary"></i>
-          ) : (
-            <i className="bi bi-toggle2-off text-secondary"></i>
-          )}
-        </td>
+        <td>{item?.name}</td>
         <td className="text-end">
-          {user?.role === "SUPER_ADMIN" || user?.role === "ADMIN" ? (
+          {/* ONLY SUPER_ADMIN CAN EDIT OR DELETE AN ADMIN/SUPER_ADMIN */}
+          {item?.role === "SUPER_ADMIN" || item?.role === "ADMIN" ? (
             <DisplayComponentRequireRole roles={["SUPER_ADMIN"]}>
               <Dropdown align="end" as={NavItem}>
                 <Dropdown.Toggle as={NavLink}>
@@ -31,14 +22,14 @@ const UserItem = ({ user }) => {
                   <div className="d-flex justify-content-center gap-2">
                     <i
                       onClick={() => {
-                        setSelectedUser(user);
+                        setSelectedSite(item);
                         openDeleteModal();
                       }}
                       className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill "
                     ></i>
                     <i
                       onClick={() => {
-                        setSelectedUser(user);
+                        setSelectedSite(item);
                         openEditModal();
                       }}
                       className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
@@ -48,6 +39,7 @@ const UserItem = ({ user }) => {
               </Dropdown>
             </DisplayComponentRequireRole>
           ) : (
+            //  {/* ONLY SUPER_ADMIN CAN EDIT OR DELETE ALL ROLES */}
             <DisplayComponentRequireRole roles={["SUPER_ADMIN", "ADMIN"]}>
               <Dropdown align="end" as={NavItem}>
                 <Dropdown.Toggle as={NavLink}>
@@ -57,14 +49,14 @@ const UserItem = ({ user }) => {
                   <div className="d-flex justify-content-center gap-2">
                     <i
                       onClick={() => {
-                        setSelectedUser(user);
+                        setSelectedSite(item);
                         openDeleteModal();
                       }}
                       className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill "
                     ></i>
                     <i
                       onClick={() => {
-                        setSelectedUser(user);
+                        setSelectedSite(item);
                         openEditModal();
                       }}
                       className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
@@ -80,4 +72,4 @@ const UserItem = ({ user }) => {
   );
 };
 
-export default UserItem;
+export default SiteItem;

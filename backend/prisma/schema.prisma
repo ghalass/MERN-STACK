@@ -18,15 +18,11 @@ model User {
   role       UserRoleType @default(UNASSIGNED)
   active     Boolean      @default(false)
   lastVisite DateTime
-  createdAt  DateTime     @default(now()) @db.Timestamp(0)
-  updatedAt  DateTime     @default(now()) @updatedAt @db.Timestamp(0)
 }
 
 model Site {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   // Relations
   engins    Engin[]
@@ -34,20 +30,16 @@ model Site {
 }
 
 model Typeparc {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   // Relations
   parcs Parc[]
 }
 
 model Parc {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         Int     @id @default(autoincrement())
+  name       String  @unique
   typeparcId Int
   engins     Engin[]
 
@@ -56,13 +48,11 @@ model Parc {
 }
 
 model Engin {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  parcId    Int
-  siteId    Int
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  active Boolean @default(true)
+  parcId Int
+  siteId Int
 
   // Relations
   Parc      Parc        @relation(fields: [parcId], references: [id], onDelete: Restrict)
@@ -72,20 +62,16 @@ model Engin {
 }
 
 model Typepanne {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   // Relations
   pannes Panne[]
 }
 
 model Panne {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   // Relations
   Typepanne   Typepanne   @relation(fields: [typepanneId], references: [id])
@@ -94,13 +80,11 @@ model Panne {
 }
 
 model Saisiehrm {
-  id        Int      @id @default(autoincrement())
-  du        DateTime
-  enginId   Int
-  siteId    Int
-  hrm       Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id      Int      @id @default(autoincrement())
+  du      DateTime
+  enginId Int
+  siteId  Int
+  hrm     Float
 
   // Relations
   Engin     Engin       @relation(fields: [enginId], references: [id], onDelete: Restrict)
@@ -111,14 +95,12 @@ model Saisiehrm {
 }
 
 model Saisiehim {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   panneId     Int
   him         Float
   ni          Int
   saisiehrmId Int
   obs         String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
   // Relations
   Panne            Panne              @relation(fields: [panneId], references: [id], onDelete: Restrict)
@@ -131,20 +113,16 @@ model Saisiehim {
 }
 
 model Typelubrifiant {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   // Relations
   lubrifiants Lubrifiant[]
 }
 
 model Lubrifiant {
-  id               Int      @id @default(autoincrement())
-  name             String   @unique
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id               Int    @id @default(autoincrement())
+  name             String @unique
   typelubrifiantId Int
 
   // Relations
@@ -153,13 +131,11 @@ model Lubrifiant {
 }
 
 model Saisielubrifiant {
-  id           Int      @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   lubrifiantId Int
   qte          Float
   obs          String?
   saisiehimId  Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 
   // Relations
   Lubrifiant Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)

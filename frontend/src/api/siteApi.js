@@ -11,9 +11,9 @@ export const createSite = async (site) => {
 };
 
 export const updateSite = async (updatedSite) => {
-    return apiRequest(API_PATHS.SITES.UPDATE_SITE(updatedSite.id), "PUT", updatedSite);
+    return apiRequest(API_PATHS.SITES.UPDATE_SITE(updatedSite.id), "PATCH", updatedSite);
 };
 
-export const deleteSite = async (site) => {
-    return apiRequest(API_PATHS.SITES.DELETE_SITE(site.id), "PATCH", site);
+export const deleteSite = async (siteToDelete) => {
+    return apiRequest(API_PATHS.SITES.DELETE_SITE(siteToDelete.id), "DELETE");
 };

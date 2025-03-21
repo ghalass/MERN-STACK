@@ -74,7 +74,6 @@ const UsersPage = () => {
         <table className="table table-hover table-sm table-responsive">
           <thead>
             <tr>
-              <th>#</th>
               <th>Nom</th>
               <th>Email</th>
               <th className="d-none d-md-block">Rôle</th>
