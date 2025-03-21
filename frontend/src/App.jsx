@@ -8,6 +8,7 @@ import TypeparcsPage from "./pages/admin/typeparcs/TypeparcsPage";
 const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const GuestLayout = lazy(() => import("./layouts/GuestLayout"));
+const PerformancesLayout = lazy(() => import("./layouts/PerformancesLayout"));
 
 /*** COMPONENTS */
 const Home = lazy(() => import("./pages/Home"));
@@ -85,10 +86,12 @@ const App = () => {
                     <Route index element={<Home />} />
                     <Route path="saisie_performances" element={<SaisieRje />} />
                     <Route path="profile" element={<Profile />} />
-                    <Route
-                      path="performances/rapports/rje"
-                      element={<RapportRje />}
-                    />
+                    <Route path="performances" element={<PerformancesLayout />}>
+                      <Route
+                        path="performances/rapports/rje"
+                        element={<RapportRje />}
+                      />
+                    </Route>
                   </Route>
                 </Route>
               </Route>
