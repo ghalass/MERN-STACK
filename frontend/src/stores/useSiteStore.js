@@ -2,6 +2,11 @@
 import { create } from 'zustand';
 
 const useSiteStore = create((set) => ({
+    // FILTER
+    search: "",
+    setSearch: (search) => set({ search }),
+
+    // SELECTED ITEM
     selectedSite: null,
     setSelectedSite: (site) => set({ selectedSite: site }),
 

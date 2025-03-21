@@ -5,8 +5,7 @@ import { fetchSites, createSite, updateSite, deleteSite } from '../api/siteApi';
 export const fecthSitesQuery = () => {
     return queryOptions({
         queryKey: ["sitesList"], // Clé de requête
-        queryFn: fetchSites, // Fonction pour récupérer les sites
-        // staleTime: 1000 * 60 * 5, // Temps de cache (5 minutes)
+        queryFn: fetchSites
     });
 };
 

@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { lazy, useEffect, useState } from "react";
 
 /*** FUNCTIONS */
 import { useQuery } from "@tanstack/react-query";
@@ -17,10 +17,11 @@ const SiteFormCreate = lazy(() => import("./SiteFormCreate"));
 const SiteItem = lazy(() => import("./SiteItem"));
 
 const SitesPage = () => {
-  const getAllQuery = useQuery(fecthSitesQuery());
-
   /** START ZUSTAND STORE */
   const {
+    // FILTER
+    search,
+    setSearch,
     // CRETAE
     isShowCreateModal,
     openCreateModal,
@@ -34,6 +35,20 @@ const SitesPage = () => {
   } = useSiteStore();
   /** END ZUSTAND STORE */
 
+  const getAllQuery = useQuery(fecthSitesQuery());
+
+  // Filter the sites based on the search query
+  const filteredSites = getAllQuery.data?.filter((site) =>
+    site.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    const newSearchValue = e.target.value;
+    if (newSearchValue !== search) {
+      setSearch(newSearchValue);
+    }
+  };
+
   return (
     <>
       <div>
@@ -43,7 +58,7 @@ const SitesPage = () => {
             Liste des sites
             <div>
               <Badge pill bg="primary">
-                {getAllQuery.data?.length}
+                {filteredSites?.length}
               </Badge>
             </div>
             {(getAllQuery.isLoading ||
@@ -57,7 +72,11 @@ const SitesPage = () => {
             <input
               type="search"
               placeholder="Chercher..."
-              className="form-control form-control-sm text-center"
+              className="form-control form-control-sm "
+              value={search}
+              // onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearch}
+              // onKeyUpCapture={handleSearch}
             />
 
             <Button
@@ -79,8 +98,8 @@ const SitesPage = () => {
             </tr>
           </thead>
           <tbody>
-            {getAllQuery.data && getAllQuery.data?.length > 0 ? (
-              getAllQuery.data?.map((item, index) => (
+            {filteredSites && filteredSites?.length > 0 ? (
+              filteredSites?.map((item, index) => (
                 <SiteItem key={index} item={item} />
               ))
             ) : (
