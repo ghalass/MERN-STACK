@@ -32,3 +32,4 @@ npm install swagger-jsdoc swagger-ui-express
 - npm i universal-cookie
 - npm i react-toastify
 - npm install recharts
+- npm install react-icons --save

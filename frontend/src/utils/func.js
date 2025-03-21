@@ -33,3 +33,20 @@ export const getUserRole = (user) => {
     }
     return re;
 };
+
+// CETTE FONCTION SERT POUR CREER UNE LISTE POUR PAGINATION
+export function getMultiplesOf10(num) {
+    let multiples = [];
+
+    // Si le nombre est inférieur à 10, retourner [10]
+    if (num < 10) {
+        return [10];
+    }
+
+    // Trouver les multiples de 10 jusqu'à num
+    for (let i = 10; i <= num; i += 10) {
+        multiples.push(i);
+    }
+
+    return multiples;
+}

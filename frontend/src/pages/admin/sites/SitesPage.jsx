@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { lazy, useState } from "react";
 
 /*** FUNCTIONS */
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Badge } from "react-bootstrap";
 import useSiteStore from "../../../stores/useSiteStore";
 import { fecthSitesQuery } from "../../../hooks/useSites";
+import Pagination from "../../../components/ui/Pagination";
 
 // COMPONENTS
 const CumstomModal = lazy(() => import("../../../components/ui/CumstomModal"));
@@ -15,6 +16,9 @@ const SiteFormDelete = lazy(() => import("./SiteFormDelete"));
 const SiteFormUpdate = lazy(() => import("./SiteFormUpdate"));
 const SiteFormCreate = lazy(() => import("./SiteFormCreate"));
 const SiteItem = lazy(() => import("./SiteItem"));
+
+// ICONS
+import { RiFileExcel2Line } from "react-icons/ri";
 
 const SitesPage = () => {
   /** START ZUSTAND STORE */
@@ -49,6 +53,25 @@ const SitesPage = () => {
     }
   };
 
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sitesPerPage, setSitesPerPage] = useState(5);
+  // Calculate current sites to display
+  const indexOfLastSite = currentPage * sitesPerPage;
+  const indexOfFirstSite = indexOfLastSite - sitesPerPage;
+  const currentSites = filteredSites?.slice(indexOfFirstSite, indexOfLastSite);
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredSites?.length / sitesPerPage);
+
+  // EXCEL
+  const handleExportExcel = () => {
+    console.log("excel export");
+  };
+
   return (
     <>
       <div>
@@ -74,9 +97,7 @@ const SitesPage = () => {
               placeholder="Chercher..."
               className="form-control form-control-sm "
               value={search}
-              // onChange={(e) => setSearch(e.target.value)}
               onChange={handleSearch}
-              // onKeyUpCapture={handleSearch}
             />
 
             <Button
@@ -90,6 +111,28 @@ const SitesPage = () => {
           </div>
         </div>
 
+        <div className="d-flex gap-2 justify-content-between align-items-center">
+          <div>
+            <Button
+              onClick={handleExportExcel}
+              variant="outline-success"
+              className="rounded-pill"
+              size="sm"
+            >
+              Excel <RiFileExcel2Line className="mb-1" />
+            </Button>
+          </div>
+
+          <Pagination
+            setPerPage={setSitesPerPage}
+            setCurrentPage={setCurrentPage}
+            handlePageChange={handlePageChange}
+            PerPage={sitesPerPage}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        </div>
+
         <table className="table table-hover table-sm table-responsive">
           <thead>
             <tr>
@@ -98,13 +141,13 @@ const SitesPage = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredSites && filteredSites?.length > 0 ? (
-              filteredSites?.map((item, index) => (
+            {currentSites && currentSites.length > 0 ? (
+              currentSites.map((item, index) => (
                 <SiteItem key={index} item={item} />
               ))
             ) : (
               <tr className="text-center">
-                <td colSpan={5}>Aucune données n'est trouvées.</td>
+                <td colSpan={5}>Aucune donnée trouvée.</td>
               </tr>
             )}
           </tbody>
