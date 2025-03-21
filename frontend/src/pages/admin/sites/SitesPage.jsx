@@ -68,11 +68,6 @@ const SitesPage = () => {
   // Calculate total pages
   const totalPages = Math.ceil(filteredSites?.length / sitesPerPage);
 
-  // EXCEL
-  const handleExportExcel = () => {
-    exportExcel("myTable", "Liste des sites");
-  };
-
   return (
     <>
       <div>
@@ -115,7 +110,7 @@ const SitesPage = () => {
         <div className="d-flex gap-2 justify-content-between align-items-center">
           <div>
             <Button
-              onClick={handleExportExcel}
+              onClick={() => exportExcel("myTable", "Liste des sites")}
               variant="outline-success"
               className="rounded-pill"
               size="sm"

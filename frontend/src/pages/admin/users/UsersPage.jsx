@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Badge } from "react-bootstrap";
 import useUserStore from "../../../stores/useUserStore";
 import { fecthUsersQuery } from "../../../hooks/useUsers";
+import { exportExcel } from "../../../utils/func";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 // COMPONENTS
 const CumstomModal = lazy(() => import("../../../components/ui/CumstomModal"));
@@ -71,7 +73,23 @@ const UsersPage = () => {
           </div>
         </div>
 
-        <table className="table table-hover table-sm table-responsive">
+        <div className="d-flex gap-2 justify-content-between align-items-center">
+          <Button
+            onClick={() => exportExcel("myTable", "Liste des utilisateurs")}
+            variant="outline-success"
+            className="rounded-pill"
+            size="sm"
+          >
+            Excel <RiFileExcel2Line className="mb-1" />
+          </Button>
+
+          <div>Pagination</div>
+        </div>
+
+        <table
+          className="table table-hover table-sm table-responsive"
+          id="myTable"
+        >
           <thead>
             <tr>
               <th>Nom</th>
