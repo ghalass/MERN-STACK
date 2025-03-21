@@ -1,26 +1,42 @@
 import { useState } from "react";
-import loginQueryOptions from "../../queryOptions/user/loginQueryOptions";
-import { useMutation } from "@tanstack/react-query";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 // COMPONENTS
 import LoaderSmall from "../../components/ui/LoaderSmall";
 import Error from "../../components/forms/Error";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { loginQuery } from "../../hooks/useUsers";
+import { toast } from "react-toastify";
+import { useAuth } from "../../context/Auth";
 
 const Login = () => {
+  const loginMutation = loginQuery();
+
   const [user, setUser] = useState({
     email: "ghalass@gmail.com",
     password: "gh@l@ss@dmin",
   });
 
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.path || "/";
+
   const onSubmit = (e) => {
     e.preventDefault();
-    loginMutation.mutate({ email: user.email, password: user.password });
-  };
+    const loginData = { email: user.email, password: user.password };
+    loginMutation.mutate(loginData, {
+      onSuccess: (response) => {
+        const token = response.token;
+        auth.login(response?.user);
+        auth.setToken(token);
+        navigate(redirectPath, { replace: true });
 
-  const loginMutation = useMutation(loginQueryOptions());
+        toast.success("Connecté avec succès.");
+      },
+    });
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100">

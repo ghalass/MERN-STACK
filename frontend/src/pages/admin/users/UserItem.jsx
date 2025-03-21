@@ -2,13 +2,11 @@ import Dropdown from "react-bootstrap/Dropdown";
 import NavItem from "react-bootstrap/NavItem";
 import NavLink from "react-bootstrap/NavLink";
 import DisplayComponentRequireRole from "../../../components/DisplayComponentRequireRole";
+import useUserStore from "../../../stores/useUserStore";
 
-const UserItem = ({
-  user,
-  setSelectedUser,
-  handleShowEditModal,
-  handleShowDeleteModal,
-}) => {
+const UserItem = ({ user }) => {
+  const { openEditModal, openDeleteModal, setSelectedUser } = useUserStore();
+
   return (
     <>
       <tr>
@@ -35,14 +33,14 @@ const UserItem = ({
                     <i
                       onClick={() => {
                         setSelectedUser(user);
-                        handleShowDeleteModal(true);
+                        openDeleteModal();
                       }}
                       className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill "
                     ></i>
                     <i
                       onClick={() => {
                         setSelectedUser(user);
-                        handleShowEditModal(true);
+                        openEditModal();
                       }}
                       className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
                     ></i>
@@ -61,14 +59,14 @@ const UserItem = ({
                     <i
                       onClick={() => {
                         setSelectedUser(user);
-                        handleShowDeleteModal(true);
+                        openDeleteModal();
                       }}
                       className="bi bi-trash3 btn btn-sm btn-outline-danger rounded-pill "
                     ></i>
                     <i
                       onClick={() => {
                         setSelectedUser(user);
-                        handleShowEditModal(true);
+                        openEditModal();
                       }}
                       className="bi bi-pencil btn btn-sm btn-outline-primary rounded-pill "
                     ></i>

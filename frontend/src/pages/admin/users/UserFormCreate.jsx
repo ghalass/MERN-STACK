@@ -2,13 +2,17 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import Error from "../../../components/forms/Error";
-import createUserQueryOptions from "../../../queryOptions/user/createUserQueryOptions";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import useUserStore from "../../../stores/useUserStore";
+import { createUserQuery } from "../../../hooks/useUsers";
 
-const UserFormCreate = ({ handleClose }) => {
+const UserFormCreate = () => {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
+
+  const { closeCreateModal } = useUserStore();
+
+  const createUserMutation = createUserQuery(setUser, closeCreateModal);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -17,12 +21,15 @@ const UserFormCreate = ({ handleClose }) => {
       email: user.email,
       password: user.password,
     };
-    mutationCreate.mutate(newUser);
-  };
 
-  const mutationCreate = useMutation(
-    createUserQueryOptions(setUser, handleClose)
-  );
+    createUserMutation.mutate(newUser, {
+      onSuccess: () => {
+        setUser({ name: "", email: "", password: "" });
+        closeCreateModal();
+        toast.success("Ajouté avec succès.");
+      },
+    });
+  };
 
   return (
     <>
@@ -72,10 +79,10 @@ const UserFormCreate = ({ handleClose }) => {
               type="submit"
               variant="outline-primary"
               size="sm"
-              disabled={mutationCreate.isPending}
+              disabled={createUserMutation.isPending}
             >
               <div className="d-flex gap-1 align-items-center justify-content-end">
-                {mutationCreate.isPending && <LoaderSmall />}{" "}
+                {createUserMutation.isPending && <LoaderSmall />}{" "}
                 <span>Ajouter</span>
               </div>
             </Button>
@@ -83,7 +90,9 @@ const UserFormCreate = ({ handleClose }) => {
         </Form.Group>
 
         <Error
-          error={mutationCreate.isError ? mutationCreate.error.message : ""}
+          error={
+            createUserMutation.isError ? createUserMutation.error.message : ""
+          }
         />
       </Form>
     </>

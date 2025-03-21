@@ -76,4 +76,5 @@ const LIST_SIDEBAR = [
   { link: "/admin", title: "Dashboard", icon: "bi-speedometer" },
   { link: "/admin/users", title: "Utilisateurs", icon: "bi-people" },
   { link: "/admin/sites", title: "Sites", icon: "bi-geo-alt-fill" },
+  { link: "/admin/typeparcs", title: "Typeparcs", icon: "bi-geo-alt-fill" },
 ];

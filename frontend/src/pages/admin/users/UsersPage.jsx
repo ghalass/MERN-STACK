@@ -1,11 +1,12 @@
-import React, { lazy, useState } from "react";
+import React, { lazy } from "react";
 
 /*** FUNCTIONS */
-import fecthUsersQueryOptions from "../../../queryOptions/user/fecthUsersQueryOptions";
 import { useQuery } from "@tanstack/react-query";
 
 /*** COMPONENTS */
 import { Button, Badge } from "react-bootstrap";
+import useUserStore from "../../../stores/useUserStore";
+import { fecthUsersQuery } from "../../../hooks/useUsers";
 
 // COMPONENTS
 const CumstomModal = lazy(() => import("../../../components/ui/CumstomModal"));
@@ -16,21 +17,22 @@ const UserFormCreate = lazy(() => import("./UserFormCreate"));
 const UserItem = lazy(() => import("./UserItem"));
 
 const UsersPage = () => {
-  const userQuery = useQuery(fecthUsersQueryOptions());
+  const userQuery = useQuery(fecthUsersQuery());
 
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const handleCloseCreateModal = () => setShowCreateModal(false);
-  const handleShowCreateModal = () => setShowCreateModal(true);
-
-  const [showEditModal, setShowEditModal] = useState(false);
-  const handleCloseEditModal = () => setShowEditModal(false);
-  const handleShowEditModal = () => setShowEditModal(true);
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const handleCloseDeleteModal = () => setShowDeleteModal(false);
-  const handleShowDeleteModal = () => setShowDeleteModal(true);
-
-  const [selectedUser, setSelectedUser] = useState(null);
+  /** START ZUSTAND STORE */
+  const {
+    // CRETAE
+    isShowCreateModal,
+    openCreateModal,
+    closeCreateModal,
+    // EDIT
+    isShowEditModal,
+    closeEditModal,
+    // DELETE
+    isShowDeleteModal,
+    closeDeleteModal,
+  } = useUserStore();
+  /** END ZUSTAND STORE */
 
   return (
     <>
@@ -59,7 +61,7 @@ const UsersPage = () => {
             />
 
             <Button
-              onClick={handleShowCreateModal}
+              onClick={openCreateModal}
               variant="outline-primary"
               className="rounded-pill"
               size="sm"
@@ -83,13 +85,7 @@ const UsersPage = () => {
           <tbody>
             {userQuery.data && userQuery.data?.length > 0 ? (
               userQuery.data?.map((user, index) => (
-                <UserItem
-                  key={index}
-                  user={user}
-                  setSelectedUser={setSelectedUser}
-                  handleShowEditModal={handleShowEditModal}
-                  handleShowDeleteModal={handleShowDeleteModal}
-                />
+                <UserItem key={index} user={user} />
               ))
             ) : (
               <tr className="text-center">
@@ -102,36 +98,29 @@ const UsersPage = () => {
 
       {/* CREATE ********************************************************/}
       <CumstomModal
-        show={showCreateModal}
-        handleClose={handleCloseCreateModal}
+        show={isShowCreateModal}
+        handleClose={closeCreateModal}
         title="Ajouter un nouveau Utilisateur"
       >
-        <UserFormCreate handleClose={handleCloseCreateModal} />
+        <UserFormCreate />
       </CumstomModal>
 
       {/* UPDATE ********************************************************/}
       <CumstomModal
-        show={showEditModal}
-        handleClose={handleCloseEditModal}
+        show={isShowEditModal}
+        handleClose={closeEditModal}
         title="Modifier un utilisateur"
       >
-        <UserFormUpdate
-          handleClose={handleCloseEditModal}
-          currentUser={selectedUser}
-          setSelectedUser={setSelectedUser}
-        />
+        <UserFormUpdate />
       </CumstomModal>
 
       {/* DELETE ********************************************************/}
       <CumstomModal
-        show={showDeleteModal}
-        handleClose={handleCloseDeleteModal}
+        show={isShowDeleteModal}
+        handleClose={closeDeleteModal}
         title="Supprimer un utilisateur"
       >
-        <UserFormDelete
-          handleClose={handleCloseDeleteModal}
-          currentUser={selectedUser}
-        />
+        <UserFormDelete />
       </CumstomModal>
     </>
   );

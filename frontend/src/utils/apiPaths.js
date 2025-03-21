@@ -21,6 +21,13 @@ export const API_PATHS = {
         DELETE_SITE: (siteId) => `/sites/${siteId}`,
         DOWNLOAD_SITES: "/sites/downloadexcel",
     },
+    TYPEPARCS: {
+        GET_ALL_TYPEPARCS: "/typeparcs",
+        ADD_TYPEPARC: "/typeparcs",
+        UPDATE_TYPEPARC: (typeparcId) => `/typeparcs/${typeparcId}`,
+        DELETE_TYPEPARC: (typeparcId) => `/typeparcs/${typeparcId}`,
+        DOWNLOAD_TYPEPARCS: "/typeparcs/downloadexcel",
+    },
     PARCS: {
         GET_ALL_PARCS: "/parcs",
         ADD_PARC: "/parcs/add",

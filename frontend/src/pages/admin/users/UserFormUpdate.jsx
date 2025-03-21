@@ -1,26 +1,34 @@
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useMutation } from "@tanstack/react-query";
-import updateUserQueryOptions from "../../../queryOptions/user/updateUserQueryOptions";
 import Error from "../../../components/forms/Error";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import { USER_TYPE } from "../../../utils/types";
+import useUserStore from "../../../stores/useUserStore";
+import { updateUserQuery } from "../../../hooks/useUsers";
+import { toast } from "react-toastify";
 
-const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
+const UserFormUpdate = () => {
+  const { selectedUser, setSelectedUser, closeEditModal } = useUserStore();
+
+  const deleteUserMutation = updateUserQuery(closeEditModal);
+
   const onSubmit = (e) => {
     e.preventDefault();
     const userToUpdate = {
-      id: currentUser.id,
-      name: currentUser.name,
-      email: currentUser.email,
-      active: currentUser.active,
-      role: currentUser.role,
+      id: selectedUser.id,
+      name: selectedUser.name,
+      email: selectedUser.email,
+      active: selectedUser.active,
+      role: selectedUser.role,
     };
-    mutationUpdate.mutate(userToUpdate);
+    deleteUserMutation.mutate(userToUpdate, {
+      onSuccess: () => {
+        closeEditModal();
+        toast.success("Modifié avec succès.");
+      },
+    });
   };
-
-  const mutationUpdate = useMutation(updateUserQueryOptions(handleClose));
 
   return (
     <div>
@@ -34,11 +42,11 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
             <Form.Control
               type="text"
               placeholder="Nom d'utilsateur"
-              value={currentUser.name}
+              value={selectedUser.name}
               onChange={(e) =>
-                setSelectedUser({ ...currentUser, name: e.target.value })
+                setSelectedUser({ ...selectedUser, name: e.target.value })
               }
-              disabled={mutationUpdate.isPending}
+              disabled={deleteUserMutation.isPending}
             />
           </FloatingLabel>
 
@@ -50,11 +58,11 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
             <Form.Control
               type="email"
               placeholder="name@example.com"
-              value={currentUser.email}
+              value={selectedUser.email}
               onChange={(e) =>
-                setSelectedUser({ ...currentUser, email: e.target.value })
+                setSelectedUser({ ...selectedUser, email: e.target.value })
               }
-              disabled={mutationUpdate.isPending}
+              disabled={deleteUserMutation.isPending}
             />
           </FloatingLabel>
 
@@ -63,11 +71,11 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
             id="custom-switch"
             label="Active"
             className="mb-3"
-            checked={currentUser.active}
+            checked={selectedUser.active}
             onChange={(e) =>
-              setSelectedUser({ ...currentUser, active: e.target.checked })
+              setSelectedUser({ ...selectedUser, active: e.target.checked })
             }
-            disabled={mutationUpdate.isPending}
+            disabled={deleteUserMutation.isPending}
           />
 
           <FloatingLabel
@@ -77,10 +85,10 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
           >
             <Form.Select
               aria-label="Floating label select example"
-              disabled={mutationUpdate.isPending}
-              defaultValue={currentUser.role}
+              disabled={deleteUserMutation.isPending}
+              defaultValue={selectedUser.role}
               onChange={(e) =>
-                setSelectedUser({ ...currentUser, role: e.target.value })
+                setSelectedUser({ ...selectedUser, role: e.target.value })
               }
             >
               <option>Liste des rôles</option>
@@ -95,7 +103,7 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
           <div className="d-flex justify-content-end">
             <Button type="submit" variant="outline-primary" size="sm">
               <div className="d-flex gap-1 align-items-center justify-content-end">
-                {mutationUpdate.isPending && <LoaderSmall />}{" "}
+                {deleteUserMutation.isPending && <LoaderSmall />}{" "}
                 <span>Modifier</span>
               </div>
             </Button>
@@ -103,7 +111,9 @@ const UserFormUpdate = ({ currentUser, setSelectedUser, handleClose }) => {
         </Form.Group>
 
         <Error
-          error={mutationUpdate.isError ? mutationUpdate.error.message : ""}
+          error={
+            deleteUserMutation.isError ? deleteUserMutation.error.message : ""
+          }
         />
       </Form>
     </div>
