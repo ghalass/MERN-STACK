@@ -18,7 +18,6 @@ const SiteFormUpdate = () => {
       id: selectedSite.id,
       name: selectedSite.name,
     };
-    console.log(siteToUpdate);
 
     updateSiteMutation.mutate(siteToUpdate, {
       onSuccess: () => {
