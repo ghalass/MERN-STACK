@@ -1,7 +1,7 @@
 import "./assets/App.css";
 import { lazy, Suspense } from "react"; // Ajout de Suspense pour gérer le chargement paresseux
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Ajout de Outlet
-import { ContextProvider } from "./context/Auth";
+import { AuthProvider } from "./context/Auth";
 import TypeparcsPage from "./pages/admin/typeparcs/TypeparcsPage";
 
 /*** LAYOUTS */
@@ -37,7 +37,7 @@ const App = () => {
   return (
     <>
       <Notification />
-      <ContextProvider>
+      <AuthProvider>
         <Router>
           <Suspense
             fallback={
@@ -95,7 +95,7 @@ const App = () => {
             </Routes>
           </Suspense>
         </Router>
-      </ContextProvider>
+      </AuthProvider>
     </>
   );
 };
