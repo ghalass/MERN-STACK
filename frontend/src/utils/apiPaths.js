@@ -65,5 +65,6 @@ export const API_PATHS = {
         GENERATE_RJE: "/rapports/getRapportRje",
         GENERATE_UNITE_PHYSIQUE: "/rapports/getRapportUnitePhysique",
         GENERATE_ETAT_MENSUEL: "/rapports/getEtatMensuel",
+        GENERATE_RAPPORT_INDISPO: "/rapports/getIndispoParParc",
     }
 };

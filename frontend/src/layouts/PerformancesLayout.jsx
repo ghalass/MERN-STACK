@@ -1,8 +1,19 @@
 import { lazy } from "react";
 import { Tabs, Tab } from "react-bootstrap";
-import ParetosInDispo from "../pages/performances/rapports_performances/ParetosInDispo";
-import UnitePhysique from "../pages/performances/rapports_performances/UnitePhysique";
-import EtatMensuel from "../pages/performances/rapports_performances/EtatMensuel";
+
+// COMPONENTS
+const ParetosInDispo = lazy(() =>
+  import("../pages/performances/rapports_performances/ParetosInDispo")
+);
+const UnitePhysique = lazy(() =>
+  import("../pages/performances/rapports_performances/UnitePhysique")
+);
+const EtatMensuel = lazy(() =>
+  import("../pages/performances/rapports_performances/EtatMensuel")
+);
+const RapportIndispo = lazy(() =>
+  import("../pages/performances/rapports_performances/RapportIndispo")
+);
 
 const RapportRje = lazy(() =>
   import("../pages/performances/rapports_performances/RapportRje")
@@ -37,6 +48,11 @@ const TABS_LIST = [
     eventKey: "etatmensuel",
     title: "Etat Mensuel",
     ele: <EtatMensuel />,
+  },
+  {
+    eventKey: "rapportindispo",
+    title: "Rapport d'indispo",
+    ele: <RapportIndispo />,
   },
   {
     eventKey: "paretoindispo",

@@ -14,5 +14,9 @@ export const getRapportEtatMensuel = async (du) => {
     return await apiRequest(API_PATHS.RAPPORTS.GENERATE_ETAT_MENSUEL, "POST", { du });
 };
 
+export const getRapportIndispo = async (du) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_RAPPORT_INDISPO, "POST", { du });
+};
+
 
 
