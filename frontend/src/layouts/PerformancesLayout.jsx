@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import ParetosInDispo from "../pages/performances/rapports_performances/ParetosInDispo";
+import UnitePhysique from "../pages/performances/rapports_performances/UnitePhysique";
 
 const RapportRje = lazy(() =>
   import("../pages/performances/rapports_performances/RapportRje")
@@ -26,6 +27,11 @@ export default function PerformancesLayout() {
 
 const TABS_LIST = [
   { eventKey: "rapportrje", title: "Rapport RJE", ele: <RapportRje /> },
+  {
+    eventKey: "unitephysique",
+    title: "Unité Physique",
+    ele: <UnitePhysique />,
+  },
   {
     eventKey: "paretoindispo",
     title: "Paretos",

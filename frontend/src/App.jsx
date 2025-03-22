@@ -87,10 +87,10 @@ const App = () => {
                     <Route path="saisie_performances" element={<SaisieRje />} />
                     <Route path="profile" element={<Profile />} />
                     <Route path="performances" element={<PerformancesLayout />}>
-                      <Route
+                      {/* <Route
                         path="performances/rapports/rje"
                         element={<RapportRje />}
-                      />
+                      /> */}
                     </Route>
                   </Route>
                 </Route>
