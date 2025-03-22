@@ -4,6 +4,8 @@ import { fecthSitesQuery } from "../../../hooks/useSites";
 import { useQuery } from "@tanstack/react-query";
 import { generateUnitePhysiqueQueryOptions } from "../../../hooks/useRapports";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import { exportExcel } from "../../../utils/func";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 const UnitePhysique = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 7));
@@ -23,6 +25,17 @@ const UnitePhysique = () => {
   return (
     <>
       <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
+        <div>
+          <Button
+            onClick={() => exportExcel("myTable", "Rapport Unité Physique")}
+            variant="outline-success"
+            className="rounded-pill"
+            size="sm"
+          >
+            Excel <RiFileExcel2Line className="mb-1" />
+          </Button>
+        </div>
+
         <FloatingLabel
           controlId="floatingInputDate"
           label="Date de saisie"
@@ -55,6 +68,7 @@ const UnitePhysique = () => {
         hover
         size="sm"
         className="text-center text-uppercase"
+        id="myTable"
       >
         <thead>
           <tr>
