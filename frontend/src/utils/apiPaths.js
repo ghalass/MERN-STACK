@@ -64,5 +64,6 @@ export const API_PATHS = {
     RAPPORTS: {
         GENERATE_RJE: "/rapports/getRapportRje",
         GENERATE_UNITE_PHYSIQUE: "/rapports/getRapportUnitePhysique",
+        GENERATE_ETAT_MENSUEL: "/rapports/getEtatMensuel",
     }
 };

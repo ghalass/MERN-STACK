@@ -4,6 +4,8 @@ import Table from "react-bootstrap/Table";
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import { generateRjeQueryOptions } from "../../../hooks/useRapports";
+import { exportExcel } from "../../../utils/func";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 const RapportRje = () => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -20,6 +22,18 @@ const RapportRje = () => {
   return (
     <div>
       <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
+        <div>
+          <Button
+            onClick={() => exportExcel("tbl_rje", "Rapport RJE")}
+            variant="outline-success"
+            className="rounded-pill"
+            size="sm"
+            disabled={generateRjeQuery.isFetching}
+          >
+            Excel <RiFileExcel2Line className="mb-1" />
+          </Button>
+        </div>
+
         <FloatingLabel
           controlId="floatingInputDate"
           label="Date de saisie"
@@ -53,6 +67,7 @@ const RapportRje = () => {
         hover
         size="sm"
         className="text-center"
+        id="tbl_rje"
       >
         <thead>
           <tr>
@@ -130,15 +145,18 @@ const RapportRje = () => {
                 <td>{r?.tdm_a}</td>
               </tr>
             ))}
-          <tr>
-            <td colSpan={23} className="text-center text-primary">
-              {generateRjeQuery.isFetching && (
-                <div>
-                  <LoaderSmall /> Chargement...
-                </div>
-              )}
-            </td>
-          </tr>
+
+          {generateRjeQuery.isFetching && (
+            <tr>
+              <td colSpan={23} className="text-center text-primary">
+                {generateRjeQuery.isFetching && (
+                  <div>
+                    <LoaderSmall /> Chargement...
+                  </div>
+                )}
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
     </div>

@@ -5,6 +5,7 @@ const express = require('express')
 const {
     getRapportRje,
     getRapportUnitePhysique,
+    getEtatMensuel
 }
     = require('../controllers/rapportsController')
 
@@ -17,6 +18,7 @@ router.use(requireAuth)
 
 router.post('/getRapportRje', getRapportRje)
 router.post('/getRapportUnitePhysique', getRapportUnitePhysique)
+router.post('/getEtatMensuel', getEtatMensuel)
 
 
 module.exports = router

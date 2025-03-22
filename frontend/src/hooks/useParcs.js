@@ -1,22 +1,22 @@
 // hooks/useTypeparcs.js
-import { useQuery, useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
-import { fetchTypeparcs, createTypeparc, updateTypeparc, deleteTypeparc } from '../api/typeparcApi';
+import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { createParc, deleteParc, fetchParcs, updateParc } from '../api/parcApi';
 
-export const useTypeparcs = () => {
+export const useParcs = () => {
     return queryOptions({
-        queryKey: ['typeparcs'], // Clé de requête
-        queryFn: fetchTypeparcs, // Fonction pour récupérer les typeparcs
+        queryKey: ['parcs'], // Clé de requête
+        queryFn: fetchParcs, // Fonction pour récupérer les typeparcs
         staleTime: 1000 * 60 * 5, // Temps de cache (5 minutes)
     });
 };
 
-export const useCreateTypeparc = () => {
+export const useCreateParc = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: createTypeparc,
+        mutationFn: createParc,
         onSuccess: () => {
-            queryClient.invalidateQueries(['typeparcs']); // Rafraîchir la liste des typeparcs
+            queryClient.invalidateQueries(['parcs']); // Rafraîchir la liste des typeparcs
             toast.success('Typeparc ajouté avec succès !'); // Notification de succès
         },
         onError: () => {
@@ -28,9 +28,9 @@ export const useCreateTypeparc = () => {
 export const useUpdateTypeparc = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: updateTypeparc,
+        mutationFn: updateParc,
         onSuccess: () => {
-            queryClient.invalidateQueries(['typeparcs']);
+            queryClient.invalidateQueries(['parcs']);
             toast.success('Typeparc modifié avec succès !'); // Notification de succès
         },
         onError: () => {
@@ -42,9 +42,9 @@ export const useUpdateTypeparc = () => {
 export const useDeleteTypeparc = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: deleteTypeparc,
+        mutationFn: deleteParc,
         onSuccess: () => {
-            queryClient.invalidateQueries(['typeparcs']);
+            queryClient.invalidateQueries(['parcs']);
             toast.success('Typeparc supprimé avec succès !'); // Notification de succès
         },
         onError: () => {

@@ -27,10 +27,13 @@ const UnitePhysique = () => {
       <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
         <div>
           <Button
-            onClick={() => exportExcel("myTable", "Rapport Unité Physique")}
+            onClick={() =>
+              exportExcel("tbl_unite_physique", "Rapport Unité Physique")
+            }
             variant="outline-success"
             className="rounded-pill"
             size="sm"
+            disabled={generateUnitePhysiqueQuery.isFetching}
           >
             Excel <RiFileExcel2Line className="mb-1" />
           </Button>
@@ -46,17 +49,17 @@ const UnitePhysique = () => {
             placeholder="Date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            // disabled={generateRjeQuery.isFetching}
+            disabled={generateUnitePhysiqueQuery.isFetching}
           />
         </FloatingLabel>
 
         <Button
-          // disabled={generateRjeQuery.isFetching}
+          disabled={generateUnitePhysiqueQuery.isFetching}
           onClick={handleClick}
           variant="outline-secondary"
         >
           <div className="d-flex gap-1">
-            {/* {generateRjeQuery.isFetching && <LoaderSmall />} */}
+            {generateUnitePhysiqueQuery.isFetching && <LoaderSmall />}
             <div> Générer le rapport</div>
           </div>
         </Button>
@@ -68,7 +71,7 @@ const UnitePhysique = () => {
         hover
         size="sm"
         className="text-center text-uppercase"
-        id="myTable"
+        id="tbl_unite_physique"
       >
         <thead>
           <tr>
@@ -80,7 +83,7 @@ const UnitePhysique = () => {
               </th>
             ))}
 
-            <th colSpan={4}></th>
+            <th colSpan={4}>TOTAL</th>
           </tr>
 
           <tr>
@@ -93,7 +96,8 @@ const UnitePhysique = () => {
               </React.Fragment>
             ))}
 
-            <td colSpan={4}></td>
+            <td colSpan={2}>HRM</td>
+            <td colSpan={2}>HIM</td>
           </tr>
 
           <tr>
@@ -109,9 +113,9 @@ const UnitePhysique = () => {
               </React.Fragment>
             ))}
 
-            <td colSpan={2}>Mensuel</td>
+            <td colSpan={2}>M</td>
 
-            <td colSpan={2}>Annuel</td>
+            <td colSpan={2}>A</td>
           </tr>
         </thead>
         <tbody>
@@ -154,18 +158,20 @@ const UnitePhysique = () => {
               </tr>
             ))}
 
-          <tr>
-            <td
-              colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}
-              className="text-center text-primary"
-            >
-              {generateUnitePhysiqueQuery.isFetching && (
-                <div>
-                  <LoaderSmall /> Chargement...
-                </div>
-              )}
-            </td>
-          </tr>
+          {generateUnitePhysiqueQuery.isFetching && (
+            <tr>
+              <td
+                colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}
+                className="text-center text-primary"
+              >
+                {generateUnitePhysiqueQuery.isFetching && (
+                  <div>
+                    <LoaderSmall /> Chargement...
+                  </div>
+                )}
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
     </>

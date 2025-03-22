@@ -9,3 +9,10 @@ export const getRapportRje = async (du) => {
 export const getRapportUnitePhysique = async (du) => {
     return await apiRequest(API_PATHS.RAPPORTS.GENERATE_UNITE_PHYSIQUE, "POST", { du });
 };
+
+export const getRapportEtatMensuel = async (du) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_ETAT_MENSUEL, "POST", { du });
+};
+
+
+
