@@ -15,10 +15,10 @@ const sitesRoutes = require('./routes/sites');
 const typeparcsRoutes = require('./routes/typeparcs');
 const parcsRoutes = require('./routes/parcs');
 const enginsRoutes = require('./routes/engins');
-const saisiehrmRoutes = require('./routes/saisiehrm');
-
 const typepannesRoutes = require('./routes/typepannes');
 const pannesRoutes = require('./routes/pannes');
+const saisiehrmRoutes = require('./routes/saisiehrm');
+const rapportsRoutes = require('./routes/rapports');
 
 // express app
 const app = express()
@@ -52,6 +52,7 @@ app.use('/engins', enginsRoutes)
 app.use('/typepannes', typepannesRoutes)
 app.use('/pannes', pannesRoutes)
 app.use('/saisiehrm', saisiehrmRoutes)
+app.use('/rapports', rapportsRoutes)
 
 // 404 route
 app.all('*', (req, res) => {

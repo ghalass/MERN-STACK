@@ -62,6 +62,7 @@ export const API_PATHS = {
         DELETE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/deleteSaisieHim",
     },
     RAPPORTS: {
-        GENERATE_RJE: "/saisiehrm/getRapportRje"
+        GENERATE_RJE: "/rapports/getRapportRje",
+        GENERATE_UNITE_PHYSIQUE: "/rapports/getRapportUnitePhysique",
     }
 };

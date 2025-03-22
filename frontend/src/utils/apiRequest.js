@@ -33,11 +33,12 @@ export const apiRequest = async (endpoint, method = "GET", body = null, token = 
 
         return data;
     } catch (error) {
-        console.error(`API Error (${error.status ?? "UNKNOWN"}):`, error.message);
         // CHECK IF AUTHENTICATED USER OR
         if (error.status === 401) {
             // Redirection vers la page de connexion
             window.location.href = "/login";
+        } else {
+            console.error(`API Error (${error.status ?? "UNKNOWN"}):`, error.message);
         }
 
         throw {

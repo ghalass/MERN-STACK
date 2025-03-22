@@ -56,7 +56,7 @@ const SitesPage = () => {
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
-  const [sitesPerPage, setSitesPerPage] = useState(5);
+  const [sitesPerPage, setSitesPerPage] = useState(10);
   // Calculate current sites to display
   const indexOfLastSite = currentPage * sitesPerPage;
   const indexOfFirstSite = indexOfLastSite - sitesPerPage;

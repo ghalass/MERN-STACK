@@ -78,6 +78,9 @@ const loginUser = async (req, res) => {
         const match = await bcrypt.compare(password, user.password)
         if (!match) { return res.status(400).json({ error: "E-mail Or Password incorrect." }) }
 
+        // CHECK IF ACCOUNT IS ACTIVE
+        if (!user?.active) return res.status(400).json({ error: "Votre compte est désactivé, veuillez contacter un admin." })
+
         // SELECT USER FIELDS TO SAVE IN TOKEN
         const loggedUser = {
             id: user?.id,

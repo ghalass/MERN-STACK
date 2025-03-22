@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import generateRjeQueryOptions from "../../../queryOptions/rapports/generateRjeQueryOptions";
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import { generateRjeQueryOptions } from "../../../hooks/useRapports";
 
 const RapportRje = () => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const [shouldFetch, setShouldFetch] = useState(false);
+  const [_, setShouldFetch] = useState(false);
 
   const generateRjeQuery = useQuery(generateRjeQueryOptions(date));
 

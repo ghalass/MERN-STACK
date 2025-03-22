@@ -1,13 +1,25 @@
 import React, { useState } from "react";
 import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
+import { fecthSitesQuery } from "../../../hooks/useSites";
+import { useQuery } from "@tanstack/react-query";
+import { generateUnitePhysiqueQueryOptions } from "../../../hooks/useRapports";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
 
 const UnitePhysique = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 7));
 
-  const handleClick = () => {
-    console.log(date);
-  };
+  const getAllSitesQuery = useQuery(fecthSitesQuery());
 
+  const [_, setShouldFetch] = useState(false);
+
+  const generateUnitePhysiqueQuery = useQuery(
+    generateUnitePhysiqueQueryOptions(date)
+  );
+
+  const handleClick = () => {
+    setShouldFetch(true); // Activer la requête au clic
+    generateUnitePhysiqueQuery.refetch(); // 🔥 Déclenche la requête au clic
+  };
   return (
     <>
       <div className="d-flex justify-content-center align-items-center gap-2 mb-3">
@@ -48,47 +60,97 @@ const UnitePhysique = () => {
           <tr>
             <th colSpan={2}></th>
 
-            <th colSpan={2}>PG11</th>
+            {getAllSitesQuery.data?.map((site, i) => (
+              <th key={i} colSpan={4}>
+                {site?.name}
+              </th>
+            ))}
 
-            <th colSpan={2}>TO14</th>
-
-            <th colSpan={2}>Mensuel</th>
-
-            <th colSpan={2}>Annuel</th>
+            <th colSpan={4}></th>
           </tr>
+
           <tr>
-            <th>Parc</th>
-            <th>Nbre</th>
+            <td colSpan={2}></td>
 
-            <th>HRM</th>
-            <th>HIM</th>
+            {getAllSitesQuery.data?.map((site, i) => (
+              <React.Fragment key={i}>
+                <td colSpan={2}>HRM</td>
+                <td colSpan={2}>HIM</td>
+              </React.Fragment>
+            ))}
 
-            <th>HRM</th>
-            <th>HIM</th>
+            <td colSpan={4}></td>
+          </tr>
 
-            <th>HRM</th>
-            <th>HIM</th>
+          <tr>
+            <td>Parc</td>
+            <td>Nbre</td>
 
-            <th>HRM</th>
-            <th>HIM</th>
+            {getAllSitesQuery.data?.map((site, i) => (
+              <React.Fragment key={i}>
+                <td>M</td>
+                <td>A</td>
+                <td>M</td>
+                <td>A</td>
+              </React.Fragment>
+            ))}
+
+            <td colSpan={2}>Mensuel</td>
+
+            <td colSpan={2}>Annuel</td>
           </tr>
         </thead>
         <tbody>
+          {!generateUnitePhysiqueQuery.isFetching &&
+            generateUnitePhysiqueQuery.data?.map((unitePhysique, i) => (
+              <tr key={i}>
+                <td>{unitePhysique?.parc}</td>
+                <td>{unitePhysique?.nombre_d_engin}</td>
+
+                {getAllSitesQuery.data?.map((site, i) => (
+                  <React.Fragment key={i}>
+                    <td>
+                      {unitePhysique.par_site?.map(
+                        (s, i) => s?.site === site?.name && s?.hrm_m
+                      )}
+                    </td>
+                    <td>
+                      {unitePhysique.par_site?.map(
+                        (s, i) => s?.site === site?.name && s?.hrm_a
+                      )}
+                    </td>
+                    <td>
+                      {unitePhysique.par_site?.map(
+                        (s, i) => s?.site === site?.name && s?.him_m
+                      )}
+                    </td>
+                    <td>
+                      {unitePhysique.par_site?.map(
+                        (s, i) => s?.site === site?.name && s?.him_a
+                      )}
+                    </td>
+                  </React.Fragment>
+                ))}
+
+                <td>{unitePhysique?.hrm_m_total}</td>
+                <td>{unitePhysique?.him_m_total}</td>
+
+                <td>{unitePhysique?.hrm_a_total}</td>
+                <td>{unitePhysique?.him_a_total}</td>
+              </tr>
+            ))}
+
           <tr>
-            <td></td>
-            <td></td>
-
-            <td></td>
-            <td></td>
-
-            <td></td>
-            <td></td>
-
-            <td></td>
-            <td></td>
-
-            <td></td>
-            <td></td>
+            <td
+              colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}
+              className="text-center text-primary"
+            >
+              {generateUnitePhysiqueQuery.isFetching && (
+                <div>
+                  <LoaderSmall /> Chargement...
+                </div>
+              )}
+            </td>
           </tr>
         </tbody>
       </Table>
