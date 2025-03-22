@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Tabs, Tab } from "react-bootstrap";
+import HeuresChassis from "../pages/performances/rapports_performances/HeuresChassis";
 
 // COMPONENTS
 const ParetosInDispo = lazy(() =>
@@ -53,6 +54,11 @@ const TABS_LIST = [
     eventKey: "rapportindispo",
     title: "Rapport d'indispo",
     ele: <RapportIndispo />,
+  },
+  {
+    eventKey: "heureschassis",
+    title: "Rapport Heures Chassis",
+    ele: <HeuresChassis />,
   },
   {
     eventKey: "paretoindispo",

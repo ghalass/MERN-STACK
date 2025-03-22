@@ -134,39 +134,39 @@ const EtatMensuel = () => {
           {!generateEtatMensuelQuery.isFetching &&
             generateEtatMensuelQuery.data?.map((item, index) => (
               <tr key={index}>
-                <td>{item.typeparc}</td>
-                <td>{item.parc}</td>
-                <td>{item.nombre_d_engin}</td>
+                <td>{item?.typeparc}</td>
+                <td>{item?.parc}</td>
+                <td>{item?.nombre_d_engin}</td>
 
-                <td>{item.nho_m}</td>
-                <td>{item.nho_a}</td>
+                <td>{item?.nho_m}</td>
+                <td>{item?.nho_a}</td>
 
-                <td>{item.hrm_m}</td>
-                <td>{item.hrm_a}</td>
+                <td>{item?.hrm_m}</td>
+                <td>{item?.hrm_a}</td>
 
-                <td>{item.him_m}</td>
-                <td>{item.him_a}</td>
+                <td>{item?.him_m}</td>
+                <td>{item?.him_a}</td>
 
-                <td>{item.ni_m}</td>
-                <td>{item.ni_a}</td>
+                <td>{item?.ni_m}</td>
+                <td>{item?.ni_a}</td>
 
-                <td>{item.hrd_m}</td>
-                <td>{item.hrd_a}</td>
+                <td>{item?.hrd_m}</td>
+                <td>{item?.hrd_a}</td>
 
-                <td>{item.mttr_m}</td>
-                <td>{item.mttr_a}</td>
+                <td>{item?.mttr_m}</td>
+                <td>{item?.mttr_a}</td>
 
-                <td>{item.dispo_m}</td>
-                <td>{item.dispo_a}</td>
+                <td>{item?.dispo_m}</td>
+                <td>{item?.dispo_a}</td>
 
-                <td>{item.tdm_m}</td>
-                <td>{item.tdm_a}</td>
+                <td>{item?.tdm_m}</td>
+                <td>{item?.tdm_a}</td>
 
-                <td>{item.mtbf_m}</td>
-                <td>{item.mtbf_a}</td>
+                <td>{item?.mtbf_m}</td>
+                <td>{item?.mtbf_a}</td>
 
-                <td>{item.util_m}</td>
-                <td>{item.util_a}</td>
+                <td>{item?.util_m}</td>
+                <td>{item?.util_a}</td>
               </tr>
             ))}
 

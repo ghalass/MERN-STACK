@@ -1,6 +1,6 @@
 // hooks/useRapports.js
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getRapportEtatMensuel, getRapportIndispo, getRapportRje, getRapportUnitePhysique } from '../api/rapportsApi';
+import { getRapportEtatMensuel, getRapportHeuresChassis, getRapportIndispo, getRapportRje, getRapportUnitePhysique } from '../api/rapportsApi';
 
 export const generateRjeQueryOptions = (du) => {
     return queryOptions({
@@ -30,6 +30,14 @@ export const getRapportIndispoOptions = (du) => {
     return queryOptions({
         queryKey: ["rapportRapportIndispo"],
         queryFn: () => getRapportIndispo(du),
+        enabled: false, // 🔥 Désactive la requête automatique
+    })
+}
+
+export const getRapportHeuresChassisOptions = (du) => {
+    return queryOptions({
+        queryKey: ["rapportRapportHeuresChassis"],
+        queryFn: () => getRapportHeuresChassis(du),
         enabled: false, // 🔥 Désactive la requête automatique
     })
 }

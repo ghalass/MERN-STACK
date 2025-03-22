@@ -230,147 +230,6 @@ const getRapportUnitePhysique = async (req, res) => {
     }
 };
 
-// const getEtatMensuel = async (req, res) => {
-//     try {
-//         const { du } = req.body; // Date de référence
-
-//         // Convertir la date en objet Date
-//         const dateDu = new Date(du);
-
-//         // Calculer le premier et le dernier jour du mois
-//         const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
-//         const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
-
-//         // Calculer le premier jour de l'année
-//         const firstDayOfYear = new Date(dateDu.getFullYear(), 0, 1);
-
-//         // Récupérer tous les parcs avec leurs engins et sites associés
-//         const parcs = await prisma.parc.findMany({
-//             include: {
-//                 engins: {
-//                     include: {
-//                         Saisiehrm: {
-//                             where: {
-//                                 du: {
-//                                     gte: firstDayOfYear, // On prend toutes les saisies depuis le début de l'année
-//                                     lte: lastDayOfMonth // Jusqu'à la fin du mois courant
-//                                 }
-//                             }
-//                         },
-//                         Saisiehim: {
-//                             where: {
-//                                 Saisiehrm: {
-//                                     du: {
-//                                         gte: firstDayOfYear, // On prend toutes les saisies depuis le début de l'année
-//                                         lte: lastDayOfMonth // Jusqu'à la fin du mois courant
-//                                     }
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 },
-//                 Typeparc: true
-//             }
-//         });
-
-//         // Fonction pour calculer les indicateurs mensuels et annuels
-//         const calculateIndicators = (engins, periodStart, periodEnd, isAnnual = false) => {
-//             let nho = 0;
-//             let hrm = 0;
-//             let him = 0;
-//             let ni = 0;
-
-//             engins.forEach(engin => {
-//                 // Calcul de NHO (Nombre d'Heures d'Opération)
-//                 const daysInPeriod = (periodEnd - periodStart) / (1000 * 60 * 60 * 24); // Nombre de jours dans la période
-//                 nho += 24 * daysInPeriod;
-
-//                 // Calcul de HRM (Heures de Maintenance Réparatoire)
-//                 engin.Saisiehrm.forEach(saisie => {
-//                     if (saisie.du >= periodStart && saisie.du <= periodEnd) {
-//                         hrm += saisie.hrm;
-//                     }
-//                 });
-
-//                 // Calcul de HIM (Heures d'Immobilisation pour Maintenance)
-//                 engin.Saisiehim.forEach(saisie => {
-//                     if (saisie.Saisiehrm.du >= periodStart && saisie.Saisiehrm.du <= periodEnd) {
-//                         him += saisie.him;
-//                         ni += saisie.ni;
-//                     }
-//                 });
-//             });
-
-//             // Calcul des autres indicateurs
-//             const hrd = nho - (him + hrm);
-//             const mttr = him / ni;
-//             const dispo = 1 - (him / nho) * 100;
-//             const tdm = hrm / nho * 100;
-//             const mtbf = hrm / ni;
-//             const util = hrm / (hrm + hrd) * 100;
-
-//             // Limiter les valeurs à deux chiffres après la virgule
-//             return {
-//                 nho: parseFloat(nho.toFixed(2)),
-//                 hrm: parseFloat(hrm.toFixed(2)),
-//                 him: parseFloat(him.toFixed(2)),
-//                 ni: parseFloat(ni.toFixed(2)),
-//                 hrd: parseFloat(hrd.toFixed(2)),
-//                 mttr: parseFloat(mttr.toFixed(2)),
-//                 dispo: parseFloat(dispo.toFixed(2)),
-//                 tdm: parseFloat(tdm.toFixed(2)),
-//                 mtbf: parseFloat(mtbf.toFixed(2)),
-//                 util: parseFloat(util.toFixed(2)),
-//             };
-//         };
-
-//         // Formatage des données
-//         const result = parcs.map(parc => {
-//             const engins = parc.engins;
-//             const nombre_d_engin = engins.length;
-
-//             // Calcul des indicateurs mensuels
-//             const indicators_m = calculateIndicators(engins, firstDayOfMonth, lastDayOfMonth);
-
-//             // Calcul des indicateurs annuels
-//             const indicators_a = calculateIndicators(engins, firstDayOfYear, lastDayOfMonth, true);
-
-//             return {
-//                 typeparc: parc.Typeparc.name,
-//                 parc: parc.name,
-//                 nombre_d_engin,
-//                 // Indicateurs mensuels
-//                 nho_m: indicators_m.nho,
-//                 hrm_m: indicators_m.hrm,
-//                 him_m: indicators_m.him,
-//                 ni_m: indicators_m.ni,
-//                 hrd_m: indicators_m.hrd,
-//                 mttr_m: indicators_m.mttr,
-//                 dispo_m: indicators_m.dispo,
-//                 tdm_m: indicators_m.tdm,
-//                 mtbf_m: indicators_m.mtbf,
-//                 util_m: indicators_m.util,
-//                 // Indicateurs annuels
-//                 nho_a: indicators_a.nho,
-//                 hrm_a: indicators_a.hrm,
-//                 him_a: indicators_a.him,
-//                 ni_a: indicators_a.ni,
-//                 hrd_a: indicators_a.hrd,
-//                 mttr_a: indicators_a.mttr,
-//                 dispo_a: indicators_a.dispo,
-//                 tdm_a: indicators_a.tdm,
-//                 mtbf_a: indicators_a.mtbf,
-//                 util_a: indicators_a.util,
-//             };
-//         });
-
-//         return res.json(result);
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: "Erreur serveur" });
-//     }
-// };
-
 const getEtatMensuel = async (req, res) => {
     try {
         const { du } = req.body; // Date de référence
@@ -644,31 +503,62 @@ const getIndispoParParc = async (req, res) => {
     }
 };
 
-module.exports = { getIndispoParParc };
+const getHeuresChassis = async (req, res) => {
+    try {
+        const { du } = req.body; // Date de référence
 
-module.exports = { getIndispoParParc };
+        // Convertir la date en objet Date
+        const dateDu = new Date(du);
 
-module.exports = { getIndispoParParc };
+        // Calculer le premier et le dernier jour du mois
+        const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
+        const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
 
-module.exports = { getIndispoParParc };
+        // Récupérer tous les engins avec leurs parcs, sites et saisies associées
+        const engins = await prisma.engin.findMany({
+            include: {
+                Parc: {
+                    include: {
+                        Typeparc: true // Inclure le type de parc
+                    }
+                },
+                Site: true, // Inclure le site associé
+                Saisiehrm: true // Inclure toutes les saisies hrm de l'engin
+            }
+        });
 
-module.exports = { getIndispoParParc };
+        // Formatage des données
+        const result = engins.map(engin => {
+            // Calcul de hrm_m (somme des hrm pour l'engin dans le mois)
+            const hrm_m = engin.Saisiehrm
+                .filter(saisie => saisie.du >= firstDayOfMonth && saisie.du <= lastDayOfMonth)
+                .reduce((sum, saisie) => sum + saisie.hrm, 0);
 
-module.exports = { getIndispoParParc };
+            // Calcul de heuresChassis (somme de tous les hrm de l'engin + initialHeureChassis)
+            const sommeHrmTotal = engin.Saisiehrm.reduce((sum, saisie) => sum + saisie.hrm, 0);
+            const heuresChassis = sommeHrmTotal + (engin.initialHeureChassis || 0);
 
-module.exports = { getEtatMensuel };
+            return {
+                typeparc: engin.Parc.Typeparc.name,
+                parc: engin.Parc.name,
+                engin: engin.name,
+                hrm_m: parseFloat(hrm_m.toFixed(2)), // hrm_m limité à deux chiffres après la virgule
+                heuresChassis: parseFloat(heuresChassis.toFixed(2)), // heuresChassis limité à deux chiffres après la virgule
+                site: engin.Site.name
+            };
+        });
 
-module.exports = { getEtatMensuel };
-
-module.exports = { getEtatMensuel };
-
-module.exports = { getEtatMensuel };
-
-module.exports = { getEtatMensuel };
+        return res.json(result);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur serveur" });
+    }
+};
 
 module.exports = {
     getRapportRje,
     getRapportUnitePhysique,
     getEtatMensuel,
     getIndispoParParc,
+    getHeuresChassis
 };

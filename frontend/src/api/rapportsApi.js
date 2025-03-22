@@ -18,5 +18,11 @@ export const getRapportIndispo = async (du) => {
     return await apiRequest(API_PATHS.RAPPORTS.GENERATE_RAPPORT_INDISPO, "POST", { du });
 };
 
+export const getRapportHeuresChassis = async (du) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_RAPPORT_HEURES_CHASSIS, "POST", { du });
+};
+
+
+
 
 

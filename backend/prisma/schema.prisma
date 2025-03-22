@@ -48,11 +48,12 @@ model Parc {
 }
 
 model Engin {
-  id     Int     @id @default(autoincrement())
-  name   String  @unique
-  active Boolean @default(true)
-  parcId Int
-  siteId Int
+  id                  Int     @id @default(autoincrement())
+  name                String  @unique
+  active              Boolean @default(true)
+  parcId              Int
+  siteId              Int
+  initialHeureChassis Float?  @default(0)
 
   // Relations
   Parc      Parc        @relation(fields: [parcId], references: [id], onDelete: Restrict)
