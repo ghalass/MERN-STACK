@@ -34,11 +34,7 @@ const RapportRje = () => {
           </Button>
         </div>
 
-        <FloatingLabel
-          controlId="floatingInputDate"
-          label="Date de saisie"
-          className=""
-        >
+        <FloatingLabel controlId="floatingInputDate" label="Date" className="">
           <Form.Control
             type="date"
             placeholder="Date de saisie"
@@ -66,12 +62,18 @@ const RapportRje = () => {
         bordered
         hover
         size="sm"
-        className="text-center"
+        className="text-center text-uppercase"
         id="tbl_rje"
       >
         <thead>
           <tr>
-            <td colSpan={2}></td>
+            <td colSpan={22}>
+              Rapport Journalier Engins RJE du{" "}
+              {date.split("-").reverse().join("-")}
+            </td>
+          </tr>
+          <tr>
+            <td></td>
 
             <td className="text-center" colSpan={7}>
               JOURNALIER

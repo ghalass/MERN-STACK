@@ -7,7 +7,7 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 
 const HeuresChassis = () => {
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 7));
 
   const [_, setShouldFetch] = useState(false);
 
@@ -36,14 +36,10 @@ const HeuresChassis = () => {
           </Button>
         </div>
 
-        <FloatingLabel
-          controlId="floatingInputDate"
-          label="Date de saisie"
-          className=""
-        >
+        <FloatingLabel controlId="floatingInputDate" label="Date" className="">
           <Form.Control
-            type="date"
-            placeholder="Date de saisie"
+            type="month"
+            placeholder="Date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             disabled={getRapportHeuresChassis.isFetching}
@@ -68,10 +64,16 @@ const HeuresChassis = () => {
         bordered
         hover
         size="sm"
-        className="text-center"
+        className="text-center text-uppercase"
         id="tbl_heures_chassis"
       >
         <thead>
+          <tr>
+            <td colSpan={6}>
+              rapport heures châssis du {date.split("-").reverse().join("-")}
+            </td>
+          </tr>
+
           <tr>
             <th>Type</th>
             <th>Parc</th>

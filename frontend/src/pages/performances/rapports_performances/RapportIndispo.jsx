@@ -7,7 +7,7 @@ import { getRapportIndispoOptions } from "../../../hooks/useRapports";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 
 const RapportIndispo = () => {
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 7));
 
   const [_, setShouldFetch] = useState(false);
 
@@ -34,13 +34,9 @@ const RapportIndispo = () => {
           </Button>
         </div>
 
-        <FloatingLabel
-          controlId="floatingInputDate"
-          label="Date de saisie"
-          className=""
-        >
+        <FloatingLabel controlId="floatingInputDate" label="Date" className="">
           <Form.Control
-            type="date"
+            type="month"
             placeholder="Date de saisie"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -70,6 +66,12 @@ const RapportIndispo = () => {
         id="tbl_rapportindispo"
       >
         <thead>
+          <tr>
+            <td colSpan={14}>
+              rapport indisponibilité du {date.split("-").reverse().join("-")}
+            </td>
+          </tr>
+
           <tr>
             <th colSpan={4}></th>
 

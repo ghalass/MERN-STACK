@@ -39,11 +39,7 @@ const UnitePhysique = () => {
           </Button>
         </div>
 
-        <FloatingLabel
-          controlId="floatingInputDate"
-          label="Date de saisie"
-          className=""
-        >
+        <FloatingLabel controlId="floatingInputDate" label="Date" className="">
           <Form.Control
             type="month"
             placeholder="Date"
@@ -74,6 +70,12 @@ const UnitePhysique = () => {
         id="tbl_unite_physique"
       >
         <thead>
+          <tr>
+            <td colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}>
+              Unité Physique du {date.split("-").reverse().join("-")}
+            </td>
+          </tr>
+
           <tr>
             <th colSpan={2}></th>
 
@@ -113,9 +115,11 @@ const UnitePhysique = () => {
               </React.Fragment>
             ))}
 
-            <td colSpan={2}>M</td>
+            <td>M</td>
+            <td>A</td>
 
-            <td colSpan={2}>A</td>
+            <td>M</td>
+            <td>A</td>
           </tr>
         </thead>
         <tbody>
@@ -151,9 +155,9 @@ const UnitePhysique = () => {
                 ))}
 
                 <td>{unitePhysique?.hrm_m_total}</td>
-                <td>{unitePhysique?.him_m_total}</td>
-
                 <td>{unitePhysique?.hrm_a_total}</td>
+
+                <td>{unitePhysique?.him_m_total}</td>
                 <td>{unitePhysique?.him_a_total}</td>
               </tr>
             ))}
