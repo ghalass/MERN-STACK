@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 
-const tokenExpireIn = 1; //hour
+const tokenExpireIn = 7; //hour
 
 const generateToken = (loggedUser) => {
     return jwt.sign(loggedUser, process.env.ACCESS_TOKEN_SECRET, { expiresIn: `${tokenExpireIn}h` });

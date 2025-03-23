@@ -19,6 +19,8 @@ const typepannesRoutes = require('./routes/typepannes');
 const pannesRoutes = require('./routes/pannes');
 const saisiehrmRoutes = require('./routes/saisiehrm');
 const rapportsRoutes = require('./routes/rapports');
+const lubrifiantsRoutes = require('./routes/lubrifiants');
+const saisielubrifiantRoutes = require('./routes/saisielubrifiant');
 
 // express app
 const app = express()
@@ -53,6 +55,8 @@ app.use('/typepannes', typepannesRoutes)
 app.use('/pannes', pannesRoutes)
 app.use('/saisiehrm', saisiehrmRoutes)
 app.use('/rapports', rapportsRoutes)
+app.use('/lubrifiants', lubrifiantsRoutes)
+app.use('/saisielubrifiant', saisielubrifiantRoutes)
 
 // 404 route
 app.all('*', (req, res) => {

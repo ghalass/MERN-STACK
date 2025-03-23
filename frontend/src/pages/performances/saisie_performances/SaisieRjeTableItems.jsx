@@ -35,18 +35,6 @@ const SaisieRjeTableItems = ({
               <i className="bi bi-droplet-half"></i>
             </Button>
           </td>
-
-          <td className="text-center">
-            <Button
-              // onClick={handleShowPanneModal}
-              variant="outline-secondary"
-              className="rounded-pill"
-              size="sm"
-              // disabled={disableAddPanneButton}
-            >
-              <i className="bi bi-gear-fill"></i>
-            </Button>
-          </td>
         </tr>
       ))}
       <SaisieRjeTableTotalRow saisieRjeQuery={saisieRjeQuery} />

@@ -17,8 +17,7 @@ const SaisieRjeTable = ({
               <th>Type</th>
               <th className="text-center">HIM</th>
               <th className="text-center">NI</th>
-              <th className="text-center">Huile</th>
-              <th className="text-center">Graisse</th>
+              <th className="text-center">Lubrifiants</th>
             </tr>
           </thead>
           <tbody>

@@ -52,6 +52,13 @@ export const API_PATHS = {
         DELETE_PANNE: (panneId) => `/pannes/${panneId}`,
         DOWNLOAD_PANNES: "/pannes/downloadexcel",
     },
+    LUBRIFIANTS: {
+        GET_ALL_LUBRIFIANTS: "/lubrifiants",
+        ADD_LUBRIFIANT: "/lubrifiants",
+        UPDATE_LUBRIFIANT: (lubrifiantId) => `/lubrifiants/${lubrifiantId}`,
+        DELETE_LUBRIFIANT: (lubrifiantId) => `/lubrifiants/${lubrifiantId}`,
+        DOWNLOAD_LUBRIFIANTS: "/lubrifiants/downloadexcel",
+    },
     SAISIE_RJE: {
         GET_SAISIE_RJE: "/saisiehrm/getSaisieHrm",
 
@@ -60,6 +67,9 @@ export const API_PATHS = {
 
         ADD_SAISIE_RJE_PANNE_HIM: "/saisiehrm/createSaisieHim",
         DELETE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/deleteSaisieHim",
+    },
+    SAISIE_LUBRIFIANT: {
+        ADD_SAISIE_LUBRIFIANT: `/saisielubrifiant/createSaisieLubrifiant`,
     },
     RAPPORTS: {
         GENERATE_RJE: "/rapports/getRapportRje",

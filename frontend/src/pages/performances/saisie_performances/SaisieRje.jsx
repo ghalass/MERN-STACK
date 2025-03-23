@@ -13,8 +13,7 @@ import fecthPannesQueryOptions from "../../../queryOptions/saisie_performances/f
 import addPanneQueryOptions from "../../../queryOptions/saisie_performances/addPanneQueryOptions";
 import SaisieRjeDeletePanneModal from "./SaisieRjeDeletePanneModal";
 import deletePanneQueryOptions from "../../../queryOptions/saisie_performances/deletePanneQueryOptions";
-import SaisieRjeCreateGoModal from "./SaisieRjeCreateGoModal";
-import SaisieRjeCreateHuileModal from "./SaisieRjeCreateHuileModal";
+import SaisieRjeCreateLubrifiantModal from "./SaisieRjeCreateLubrifiantModal";
 
 const SaisieRje = () => {
   const [showHRMModal, setShowHRMModal] = useState(false);
@@ -24,10 +23,6 @@ const SaisieRje = () => {
   const [showPanneModal, setShowPanneModal] = useState(false);
   const handleClosePanneModal = () => setShowPanneModal(false);
   const handleShowPanneModal = () => setShowPanneModal(true);
-
-  const [showGOModal, setShowGOModal] = useState(false);
-  const handleCloseGOModal = () => setShowGOModal(false);
-  const handleShowGOModal = () => setShowGOModal(true);
 
   const [selectedSaisieHim, setSelectedSaisieHim] = useState({});
   const [showHuileModal, setShowHuileModal] = useState(false);
@@ -119,7 +114,6 @@ const SaisieRje = () => {
         selectedFields={selectedFields}
         handleShowHRMModal={handleShowHRMModal}
         handleShowPanneModal={handleShowPanneModal}
-        handleShowGOModal={handleShowGOModal}
         saisieRjeQuery={saisieRjeQuery}
       />
 
@@ -160,19 +154,8 @@ const SaisieRje = () => {
         panneToDelete={panneToDelete}
       />
 
-      {/* GO MODAL *****************************/}
-      <SaisieRjeCreateGoModal
-        showGOModal={showGOModal}
-        handleCloseGOModal={handleCloseGOModal}
-        hrm={hrm}
-        setHrm={setHrm}
-        handleUpsetHrm={handleUpsetHrm}
-        mutationUpsetHRM={mutationUpsetHRM}
-        saisieRjeQuery={saisieRjeQuery}
-      />
-
-      {/* GO MODAL *****************************/}
-      <SaisieRjeCreateHuileModal
+      {/* HUILE MODAL *****************************/}
+      <SaisieRjeCreateLubrifiantModal
         showHuileModal={showHuileModal}
         handleCloseHuileModal={handleCloseHuileModal}
         selectedSaisieHim={selectedSaisieHim}

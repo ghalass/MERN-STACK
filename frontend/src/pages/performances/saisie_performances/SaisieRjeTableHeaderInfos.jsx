@@ -21,8 +21,6 @@ const SaisieRjeTableHeaderInfos = ({ saisieRjeQuery }) => {
           <span>HRM[h] : {saisieRjeQuery.data?.[0]?.hrm || " "}</span>
           <i className="bi bi-geo-alt"></i>{" "}
           <span>Site : {saisieRjeQuery.data?.[0]?.Site?.name || " "}</span>
-          <i className="bi bi-fuel-pump-diesel"></i>
-          <span>GO[hl] : 0</span>
         </div>
       </div>
     </>

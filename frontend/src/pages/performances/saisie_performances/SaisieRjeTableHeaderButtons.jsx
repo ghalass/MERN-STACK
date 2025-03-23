@@ -5,7 +5,6 @@ const SaisieRjeTableHeaderButtons = ({
   selectedFields,
   handleShowHRMModal,
   handleShowPanneModal,
-  handleShowGOModal,
   saisieRjeQuery,
 }) => {
   // DISABLE ADD PANNE BUTTON WHEN NO HRM AND NO ENGIN SELECTED
@@ -24,16 +23,6 @@ const SaisieRjeTableHeaderButtons = ({
           disabled={disableAddPanneButton}
         >
           <i className="bi bi-cone-striped"></i>
-        </Button>
-
-        <Button
-          onClick={handleShowGOModal}
-          variant="outline-secondary"
-          className="rounded-pill"
-          size="sm"
-          disabled={!selectedFields.enginId}
-        >
-          <i className="bi bi-fuel-pump-diesel"></i>
         </Button>
 
         <Button
