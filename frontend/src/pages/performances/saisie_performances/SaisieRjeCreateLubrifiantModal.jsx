@@ -41,12 +41,12 @@ const SaisieRjeCreateLubrifiantModal = ({
       saisiehimId: selectedSaisieHim?.id,
     };
 
-    console.log(newSaisieLubrifiant);
-
     createSaisieLubrifiant.mutate(newSaisieLubrifiant, {
       onSuccess: () => {
-        // setSite({ name: "" });
-        // closeCreateModal();
+        setQte("");
+        setObs("");
+        setSelectedLubrifiant("");
+        // handleCloseHuileModal();
         toast.success("Ajouté avec succès.");
       },
     });
@@ -59,21 +59,98 @@ const SaisieRjeCreateLubrifiantModal = ({
         handleClose={handleCloseHuileModal}
         title="Lubrifiants consommés"
         isloading={createSaisieLubrifiant.isPending}
+        size="lg"
       >
-        <div className="d-flex flex-row justify-content-between gap-1">
-          <div>
-            <p className="mb-0">
-              <strong>Panne :</strong>{" "}
-              <span className="text-danger">
-                {selectedSaisieHim?.Panne?.name}
-              </span>
-            </p>
-            <p className="mb-0">
-              <strong>Type de Panne : </strong>
-              <span className="text-danger">
-                {selectedSaisieHim?.Panne?.Typepanne?.name}
-              </span>
-            </p>
+        <div className="row">
+          <div className="col-lg">
+            <div className="mb-1">
+              <p className="mb-0">
+                <strong>Panne :</strong>{" "}
+                <span className="text-danger">
+                  {selectedSaisieHim?.Panne?.name}
+                </span>
+              </p>
+              <p className="mb-0">
+                <strong>Type de Panne : </strong>
+                <span className="text-danger">
+                  {selectedSaisieHim?.Panne?.Typepanne?.name}
+                </span>
+              </p>
+            </div>
+            <Form onSubmit={onSubmit}>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <div className="d-flex gap-1">
+                  <FloatingLabel
+                    controlId="floatingSelect"
+                    label="Choisir un parc"
+                    className="mb-3"
+                  >
+                    <Form.Select
+                      aria-label="Floating label select example"
+                      value={selectedLubrifiant}
+                      onChange={(e) => setSelectedLubrifiant(e.target.value)}
+                      // disabled={mutationAddPanneHRM.isLoading}
+                    >
+                      <option value="">Liste des Lubrifiants</option>
+                      {getAllLubrifiantsQuery.data?.map((item, index) => (
+                        <option key={index} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </FloatingLabel>
+
+                  <FloatingLabel
+                    controlId="floatingInputHim"
+                    label="Qté"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="number"
+                      min={0}
+                      placeholder="Qte"
+                      value={qte}
+                      onChange={(e) => setQte(e.target.value)}
+                      // disabled={mutationAddPanneHRM.isLoading}
+                    />
+                  </FloatingLabel>
+                </div>
+
+                <FloatingLabel
+                  controlId="floatingInputHim"
+                  label="Obs"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="Obs"
+                    value={obs}
+                    onChange={(e) => setObs(e.target.value)}
+                    // disabled={mutationAddPanneHRM.isLoading}
+                  />
+                </FloatingLabel>
+
+                <div className="d-flex justify-content-end">
+                  <Button
+                    type="submit"
+                    variant="outline-primary"
+                    size="sm"
+                    disabled={createSaisieLubrifiant.isPending}
+                  >
+                    <div className="d-flex gap-1 align-items-center justify-content-end">
+                      {createSaisieLubrifiant.isPending && <LoaderSmall />}{" "}
+                      <span>Enregistrer</span>
+                    </div>
+                  </Button>
+                </div>
+              </Form.Group>
+            </Form>
+          </div>
+
+          <div className="col-lg">
             <table className="table table-sm table-hover">
               <thead>
                 <tr>
@@ -107,77 +184,6 @@ const SaisieRjeCreateLubrifiantModal = ({
                 ))}
               </tbody>
             </table>
-          </div>
-          <div>
-            <Form onSubmit={onSubmit}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <FloatingLabel
-                  controlId="floatingSelect"
-                  label="Choisir un parc"
-                  className="mb-3"
-                >
-                  <Form.Select
-                    aria-label="Floating label select example"
-                    value={selectedLubrifiant}
-                    onChange={(e) => setSelectedLubrifiant(e.target.value)}
-                    // disabled={mutationAddPanneHRM.isLoading}
-                  >
-                    <option value="">Liste des Lubrifiants</option>
-                    {getAllLubrifiantsQuery.data?.map((item, index) => (
-                      <option key={index} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </FloatingLabel>
-
-                <FloatingLabel
-                  controlId="floatingInputHim"
-                  label="Qté"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    placeholder="Qte"
-                    value={qte}
-                    onChange={(e) => setQte(e.target.value)}
-                    // disabled={mutationAddPanneHRM.isLoading}
-                  />
-                </FloatingLabel>
-
-                <FloatingLabel
-                  controlId="floatingInputHim"
-                  label="Obs"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Obs"
-                    value={obs}
-                    onChange={(e) => setObs(e.target.value)}
-                    // disabled={mutationAddPanneHRM.isLoading}
-                  />
-                </FloatingLabel>
-
-                <div className="d-flex justify-content-end">
-                  <Button
-                    type="submit"
-                    variant="outline-primary"
-                    size="sm"
-                    disabled={createSaisieLubrifiant.isPending}
-                  >
-                    <div className="d-flex gap-1 align-items-center justify-content-end">
-                      {createSaisieLubrifiant.isPending && <LoaderSmall />}{" "}
-                      <span>Enregistrer</span>
-                    </div>
-                  </Button>
-                </div>
-              </Form.Group>
-            </Form>
           </div>
         </div>
         <Error

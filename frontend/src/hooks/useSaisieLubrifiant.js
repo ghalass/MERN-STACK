@@ -14,7 +14,7 @@ export const useCreateSaisieLubrifiant = () => {
     return useMutation({
         mutationFn: createSaisieLubrifiant,
         onSuccess: () => {
-            queryClient.invalidateQueries(['sitesList']); // Rafraîchir la liste des sites
+            queryClient.invalidateQueries(['saisieRjeList']); // Rafraîchir la liste des sites
         }
     });
 };

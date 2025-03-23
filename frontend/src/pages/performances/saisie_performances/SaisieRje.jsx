@@ -28,7 +28,6 @@ const SaisieRje = () => {
   const [showHuileModal, setShowHuileModal] = useState(false);
   const handleCloseHuileModal = () => setShowHuileModal(false);
   const handleShowHuileModal = (d) => {
-    console.log(d);
     setSelectedSaisieHim(d);
     setShowHuileModal(true);
   };
