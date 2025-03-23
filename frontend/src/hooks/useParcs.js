@@ -1,15 +1,23 @@
 // hooks/useTypeparcs.js
 import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { createParc, deleteParc, fetchParcs, updateParc } from '../api/parcApi';
+import { createParc, deleteParc, fetchParcs, fetchParcsByTypeparc, updateParc } from '../api/parcApi';
 
 export const useParcs = () => {
     return queryOptions({
         queryKey: ['parcs'], // Clé de requête
         queryFn: fetchParcs, // Fonction pour récupérer les typeparcs
-        staleTime: 1000 * 60 * 5, // Temps de cache (5 minutes)
     });
 };
+
+export const useParcsByTypeParc = (typeparcId) => {
+    return queryOptions({
+        queryKey: ['parcsByTypeparc', typeparcId], // Clé de requête
+        queryFn: () => fetchParcsByTypeparc(typeparcId), // Fonction pour récupérer les typeparcs
+        enabled: !!(typeparcId !== "")
+    });
+};
+
 
 export const useCreateParc = () => {
     const queryClient = useQueryClient();

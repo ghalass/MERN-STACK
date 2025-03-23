@@ -30,9 +30,36 @@ const createSaisieLubrifiant = async (req, res) => {
         if (exist) return res.status(400).json({ error: "Saisie déjà faite pour cet engin à cette date!", exist });
 
         const savedSaisie = await prisma.saisielubrifiant.create({
-            data: { lubrifiantId: parseInt(lubrifiantId), qte: parseFloat(qte), obs, saisiehimId: parseInt(saisiehimId) }
+            data: { lubrifiantId: parseInt(lubrifiantId), qte: parseFloat(qte), obs, saisiehimId: parseInt(saisiehimId) }, include: {
+                Lubrifiant: { include: { Typelubrifiant: true } },
+            }
         })
         return res.status(201).json(savedSaisie)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteSaisieLubrifiant = async (req, res) => {
+    try {
+        const { id } = req.body
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
+
+        const existSaisielubrifiant = await prisma.saisielubrifiant.findFirst({
+            where: { id: parseInt(id) }
+        });
+
+        if (!existSaisielubrifiant) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
+
+        await prisma.saisielubrifiant.delete({
+            where: { id: parseInt(id) }
+        });
+
+        res.status(200).json(existSaisielubrifiant)
     } catch (error) {
         console.log(error);
     }
@@ -42,4 +69,5 @@ const createSaisieLubrifiant = async (req, res) => {
 module.exports = {
 
     createSaisieLubrifiant,
+    deleteSaisieLubrifiant
 }

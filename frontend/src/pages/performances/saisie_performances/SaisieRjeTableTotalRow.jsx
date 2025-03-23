@@ -1,7 +1,10 @@
 import React from "react";
 import { Badge } from "react-bootstrap";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 
-const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
+const SaisieRjeTableTotalRow = () => {
+  const { saisieRjeQueryStore } = useSaisieRjeStore();
+
   return (
     <>
       <tr className="">
@@ -9,7 +12,7 @@ const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
         <td></td>
         <td className="text-center">
           <Badge pill bg="danger">
-            {saisieRjeQuery.data?.[0].Saisiehim?.reduce(
+            {saisieRjeQueryStore.data?.[0].Saisiehim?.reduce(
               (acc, val) => (acc = acc + val?.him),
               0
             )}
@@ -17,7 +20,7 @@ const SaisieRjeTableTotalRow = ({ saisieRjeQuery }) => {
         </td>
         <td className="text-center">
           <Badge pill bg="danger">
-            {saisieRjeQuery.data?.[0].Saisiehim?.reduce(
+            {saisieRjeQueryStore.data?.[0].Saisiehim?.reduce(
               (acc, val) => (acc = acc + val?.ni),
               0
             )}

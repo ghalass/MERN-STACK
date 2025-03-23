@@ -1,20 +1,33 @@
 import React from "react";
 import SaisieRjeTableTotalRow from "./SaisieRjeTableTotalRow";
 import { Button } from "react-bootstrap";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 
-const SaisieRjeTableItems = ({
-  saisieRjeQuery,
-  handleShowDeletePanneModal,
-  handleShowHuileModal,
-}) => {
+const SaisieRjeTableItems = () => {
+  const {
+    saisieRjeQueryStore,
+    handleShowLubModal,
+    handleShowDeletePanneModal,
+    setSelectedSaisieHim,
+    handleShowEditPanneModal,
+  } = useSaisieRjeStore();
+
   return (
     <>
-      {saisieRjeQuery.data?.[0].Saisiehim?.map((saisie_him, index) => (
+      {saisieRjeQueryStore.data?.[0].Saisiehim?.map((saisie_him, index) => (
         <tr key={index}>
           <td>
             <button
+              onClick={() => handleShowEditPanneModal(saisie_him)}
+              className="btn btn-sm btn-outline-success rounded-pill me-2"
+            >
+              <i className="bi bi-pencil"></i>
+            </button>
+
+            <button
               onClick={() => handleShowDeletePanneModal(saisie_him)}
               className="btn btn-sm btn-outline-danger rounded-pill"
+              disabled={saisie_him?.Saisielubrifiant?.length > 0}
             >
               <i className="bi bi-trash3"></i>
             </button>
@@ -25,19 +38,26 @@ const SaisieRjeTableItems = ({
           <td className="text-center">{saisie_him?.ni}</td>
           <td className="text-center">
             <Button
-              onClick={() => handleShowHuileModal(saisie_him)}
-              // onClick={handleShowPanneModal}
+              onClick={() => {
+                handleShowLubModal();
+                setSelectedSaisieHim(saisie_him);
+              }}
               variant="outline-secondary"
               className="rounded-pill"
               size="sm"
               // disabled={disableAddPanneButton}
             >
-              <i className="bi bi-droplet-half"></i>
+              {saisie_him?.Saisielubrifiant?.length > 0 ? (
+                <i className={`bi bi-droplet-fill me-2`}></i>
+              ) : (
+                <i className={`bi bi-droplet me-2`}></i>
+              )}
+              <span>{saisie_him?.Saisielubrifiant?.length}</span>
             </Button>
           </td>
         </tr>
       ))}
-      <SaisieRjeTableTotalRow saisieRjeQuery={saisieRjeQuery} />
+      <SaisieRjeTableTotalRow />
     </>
   );
 };

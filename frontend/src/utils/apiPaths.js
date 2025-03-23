@@ -30,6 +30,7 @@ export const API_PATHS = {
     },
     PARCS: {
         GET_ALL_PARCS: "/parcs",
+        GET_ALL_PARCS_BY_TYPEPARC: (typeparcId) => `/parcs/typeparc/${typeparcId}`,
         ADD_PARC: "/parcs/add",
         UPDATE_PARC: (parcId) => `/parcs/${parcId}`,
         DELETE_PARC: (parcId) => `/parcs/${parcId}`,
@@ -43,9 +44,16 @@ export const API_PATHS = {
         DELETE_ENGIN: (enginId) => `/engins/${enginId}`,
         DOWNLOAD_ENGINS: "/engins/downloadexcel",
     },
+    TYPEPANNES: {
+        GET_ALL_TYPEPANNES: "/typepannes",
+        ADD_TYPEPANNE: "/typepannes",
+        UPDATE_TYPEPANNE: (typepanneId) => `/typepannes/${typepanneId}`,
+        DELETE_TYPEPANNE: (typepanneId) => `/typepannes/${typepanneId}`,
+        DOWNLOAD_TYPEPANNES: "/typepannes/downloadexcel",
+    },
     PANNES: {
         GET_ALL_PANNES: "/pannes",
-        GET_ALL_PANNES_BY_PARCID: (parcId) => `/pannes/parc/${parcId}`,
+        GET_ALL_PANNES_BY_TYPEPANNE_ID: (typepanneId) => `/pannes/typepanne/${typepanneId}`,
 
         ADD_PANNE: "/pannes/add",
         UPDATE_PANNE: (panneId) => `/pannes/${panneId}`,
@@ -67,9 +75,11 @@ export const API_PATHS = {
 
         ADD_SAISIE_RJE_PANNE_HIM: "/saisiehrm/createSaisieHim",
         DELETE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/deleteSaisieHim",
+        UPDATE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/updateSaisieHim",
     },
     SAISIE_LUBRIFIANT: {
         ADD_SAISIE_LUBRIFIANT: `/saisielubrifiant/createSaisieLubrifiant`,
+        DELETE_SAISIE_LUBRIFIANT: `/saisielubrifiant/deleteSaisieLubrifiant`,
     },
     RAPPORTS: {
         GENERATE_RJE: "/rapports/getRapportRje",

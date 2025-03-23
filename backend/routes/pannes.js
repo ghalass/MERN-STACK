@@ -7,7 +7,8 @@ const {
     getPanne,
     deletePanne,
     updatePanne,
-    getPannesByParcId
+    fetchPannesByTypepanne,
+
 } = require('../controllers/panneController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -19,10 +20,11 @@ router.use(requireAuth)
 
 router.get('/', getPannes)
 
-router.get('/parc/:id', getPannesByParcId)
-
 // GET single workout
 router.get('/:id', getPanne)
+
+// GET single workout
+router.get('/typepanne/:id', fetchPannesByTypepanne)
 
 // POST a new workout
 router.post('/', createPanne)

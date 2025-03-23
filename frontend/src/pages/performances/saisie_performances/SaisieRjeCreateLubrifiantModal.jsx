@@ -5,24 +5,33 @@ import CumstomModal from "../../../components/ui/CumstomModal";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import { fecthLubrifiantsQuery } from "../../../hooks/useLubrifiants";
 import { useQuery } from "@tanstack/react-query";
-import { useCreateSaisieLubrifiant } from "../../../hooks/useSaisieLubrifiant";
+import {
+  useCreateSaisieLubrifiant,
+  useDeleteSaisieLubrifiant,
+} from "../../../hooks/useSaisieLubrifiant";
 import { toast } from "react-toastify";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 
-const SaisieRjeCreateLubrifiantModal = ({
-  showHuileModal,
-  handleCloseHuileModal,
-  setHrm,
-  saisieRjeQuery,
-  selectedSaisieHim,
-}) => {
+const SaisieRjeCreateLubrifiantModal = () => {
+  const {
+    setHrm,
+    saisieRjeQueryStore,
+    selectedSaisieHim,
+    handleCloseLubModal,
+    showLubModal,
+    setSelectedSaisieHim,
+  } = useSaisieRjeStore();
   const [error, setError] = useState("");
 
   // RESET INITIAL VALUES WHEN SHOW/HIDE MODAL OR DATA CHANGED
   useEffect(() => {
     setError("");
-    setHrm(saisieRjeQuery.data?.[0]?.hrm);
+    setQte("");
+    setObs("");
+    setSelectedLubrifiant("");
+    setHrm(saisieRjeQueryStore?.data?.[0]?.hrm);
     createSaisieLubrifiant.reset();
-  }, [showHuileModal, saisieRjeQuery.data]);
+  }, [showLubModal, saisieRjeQueryStore?.data]);
 
   const [selectedLubrifiant, setSelectedLubrifiant] = useState("");
   const [qte, setQte] = useState("");
@@ -31,32 +40,57 @@ const SaisieRjeCreateLubrifiantModal = ({
   const getAllLubrifiantsQuery = useQuery(fecthLubrifiantsQuery());
 
   const createSaisieLubrifiant = useCreateSaisieLubrifiant();
+  const deleteSaisieLubrifiant = useDeleteSaisieLubrifiant();
 
   const onSubmit = (e) => {
     e.preventDefault();
     const newSaisieLubrifiant = {
       lubrifiantId: selectedLubrifiant,
-      qte: qte,
-      obs: obs,
+      qte,
+      obs,
       saisiehimId: selectedSaisieHim?.id,
     };
 
     createSaisieLubrifiant.mutate(newSaisieLubrifiant, {
-      onSuccess: () => {
+      onSuccess: (res) => {
         setQte("");
         setObs("");
         setSelectedLubrifiant("");
-        // handleCloseHuileModal();
+
+        // PUSH THE ADDED LUB TO THE SELECTED HIM SAISIE 'BECAUSE REACT QUERY DONT REFRESH IT'
+        selectedSaisieHim?.Saisielubrifiant.push(res);
         toast.success("Ajouté avec succès.");
       },
     });
   };
 
+  const handleDeleteLub = (lub) => {
+    deleteSaisieLubrifiant.mutate(
+      { id: lub?.id },
+      {
+        onSuccess: () => {
+          const idToRemove = lub?.id; // ID of the object to remove
+
+          // PUSH THE ADDED LUB TO THE SELECTED HIM SAISIE 'BECAUSE REACT QUERY DONT REFRESH IT'
+          const newArray = selectedSaisieHim?.Saisielubrifiant.filter(
+            (item) => item.id !== idToRemove
+          );
+
+          setSelectedSaisieHim({
+            ...selectedSaisieHim,
+            Saisielubrifiant: newArray,
+          });
+          toast.success("Supprimé avec succès.");
+        },
+      }
+    );
+  };
+
   return (
     <div>
       <CumstomModal
-        show={showHuileModal}
-        handleClose={handleCloseHuileModal}
+        show={showLubModal}
+        handleClose={handleCloseLubModal}
         title="Lubrifiants consommés"
         isloading={createSaisieLubrifiant.isPending}
         size="lg"
@@ -92,7 +126,10 @@ const SaisieRjeCreateLubrifiantModal = ({
                       aria-label="Floating label select example"
                       value={selectedLubrifiant}
                       onChange={(e) => setSelectedLubrifiant(e.target.value)}
-                      // disabled={mutationAddPanneHRM.isLoading}
+                      disabled={
+                        createSaisieLubrifiant.isPending ||
+                        deleteSaisieLubrifiant.isPending
+                      }
                     >
                       <option value="">Liste des Lubrifiants</option>
                       {getAllLubrifiantsQuery.data?.map((item, index) => (
@@ -110,11 +147,15 @@ const SaisieRjeCreateLubrifiantModal = ({
                   >
                     <Form.Control
                       type="number"
+                      step={0.1}
                       min={0}
                       placeholder="Qte"
                       value={qte}
                       onChange={(e) => setQte(e.target.value)}
-                      // disabled={mutationAddPanneHRM.isLoading}
+                      disabled={
+                        createSaisieLubrifiant.isPending ||
+                        deleteSaisieLubrifiant.isPending
+                      }
                     />
                   </FloatingLabel>
                 </div>
@@ -129,7 +170,10 @@ const SaisieRjeCreateLubrifiantModal = ({
                     placeholder="Obs"
                     value={obs}
                     onChange={(e) => setObs(e.target.value)}
-                    // disabled={mutationAddPanneHRM.isLoading}
+                    disabled={
+                      createSaisieLubrifiant.isPending ||
+                      deleteSaisieLubrifiant.isPending
+                    }
                   />
                 </FloatingLabel>
 
@@ -148,6 +192,15 @@ const SaisieRjeCreateLubrifiantModal = ({
                 </div>
               </Form.Group>
             </Form>
+
+            <Error
+              error={
+                error ||
+                (createSaisieLubrifiant.isError
+                  ? createSaisieLubrifiant.error.message
+                  : "")
+              }
+            />
           </div>
 
           <div className="col-lg">
@@ -166,11 +219,14 @@ const SaisieRjeCreateLubrifiantModal = ({
                   <tr key={i}>
                     <td>
                       <Button
-                        // onClick={handleShowPanneModal}
+                        onClick={() => handleDeleteLub(saisie_lub)}
                         variant="outline-danger"
                         className="rounded-pill"
                         size="sm"
-                        // disabled={disableAddPanneButton}
+                        disabled={
+                          createSaisieLubrifiant.isPending ||
+                          deleteSaisieLubrifiant.isPending
+                        }
                       >
                         <i className="bi bi-trash3"></i>
                       </Button>
@@ -186,14 +242,6 @@ const SaisieRjeCreateLubrifiantModal = ({
             </table>
           </div>
         </div>
-        <Error
-          error={
-            error ||
-            (createSaisieLubrifiant.isError
-              ? createSaisieLubrifiant.error.message
-              : "")
-          }
-        />
       </CumstomModal>
     </div>
   );

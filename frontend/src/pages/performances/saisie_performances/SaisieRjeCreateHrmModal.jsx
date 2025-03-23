@@ -3,24 +3,28 @@ import { Button, FloatingLabel, Form } from "react-bootstrap";
 import Error from "../../../components/forms/Error";
 import CumstomModal from "../../../components/ui/CumstomModal";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
+import { useMutation } from "@tanstack/react-query";
+import upsetHRMQueryOptions from "../../../queryOptions/saisie_performances/upsetHRMQueryOptions";
 
-const SaisieRjeCreateHrmModal = ({
-  showHRMModal,
-  handleCloseHRMModal,
-  hrm,
-  setHrm,
-  handleUpsetHrm,
-  mutationUpsetHRM,
-  saisieRjeQuery,
-}) => {
+const SaisieRjeCreateHrmModal = () => {
+  const {
+    hrm,
+    setHrm,
+    saisieRjeQueryStore,
+    showHRMModal,
+    handleCloseHRMModal,
+    selectedFields,
+  } = useSaisieRjeStore();
+
   const [error, setError] = useState("");
 
   // RESET INITIAL VALUES WHEN SHOW/HIDE MODAL OR DATA CHANGED
   useEffect(() => {
     setError("");
-    setHrm(saisieRjeQuery.data?.[0]?.hrm);
+    setHrm(saisieRjeQueryStore?.data?.[0]?.hrm);
     mutationUpsetHRM.reset();
-  }, [showHRMModal, saisieRjeQuery.data]);
+  }, [showHRMModal, saisieRjeQueryStore?.data]);
 
   const onSubmit = (e) => {
     setError("");
@@ -31,8 +35,20 @@ const SaisieRjeCreateHrmModal = ({
       return;
     }
 
-    handleUpsetHrm();
+    const upsetHRM = {
+      id: saisieRjeQueryStore.data?.[0]?.id || "",
+      du: saisieRjeQueryStore.data?.[0]?.du || selectedFields?.du,
+      enginId:
+        saisieRjeQueryStore.data?.[0]?.enginId || selectedFields?.enginId,
+      siteId: saisieRjeQueryStore.data?.[0]?.siteId || selectedFields?.siteId,
+      hrm: hrm,
+    };
+    mutationUpsetHRM.mutate(upsetHRM);
   };
+
+  const mutationUpsetHRM = useMutation(
+    upsetHRMQueryOptions(handleCloseHRMModal)
+  );
 
   return (
     <div>

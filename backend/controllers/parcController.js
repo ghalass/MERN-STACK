@@ -14,6 +14,20 @@ const getParcs = async (req, res) => {
     }
 }
 
+const getParcsByTypeparc = async (req, res) => {
+    try {
+        const { id } = req.params
+        const parcs = await prisma.parc.findMany({
+            where: { typeparcId: parseInt(id) },
+            include: { Typeparc: true },
+            orderBy: { name: 'asc' },
+        });
+        res.status(200).json(parcs)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // get a single parc
 const getParc = async (req, res) => {
     const { id } = req.params
@@ -143,5 +157,6 @@ module.exports = {
     getParcs,
     getParc,
     deleteParc,
-    updateParc
+    updateParc,
+    getParcsByTypeparc,
 }

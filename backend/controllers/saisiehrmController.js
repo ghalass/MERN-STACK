@@ -173,6 +173,55 @@ const deleteSaisieHim = async (req, res) => {
     }
 }
 
+const updateSaisieHim = async (req, res) => {
+    try {
+        console.log(req.body);
+
+        const { id, panneId, him, ni, saisiehrmId } = req.body
+        // Vérification des champs obligatoires
+        const missingFields = ["id", "panneId", "him", "ni", "saisiehrmId"].filter((field) => !req.body[field]);
+        console.log(missingFields);
+
+        if (missingFields.length > 0) {
+            return res
+                .status(400)
+                .json({ error: "Veuillez remplir tous les champs!", missingFields });
+        }
+
+        // check if already exist
+        existSaisiehim = await prisma.saisiehim.findFirst({
+            where: { id: parseInt(id) }
+        });
+        if (!existSaisiehim) return res.status(404).json({ error: "Saisie n'existe pas!", exist });
+
+
+        // CHECK TOTAL HRM & HIM
+        const totlaHRM = await prisma.saisiehrm.aggregate({
+            _sum: { hrm: true },
+            where: { id: parseInt(saisiehrmId) },
+        });
+        const totlaHIM = await prisma.saisiehim.aggregate({
+            _sum: { him: true },
+            where: { saisiehrmId: parseInt(saisiehrmId) },
+        });
+        const him_hrm_saisie = totlaHRM._sum.hrm + totlaHIM._sum.him + Number(him)
+        let message = `HRM saisie = ${totlaHRM._sum.hrm || 0}\n`;
+        message += `HIM saisie = ${totlaHIM._sum.him || 0}\n`;
+        message += `Nouveau HIM = ${him || 0}\n`;
+        message += `Total sera = ${him_hrm_saisie} > 24h\n`;
+        message += `** IMPOSSIBLE de dépasser 24h **`;
+        if (him_hrm_saisie > 24) return res.status(400).json({ error: message });
+
+        const updated = await prisma.saisiehim.update({
+            where: { id: parseInt(id) },
+            data: { panneId: parseInt(panneId), him: parseFloat(him), ni: parseInt(ni), }
+        })
+        return res.status(201).json(updated)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const getSaisieHrm = async (req, res) => {
     try {
         const { du, enginId } = req.body
@@ -209,6 +258,7 @@ module.exports = {
 
     createSaisieHim,
     deleteSaisieHim,
+    updateSaisieHim,
 
     getSaisieHrm
 }

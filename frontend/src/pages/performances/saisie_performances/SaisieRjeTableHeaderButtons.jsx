@@ -1,15 +1,18 @@
 import React from "react";
 import { Button } from "react-bootstrap";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 
-const SaisieRjeTableHeaderButtons = ({
-  selectedFields,
-  handleShowHRMModal,
-  handleShowPanneModal,
-  saisieRjeQuery,
-}) => {
+const SaisieRjeTableHeaderButtons = () => {
+  const {
+    selectedFields,
+    saisieRjeQueryStore,
+    handleShowHRMModal,
+    handleShowPanneModal,
+  } = useSaisieRjeStore();
+
   // DISABLE ADD PANNE BUTTON WHEN NO HRM AND NO ENGIN SELECTED
   const disableAddPanneButton = !(
-    !!selectedFields.enginId && !!saisieRjeQuery.data?.[0]?.hrm
+    !!selectedFields.enginId && !!saisieRjeQueryStore?.data?.[0]?.hrm
   );
 
   return (

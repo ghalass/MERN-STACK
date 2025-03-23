@@ -2,18 +2,23 @@ import React from "react";
 import { Button, Form } from "react-bootstrap";
 import CumstomModal from "../../../components/ui/CumstomModal";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
+import { useMutation } from "@tanstack/react-query";
+import { useDeleteSaisiePanne } from "../../../hooks/useSaisieRje";
 
-const SaisieRjeDeletePanneModal = ({
-  showDeletePanneModal,
-  handleCloseDeletePanneModal,
-  mutationDeletePanneHRM,
-  handleDeletePanne,
-  panneToDelete,
-}) => {
+const SaisieRjeDeletePanneModal = () => {
+  const { showDeletePanneModal, handleCloseDeletePanneModal, panneToDelete } =
+    useSaisieRjeStore();
+
   const onSubmit = (e) => {
     e.preventDefault();
-    handleDeletePanne();
+    const data = {
+      id: panneToDelete?.id,
+    };
+    mutationDeletePanneHRM.mutate(data);
+    // handleCloseDeletePanneModal();
   };
+  const mutationDeletePanneHRM = useMutation(useDeleteSaisiePanne());
 
   return (
     <div>

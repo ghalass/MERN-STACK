@@ -6,7 +6,8 @@ const {
     getParcs,
     getParc,
     deleteParc,
-    updateParc
+    updateParc,
+    getParcsByTypeparc,
 } = require('../controllers/parcController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -21,6 +22,9 @@ router.get('/', getParcs)
 // GET single workout
 router.get('/:id', getParc)
 
+// GET single workout
+router.get('/typeparc/:id', getParcsByTypeparc)
+
 // POST a new workout
 router.post('/', createParc)
 
@@ -29,6 +33,8 @@ router.patch('/:id', updateParc)
 
 // DELETE a workout
 router.delete('/:id', deleteParc)
+
+
 
 
 module.exports = router

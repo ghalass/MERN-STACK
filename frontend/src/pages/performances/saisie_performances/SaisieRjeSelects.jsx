@@ -1,19 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { Form } from "react-bootstrap";
-import fecthParcsQueryOptions from "../../../queryOptions/saisie_performances/fecthParcsQueryOptions";
 import fectSitesQueryOptions from "../../../queryOptions/saisie_performances/fecthSitesQueryOptions";
 import fectEnginsQueryOptions from "../../../queryOptions/saisie_performances/fecthEnginsQueryOptions";
+import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
+import { useTypeparcs } from "../../../hooks/useTypeparcs";
+import { useParcsByTypeParc } from "../../../hooks/useParcs";
 
-const SaisieRjeSelects = ({ selectedFields, setSelectedFields }) => {
-  const parcsQuery = useQuery(fecthParcsQueryOptions());
+const SaisieRjeSelects = () => {
+  const { selectedFields, setSelectedFields } = useSaisieRjeStore();
+
+  const typeparcsQuery = useQuery(useTypeparcs());
+
+  const parcsByTypeparcQuery = useQuery(
+    useParcsByTypeParc(selectedFields?.typeparcId)
+  );
+
   const sitesQuery = useQuery(fectSitesQueryOptions());
   const enginsQuery = useQuery(
     fectEnginsQueryOptions(selectedFields?.parcId, selectedFields?.siteId)
   );
 
   const isLoading =
-    enginsQuery.isLoading || parcsQuery.isLoading || sitesQuery.isLoading;
+    typeparcsQuery.isLoading ||
+    enginsQuery.isLoading ||
+    sitesQuery.isLoading ||
+    parcsByTypeparcQuery.isLoading;
 
   return (
     <div className="d-flex gap-1 justify-content-center">
@@ -35,6 +47,33 @@ const SaisieRjeSelects = ({ selectedFields, setSelectedFields }) => {
 
       <FloatingLabel
         controlId="floatingSelect"
+        label="Choisir un typeparc"
+        className="mb-3"
+      >
+        <Form.Select
+          aria-label="Floating label select example"
+          value={selectedFields?.typeparcId}
+          onChange={(e) =>
+            setSelectedFields({
+              ...selectedFields,
+              typeparcId: e.target.value,
+              parcId: "",
+              enginId: "",
+            })
+          }
+          disabled={isLoading}
+        >
+          <option value="">Liste des typeparcs</option>
+          {typeparcsQuery?.data?.map((item, index) => (
+            <option key={index} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </Form.Select>
+      </FloatingLabel>
+
+      <FloatingLabel
+        controlId="floatingSelect"
         label="Choisir un parc"
         className="mb-3"
       >
@@ -51,7 +90,7 @@ const SaisieRjeSelects = ({ selectedFields, setSelectedFields }) => {
           disabled={isLoading}
         >
           <option value="">Liste des parcs</option>
-          {parcsQuery?.data?.map((item, index) => (
+          {parcsByTypeparcQuery?.data?.map((item, index) => (
             <option key={index} value={item.id}>
               {item.name}
             </option>

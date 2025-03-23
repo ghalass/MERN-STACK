@@ -4,6 +4,7 @@ const express = require('express')
 const {
 
     createSaisieLubrifiant,
+    deleteSaisieLubrifiant
 
 }
     = require('../controllers/saisielubrifiantController')
@@ -16,5 +17,7 @@ const router = express.Router()
 router.use(requireAuth)
 
 router.post('/createSaisieLubrifiant', createSaisieLubrifiant)
+router.delete('/deleteSaisieLubrifiant', deleteSaisieLubrifiant)
+
 
 module.exports = router

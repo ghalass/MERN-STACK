@@ -1,63 +1,66 @@
 import React, { useEffect, useState } from "react";
+import CumstomModal from "../../../components/ui/CumstomModal";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import Error from "../../../components/forms/Error";
-import CumstomModal from "../../../components/ui/CumstomModal";
-import LoaderSmall from "../../../components/ui/LoaderSmall";
+import { usePannesByTypePanne } from "../../../hooks/usePannes";
 import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import addPanneQueryOptions from "../../../queryOptions/saisie_performances/addPanneQueryOptions";
 import { useTypepannes } from "../../../hooks/useTypepannes";
-import { usePannesByTypePanne } from "../../../hooks/usePannes";
+import addPanneQueryOptions from "../../../queryOptions/saisie_performances/addPanneQueryOptions";
+import LoaderSmall from "../../../components/ui/LoaderSmall";
+import { useUpdateSaisiePanne } from "../../../hooks/useSaisieRje";
 
-const SaisieRjeCreatePanneModal = () => {
-  const { showPanneModal, handleClosePanneModal, saisieRjeQueryStore } =
+const SaisieRjeEditPanneModal = () => {
+  const { showEditPanneModal, handleCloseEditPanneModal, panneToEdit } =
     useSaisieRjeStore();
 
-  const [selectedTypepanne, setSelectedTypepanne] = useState("");
-  const [selectedPanne, setSelectedPanne] = useState("");
-  const [him, setHim] = useState("");
-  const [ni, setNi] = useState("");
+  const [selectedTypepanne, setSelectedTypepanne] = useState();
+  const [selectedPanne, setSelectedPanne] = useState();
+  const [him, setHim] = useState();
+  const [ni, setNi] = useState();
+
+  // RESET INITIAL VALUES WHEN SHOW/HIDE MODAL OR DATA CHANGED
+  useEffect(() => {
+    mutationUpdatePanneHRM.reset();
+    setSelectedTypepanne(panneToEdit?.Panne?.Typepanne?.id);
+    setSelectedPanne(panneToEdit?.panneId);
+    setHim(panneToEdit?.him);
+    setNi(panneToEdit?.ni);
+  }, [showEditPanneModal]);
 
   const typepannesQuery = useQuery(useTypepannes());
   const pannesByTypepanneQuery = useQuery(
     usePannesByTypePanne(selectedTypepanne)
   );
 
-  // RESET INITIAL VALUES WHEN SHOW/HIDE MODAL OR DATA CHANGED
-  useEffect(() => {
-    mutationAddPanneHRM.reset();
-    setSelectedTypepanne("");
-    setSelectedPanne("");
-    setHim("");
-    setNi("");
-  }, [showPanneModal]);
-
   const onSubmit = (e) => {
     e.preventDefault();
-    const panneToAdd = {
-      saisiehrmId: saisieRjeQueryStore?.data?.[0]?.id,
+    const panneToUpdate = {
+      id: panneToEdit?.id,
       panneId: selectedPanne,
-      him,
-      ni,
+      him: him,
+      ni: ni,
+      saisiehrmId: panneToEdit?.saisiehrmId,
     };
-    mutationAddPanneHRM.mutate(panneToAdd);
+
+    mutationUpdatePanneHRM.mutate(panneToUpdate);
   };
 
-  const mutationAddPanneHRM = useMutation(
-    addPanneQueryOptions(handleClosePanneModal)
+  const mutationUpdatePanneHRM = useMutation(
+    useUpdateSaisiePanne(handleCloseEditPanneModal)
   );
 
   const isloading =
     typepannesQuery.isLoading ||
     pannesByTypepanneQuery.isLoading ||
-    mutationAddPanneHRM.isPending;
+    mutationUpdatePanneHRM.isPending;
 
   return (
     <div>
       <CumstomModal
-        show={showPanneModal}
-        handleClose={handleClosePanneModal}
-        title="Panne"
+        show={showEditPanneModal}
+        handleClose={handleCloseEditPanneModal}
+        title="Modifier une panne"
         isloading={isloading}
       >
         <Form onSubmit={onSubmit}>
@@ -154,7 +157,8 @@ const SaisieRjeCreatePanneModal = () => {
         </Form>
         <Error
           error={
-            mutationAddPanneHRM.isError && mutationAddPanneHRM.error.message
+            mutationUpdatePanneHRM.isError &&
+            mutationUpdatePanneHRM.error.message
           }
         />
       </CumstomModal>
@@ -162,4 +166,4 @@ const SaisieRjeCreatePanneModal = () => {
   );
 };
 
-export default SaisieRjeCreatePanneModal;
+export default SaisieRjeEditPanneModal;

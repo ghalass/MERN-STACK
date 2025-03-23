@@ -14,9 +14,9 @@ export const createSaisieLubrifiant = async (saisie) => {
 //     return await apiRequest(API_PATHS.AUTH.UPDATE_USER, "PATCH", updatedSite);
 // };
 
-// export const deleteUser = async (siteId) => {
-//     return await apiRequest(API_PATHS.AUTH.DELETE_USER(siteId), "DELETE");
-// };
+export const deleteSaisieLubrifiant = async (data) => {
+    return await apiRequest(API_PATHS.SAISIE_LUBRIFIANT.DELETE_SAISIE_LUBRIFIANT, "DELETE", data);
+};
 
 // export const loginUser = async (data) => {
 //     return await apiRequest(API_PATHS.AUTH.LOGIN, "POST", data);

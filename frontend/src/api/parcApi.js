@@ -6,6 +6,11 @@ export const fetchParcs = async () => {
     return apiRequest(API_PATHS.PARCS.GET_ALL_PARCS, "GET");
 };
 
+export const fetchParcsByTypeparc = async (typeparcId) => {
+    return apiRequest(API_PATHS.PARCS.GET_ALL_PARCS_BY_TYPEPARC(typeparcId), "GET");
+};
+
+
 export const createParc = async (parc) => {
     return apiRequest(API_PATHS.PARCS.ADD_PARC, "POST", parc);
 };
