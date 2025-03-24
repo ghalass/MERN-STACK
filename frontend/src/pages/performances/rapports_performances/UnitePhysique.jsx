@@ -71,7 +71,7 @@ const UnitePhysique = () => {
       >
         <thead>
           <tr>
-            <td colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}>
+            <td colSpan={Number(4 * getAllSitesQuery?.data?.length + 6)}>
               Unité Physique du {date.split("-").reverse().join("-")}
             </td>
           </tr>
@@ -79,7 +79,7 @@ const UnitePhysique = () => {
           <tr>
             <th colSpan={2}></th>
 
-            {getAllSitesQuery.data?.map((site, i) => (
+            {getAllSitesQuery?.data?.map((site, i) => (
               <th key={i} colSpan={4}>
                 {site?.name}
               </th>
@@ -91,7 +91,7 @@ const UnitePhysique = () => {
           <tr>
             <td colSpan={2}></td>
 
-            {getAllSitesQuery.data?.map((site, i) => (
+            {getAllSitesQuery?.data?.map((site, i) => (
               <React.Fragment key={i}>
                 <td colSpan={2}>HRM</td>
                 <td colSpan={2}>HIM</td>
@@ -165,7 +165,7 @@ const UnitePhysique = () => {
           {generateUnitePhysiqueQuery.isFetching && (
             <tr>
               <td
-                colSpan={Number(4 * getAllSitesQuery.data?.length + 6)}
+                colSpan={Number(4 * getAllSitesQuery?.data?.length + 6)}
                 className="text-center text-primary"
               >
                 {generateUnitePhysiqueQuery.isFetching && (

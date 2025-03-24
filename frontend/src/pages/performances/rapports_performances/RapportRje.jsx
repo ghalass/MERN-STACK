@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
-import Table from "react-bootstrap/Table";
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 import { useQuery } from "@tanstack/react-query";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import { generateRjeQueryOptions } from "../../../hooks/useRapports";

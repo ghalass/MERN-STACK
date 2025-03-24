@@ -80,9 +80,4 @@ const LIST_SIDEBAR = [
     icon: "bi-people",
   },
   { link: "/performances", title: "Performances", icon: "bi-people" },
-  {
-    link: "/saisie_lubrifiants",
-    title: "Saisie lubrifiants",
-    icon: "bi-people",
-  },
 ];

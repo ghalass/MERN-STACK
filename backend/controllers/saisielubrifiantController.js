@@ -65,9 +65,8 @@ const deleteSaisieLubrifiant = async (req, res) => {
     }
 }
 
-
 module.exports = {
 
     createSaisieLubrifiant,
-    deleteSaisieLubrifiant
+    deleteSaisieLubrifiant,
 }

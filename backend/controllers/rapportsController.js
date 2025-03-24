@@ -555,10 +555,322 @@ const getHeuresChassis = async (req, res) => {
     }
 };
 
+const getSpecLub = async (req, res) => {
+    try {
+        const { typelubrifiantId, year } = req.body;
+
+        // Validation des paramètres
+        if (!typelubrifiantId || !year) {
+            return res.status(400).json({
+                message: "typelubrifiantId and year are required"
+            });
+        }
+
+        const yearNum = parseInt(year);
+        const startDate = new Date(yearNum, 0, 1);
+        const endDate = new Date(yearNum + 1, 0, 1);
+
+        // Récupérer le type de lubrifiant
+        const typelubrifiant = await prisma.typelubrifiant.findUnique({
+            where: { id: parseInt(typelubrifiantId) }
+        });
+
+        if (!typelubrifiant) {
+            return res.status(404).json({ message: "Typelubrifiant not found" });
+        }
+
+        // Récupérer tous les parcs triés par nom avec leurs engins
+        const parcs = await prisma.parc.findMany({
+            orderBy: { name: 'asc' },
+            include: {
+                engins: {
+                    select: { id: true }
+                }
+            }
+        });
+
+        const result = await Promise.all(parcs.map(async (parc) => {
+            const parcResult = {
+                parc: parc.name,
+                nombe_engin: parc.engins.length,
+                typelubrifiantId: parseInt(typelubrifiantId),
+                typelubrifiant: typelubrifiant.name,
+                hrm_total: 0,
+                qte_total: 0
+            };
+
+            // Initialiser les valeurs mensuelles (1-12)
+            for (let month = 1; month <= 12; month++) {
+                parcResult[`hrm_${month}`] = 0;
+                parcResult[`qte_${month}`] = 0;
+                parcResult[`spec_${month}`] = 0;
+            }
+
+            // 1. Calcul des HRM par mois
+            const hrmByMonth = await prisma.saisiehrm.groupBy({
+                by: ['du'],
+                where: {
+                    enginId: { in: parc.engins.map(e => e.id) },
+                    du: {
+                        gte: startDate,
+                        lt: endDate
+                    }
+                },
+                _sum: { hrm: true }
+            });
+
+            // Traitement des HRM
+            hrmByMonth.forEach(({ du, _sum }) => {
+                const month = du.getMonth() + 1; // Convertir en 1-12
+                parcResult[`hrm_${month}`] += _sum.hrm;
+                parcResult.hrm_total += _sum.hrm;
+            });
+
+            // 2. Calcul des quantités par mois
+            const qteByMonth = await prisma.saisielubrifiant.findMany({
+                where: {
+                    Lubrifiant: { typelubrifiantId: parseInt(typelubrifiantId) },
+                    Saisiehim: {
+                        Saisiehrm: {
+                            enginId: { in: parc.engins.map(e => e.id) },
+                            du: {
+                                gte: startDate,
+                                lt: endDate
+                            }
+                        }
+                    }
+                },
+                include: {
+                    Saisiehim: {
+                        include: {
+                            Saisiehrm: {
+                                select: { du: true }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Traitement des quantités
+            qteByMonth.forEach(({ qte, Saisiehim }) => {
+                const month = Saisiehim.Saisiehrm.du.getMonth() + 1; // Convertir en 1-12
+                parcResult[`qte_${month}`] += qte;
+                parcResult.qte_total += qte;
+            });
+
+            // Calcul des spécifications mensuelles avec 2 décimales
+            for (let month = 1; month <= 12; month++) {
+                const hrm = parcResult[`hrm_${month}`];
+                const qte = parcResult[`qte_${month}`];
+                parcResult[`spec_${month}`] = hrm > 0 ? parseFloat((qte / hrm).toFixed(2)) : 0;
+            }
+
+            // Calcul de la spécification totale avec 2 décimales
+            parcResult.spec_total = parcResult.hrm_total > 0
+                ? parseFloat((parcResult.qte_total / parcResult.hrm_total).toFixed(2))
+                : 0;
+
+            return parcResult;
+        }));
+
+        res.json(result);
+
+    } catch (error) {
+        console.error("Error in getSpecLub:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+};
+
+const getParetoIndispoParc = async (req, res) => {
+    try {
+        const { parcId, date } = req.body;
+
+        // Validation des paramètres
+        if (!parcId || !date) {
+            return res.status(400).json({
+                message: "parcId and date are required"
+            });
+        }
+
+        const inputDate = new Date(date);
+        const year = inputDate.getFullYear();
+        const month = inputDate.getMonth() + 1; // 1-12
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 1);
+
+        // Calcul du nombre d'heures dans le mois
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const hoursInMonth = daysInMonth * 24;
+
+        // Récupérer le parc avec ses engins
+        const parc = await prisma.parc.findUnique({
+            where: { id: parseInt(parcId) },
+            include: {
+                engins: {
+                    select: { id: true }
+                }
+            }
+        });
+
+        if (!parc) {
+            return res.status(404).json({ message: "Parc not found" });
+        }
+
+        // Calcul du Nho (heures dans le mois * nombre d'engins)
+        const nho = hoursInMonth * parc.engins.length;
+
+        // Calcul des Him par panne
+        const indispoByPanne = await prisma.saisiehim.groupBy({
+            by: ['panneId'],
+            where: {
+                Saisiehrm: {
+                    enginId: { in: parc.engins.map(e => e.id) },
+                    du: {
+                        gte: startDate,
+                        lt: endDate
+                    }
+                }
+            },
+            _sum: { him: true },
+            orderBy: {
+                _sum: { him: 'desc' }
+            }
+        });
+
+        // Récupérer les noms des pannes
+        const panneIds = indispoByPanne.map(item => item.panneId);
+        const pannes = await prisma.panne.findMany({
+            where: { id: { in: panneIds } },
+            select: { id: true, name: true }
+        });
+
+        // Créer un map pour accéder rapidement aux noms des pannes
+        const panneMap = new Map(pannes.map(panne => [panne.id, panne.name]));
+
+        // Calcul de l'indisponibilité pour chaque panne
+        const result = indispoByPanne.map(item => {
+            const indispo = nho > 0 ? parseFloat(((100 * item._sum.him) / nho).toFixed(2)) : 0;
+            return {
+                // parc: parc.name,
+                // year: year.toString(),
+                // month: month.toString(),
+                // nombe_engin: parc.engins.length,
+                panne: panneMap.get(item.panneId) || 'Inconnue',
+                indispo: indispo
+            };
+        });
+
+        res.json(result);
+
+    } catch (error) {
+        console.error("Error in getParetoIndispoParc:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+};
+
+const getParetoMtbfParc = async (req, res) => {
+    try {
+        const { parcId, date } = req.body;
+
+        // Validation des entrées
+        if (!parcId || !date) {
+            return res.status(400).json({ error: "parcId et date sont obligatoires" });
+        }
+
+        const inputDate = new Date(date);
+        const year = inputDate.getFullYear();
+
+        // Récupération du parc avec ses engins actifs
+        const parc = await prisma.parc.findUnique({
+            where: { id: parseInt(parcId) },
+            include: {
+                engins: {
+                    where: { active: true },
+                    select: { id: true }
+                }
+            }
+        });
+
+        if (!parc) {
+            return res.status(404).json({ error: "Parc non trouvé" });
+        }
+
+        const enginIds = parc.engins.map(engin => engin.id);
+        if (enginIds.length === 0) {
+            return res.status(400).json({ error: "Aucun engin actif dans ce parc" });
+        }
+
+        // Noms des mois en français
+        const monthNames = [
+            "janvier", "février", "mars", "avril", "mai", "juin",
+            "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+        ];
+
+        const results = [];
+
+        // Traitement pour chaque mois de l'année
+        for (let month = 0; month < 12; month++) {
+            const monthIndex = month + 1;
+            const monthStart = new Date(year, month, 1);
+            const monthEnd = new Date(year, month + 1, 0);
+
+            // Récupération des HRM (somme des hrm)
+            const hrmResult = await prisma.saisiehrm.aggregate({
+                where: {
+                    enginId: { in: enginIds },
+                    du: { gte: monthStart, lte: monthEnd }
+                },
+                _sum: { hrm: true }
+            });
+            const hrm = hrmResult._sum.hrm || 0;
+
+            // Récupération des NI (somme des ni)
+            const niResult = await prisma.saisiehim.aggregate({
+                where: {
+                    Saisiehrm: {
+                        enginId: { in: enginIds },
+                        du: { gte: monthStart, lte: monthEnd }
+                    }
+                },
+                _sum: { ni: true }
+            });
+            const ni = niResult._sum.ni || 0;
+
+            // Calcul du MTBF (avec 2 décimales)
+            const mtbf = ni > 0 ? parseFloat((hrm / ni).toFixed(2)) : null;
+
+            // Construction de l'objet résultat pour le mois
+            results.push({
+                mois: monthNames[month],
+                // [`hrm_${monthIndex}`]: hrm,
+                // [`ni_${monthIndex}`]: ni,
+                // [`mtbf_${monthIndex}`]: mtbf,
+                [`mtbf`]: mtbf
+            });
+        }
+
+        res.json(results);
+
+    } catch (error) {
+        console.error("Erreur dans getParetoMtbfParc:", error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+};
+
+
 module.exports = {
     getRapportRje,
     getRapportUnitePhysique,
     getEtatMensuel,
     getIndispoParParc,
-    getHeuresChassis
+    getHeuresChassis,
+    getSpecLub,
+    getParetoIndispoParc,
+    getParetoMtbfParc,
 };

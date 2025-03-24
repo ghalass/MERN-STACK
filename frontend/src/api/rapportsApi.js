@@ -22,7 +22,14 @@ export const getRapportHeuresChassis = async (du) => {
     return await apiRequest(API_PATHS.RAPPORTS.GENERATE_RAPPORT_HEURES_CHASSIS, "POST", { du });
 };
 
+export const getRapportSpecLub = async (typelubrifiantId, year) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_RAPPORT_SPEC_LUB, "POST", { typelubrifiantId, year });
+};
 
+export const getParetoIndispParc = async (parcId, date) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_PARETO_INDISPO_PARC, "POST", { parcId, date });
+};
 
-
-
+export const getParetoMtbfParc = async (parcId, date) => {
+    return await apiRequest(API_PATHS.RAPPORTS.GENERATE_PARETO_MTBF_PARC, "POST", { parcId, date });
+};

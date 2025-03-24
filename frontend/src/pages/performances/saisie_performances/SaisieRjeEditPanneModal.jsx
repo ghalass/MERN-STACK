@@ -6,7 +6,6 @@ import { usePannesByTypePanne } from "../../../hooks/usePannes";
 import useSaisieRjeStore from "../../../stores/useSaisieRjeStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTypepannes } from "../../../hooks/useTypepannes";
-import addPanneQueryOptions from "../../../queryOptions/saisie_performances/addPanneQueryOptions";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import { useUpdateSaisiePanne } from "../../../hooks/useSaisieRje";
 

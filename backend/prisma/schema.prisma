@@ -15,7 +15,7 @@ model User {
   name       String
   email      String       @unique
   password   String
-  role       UserRoleType @default(UNASSIGNED)
+  role       UserRoleType @default(USER)
   active     Boolean      @default(false)
   lastVisite DateTime
 }
@@ -148,5 +148,4 @@ enum UserRoleType {
   ADMIN
   AGENT_SAISIE
   USER
-  UNASSIGNED
 }

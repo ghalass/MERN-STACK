@@ -8,6 +8,9 @@ const {
     getEtatMensuel,
     getIndispoParParc,
     getHeuresChassis,
+    getSpecLub,
+    getParetoIndispoParc,
+    getParetoMtbfParc,
 }
     = require('../controllers/rapportsController')
 
@@ -23,5 +26,8 @@ router.post('/getRapportUnitePhysique', getRapportUnitePhysique)
 router.post('/getEtatMensuel', getEtatMensuel)
 router.post('/getIndispoParParc', getIndispoParParc)
 router.post('/getHeuresChassis', getHeuresChassis)
+router.post('/getSpecLub', getSpecLub)
+router.post('/getParetoIndispoParc', getParetoIndispoParc)
+router.post('/getParetoMtbfParc', getParetoMtbfParc)
 
 module.exports = router

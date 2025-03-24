@@ -60,6 +60,13 @@ export const API_PATHS = {
         DELETE_PANNE: (panneId) => `/pannes/${panneId}`,
         DOWNLOAD_PANNES: "/pannes/downloadexcel",
     },
+    TYPELUBRIFIANTS: {
+        GET_ALL_TYPELUBRIFIANTS: "/typelubrifiants",
+        ADD_TYPELUBRIFIANT: "/typelubrifiants",
+        UPDATE_TYPELUBRIFIANT: (typelubrifiantId) => `/typelubrifiants/${typelubrifiantId}`,
+        DELETE_TYPELUBRIFIANT: (typelubrifiantId) => `/typelubrifiants/${typelubrifiantId}`,
+        DOWNLOAD_TYPELUBRIFIANTS: "/typelubrifiants/downloadexcel",
+    },
     LUBRIFIANTS: {
         GET_ALL_LUBRIFIANTS: "/lubrifiants",
         ADD_LUBRIFIANT: "/lubrifiants",
@@ -87,5 +94,8 @@ export const API_PATHS = {
         GENERATE_ETAT_MENSUEL: "/rapports/getEtatMensuel",
         GENERATE_RAPPORT_INDISPO: "/rapports/getIndispoParParc",
         GENERATE_RAPPORT_HEURES_CHASSIS: "/rapports/getHeuresChassis",
+        GENERATE_RAPPORT_SPEC_LUB: "/rapports/getSpecLub",
+        GENERATE_PARETO_INDISPO_PARC: "/rapports/getParetoIndispoParc",
+        GENERATE_PARETO_MTBF_PARC: "/rapports/getParetoMtbfParc",
     }
 };

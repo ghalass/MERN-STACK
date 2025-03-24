@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import HeuresChassis from "../pages/performances/rapports_performances/HeuresChassis";
+import RapportSpecLub from "../pages/performances/rapports_performances/RapportSpecLub";
 
 // COMPONENTS
 const ParetosInDispo = lazy(() =>
@@ -27,6 +28,7 @@ export default function PerformancesLayout() {
         defaultActiveKey="rapportrje"
         id="uncontrolled-tab-example"
         className="mb-3"
+        fill
       >
         {TABS_LIST.map((tab, index) => (
           <Tab key={index} eventKey={tab.eventKey} title={tab.title}>
@@ -52,13 +54,18 @@ const TABS_LIST = [
   },
   {
     eventKey: "rapportindispo",
-    title: "Rapport d'indispo",
+    title: "Indispo",
     ele: <RapportIndispo />,
   },
   {
     eventKey: "heureschassis",
-    title: "Rapport Heures Chassis",
+    title: "Heures Chassis",
     ele: <HeuresChassis />,
+  },
+  {
+    eventKey: "rapportspeclub",
+    title: "Spéc Lub",
+    ele: <RapportSpecLub />,
   },
   {
     eventKey: "paretoindispo",
