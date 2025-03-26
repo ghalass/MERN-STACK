@@ -4,10 +4,12 @@ import {
 } from "../../../hooks/useRapports";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 import { useParcs } from "../../../hooks/useParcs";
 import LoaderSmall from "../../../components/ui/LoaderSmall";
 import Chart from "../../../components/Chart";
+
+import { getYear, getMonth, parseISO } from "date-fns";
 
 const ParetosInDispo = () => {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 7));
@@ -19,10 +21,10 @@ const ParetosInDispo = () => {
   const [_, setShouldFetch] = useState(false);
 
   const getParetoIndispParc = useQuery(
-    getParetoIndispParcOptions(selectedParc, "2025-03-24")
+    getParetoIndispParcOptions(selectedParc, date)
   );
   const getParetoMtbfParc = useQuery(
-    getParetoMtbfParcOptions(selectedParc, "2025-03-24")
+    getParetoMtbfParcOptions(selectedParc, date)
   );
 
   const handleClick = () => {
@@ -80,50 +82,157 @@ const ParetosInDispo = () => {
       </div>
 
       <div className="row">
-        <div className="col-md">
-          <h6 className="text-center text-uppercase">
-            pareto indispo du parc {selectedParcName} au mois :{" "}
-            {date.split("-").reverse().join("-")}
-          </h6>
+        <div className="col-lg">
+          <div className="d-flex flex-column">
+            <div>
+              <h6 className="text-center text-uppercase">
+                pareto indispo du parc {selectedParcName} au mois :{" "}
+                {date.split("-").reverse().join("-")}
+              </h6>
+              {getParetoIndispParc.isFetching && (
+                <div className="text-center text-primary">
+                  <LoaderSmall />
+                </div>
+              )}
+              {!getParetoIndispParc.isFetching &&
+              selectedParc !== "" &&
+              getParetoIndispParc?.data &&
+              getParetoIndispParc?.data?.length > 0 ? (
+                <Chart
+                  data={getParetoIndispParc?.data?.slice(0, 10)}
+                  xDataKey={"panne"}
+                  barDataKey={"indispo"}
+                />
+              ) : (
+                <h6 className="text-center">
+                  {selectedParc !== "" &&
+                    "Aucune pannes n'est trouvées pour ce parc à cette date."}
+                </h6>
+              )}
+            </div>
 
-          {selectedParc !== "" &&
-          getParetoIndispParc?.data &&
-          getParetoIndispParc?.data?.length > 0 ? (
-            <Chart
-              data={getParetoIndispParc?.data?.slice(0, 10)}
-              xDataKey={"panne"}
-              barDataKey={"indispo"}
-            />
-          ) : (
-            <h6 className="text-center">
-              {selectedParc !== ""
-                ? "Aucune pannes n'est trouvées pour ce parc à cette date."
-                : "Veuillez choisir un parc et un mois, puis cliquez générer"}
-            </h6>
-          )}
+            <div>
+              {!getParetoIndispParc.isFetching && (
+                <Table
+                  responsive
+                  striped
+                  bordered
+                  hover
+                  size="sm"
+                  className="text-center text-uppercase"
+                  id="tbl_etat_mensuel"
+                >
+                  <thead>
+                    {selectedParc !== "" &&
+                      getParetoIndispParc?.data &&
+                      getParetoIndispParc?.data?.length > 0 && (
+                        <tr>
+                          <td colSpan={11}>
+                            les 10 engins le plus affectés [HIM]
+                          </td>
+                        </tr>
+                      )}
+                  </thead>
+                  <tbody>
+                    {selectedParc !== "" &&
+                      getParetoIndispParc?.data &&
+                      getParetoIndispParc?.data?.length > 0 &&
+                      getParetoIndispParc?.data
+                        ?.slice(0, 9)
+                        .map((panneObj, k) => (
+                          <tr key={k}>
+                            <td>{panneObj?.panne}</td>
+                            {panneObj?.engins &&
+                              panneObj?.engins?.length > 0 &&
+                              panneObj?.engins?.map((e, r) => (
+                                <td>
+                                  {e?.him !== 0
+                                    ? e?.name + " ( " + e?.him + " ) "
+                                    : ""}
+                                </td>
+                              ))}
+                          </tr>
+                        ))}
+                  </tbody>
+                </Table>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="col-md">
-          <h6 className="text-center text-uppercase">
-            évolution mtbf du parc {selectedParcName} au mois :{" "}
-            {date.split("-").reverse().join("-")}
-          </h6>
-          {selectedParc !== "" &&
-          getParetoMtbfParc?.data &&
-          getParetoMtbfParc?.data?.length > 0 ? (
-            <Chart
-              data={getParetoMtbfParc?.data}
-              xDataKey={"mois"}
-              barDataKey={"mtbf"}
-              type="line"
-            />
-          ) : (
-            <h6 className="text-center">
-              {selectedParc !== ""
-                ? "Aucune pannes n'est trouvées pour ce parc à cette date."
-                : "Veuillez choisir un parc et un mois, puis cliquez générer"}
+        <div className="col-sm">
+          <div className="d-flex flex-column">
+            <h6 className="text-center text-uppercase">
+              évolution mtbf du parc {selectedParcName}
+              {" - "}
+              {getYear(parseISO(date))}
             </h6>
-          )}
+
+            {!getParetoIndispParc.isFetching &&
+              selectedParc !== "" &&
+              getParetoMtbfParc?.data &&
+              getParetoMtbfParc?.data?.length > 0 && (
+                <Chart
+                  data={getParetoMtbfParc?.data}
+                  xDataKey={"mois"}
+                  barDataKey={"mtbf"}
+                  type="line"
+                />
+              )}
+          </div>
+
+          <div>
+            {getParetoIndispParc.isFetching && (
+              <div className="text-center text-primary">
+                <LoaderSmall />
+              </div>
+            )}
+
+            {!getParetoIndispParc.isFetching && (
+              <Table
+                responsive
+                striped
+                bordered
+                hover
+                size="sm"
+                className="text-center text-uppercase"
+                id="tbl_etat_mensuel"
+              >
+                <thead>
+                  {selectedParc !== "" &&
+                    getParetoIndispParc?.data &&
+                    getParetoIndispParc?.data?.length > 0 && (
+                      <tr>
+                        <td colSpan={11}>
+                          les 10 engins le plus affectés [NI]
+                        </td>
+                      </tr>
+                    )}
+                </thead>
+                <tbody>
+                  {selectedParc !== "" &&
+                    getParetoIndispParc?.data &&
+                    getParetoIndispParc?.data?.length > 0 &&
+                    getParetoIndispParc?.data
+                      ?.slice(0, 9)
+                      .map((panneObj, k) => (
+                        <tr key={k}>
+                          <td>{panneObj?.panne}</td>
+                          {panneObj?.engins_mtbf &&
+                            panneObj?.engins_mtbf?.length > 0 &&
+                            panneObj?.engins_mtbf?.map((e, r) => (
+                              <td>
+                                {e?.ni !== 0
+                                  ? e?.name + " ( " + e?.ni + " ) "
+                                  : ""}
+                              </td>
+                            ))}
+                        </tr>
+                      ))}
+                </tbody>
+              </Table>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -247,6 +247,100 @@ const getSaisieHrm = async (req, res) => {
     }
 }
 
+const getSaisieHrmDay = async (req, res) => {
+    try {
+        const { du } = req.body;
+        const dateCible = new Date(du);
+
+        // Formater la date pour l'affichage (jj-mm-aaaa)
+        const formatDate = (date) => {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        };
+
+        // Récupérer toutes les saisies HRM pour la date exacte avec les relations nécessaires
+        const saisies = await prisma.saisiehrm.findMany({
+            where: {
+                du: {
+                    equals: dateCible
+                }
+            },
+            include: {
+                Engin: {
+                    include: {
+                        Parc: {
+                            include: {
+                                Typeparc: true
+                            }
+                        }
+                    }
+                },
+                Site: true,  // On inclut maintenant le Site depuis Saisiehrm
+                Saisiehim: {
+                    include: {
+                        Panne: true,
+                        Saisielubrifiant: {
+                            include: {
+                                Lubrifiant: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Préparer le résultat final
+        const result = [];
+
+        // Traiter chaque saisie HRM
+        saisies.forEach(saisie => {
+            const baseData = {
+                date: formatDate(dateCible),
+                typeparc: saisie.Engin.Parc.Typeparc.name,
+                parc: saisie.Engin.Parc.name,
+                engin: saisie.Engin.name,
+                site: saisie.Site.name,  // On prend maintenant le site depuis Saisiehrm
+                hrm: saisie.hrm
+            };
+
+            // Si l'engin a des pannes (Saisiehim)
+            if (saisie.Saisiehim && saisie.Saisiehim.length > 0) {
+                saisie.Saisiehim.forEach(saisieHim => {
+                    // Préparer les lubrifiants consommés
+                    const lubrifiants = saisieHim.Saisielubrifiant.map(lub => ({
+                        name: lub.Lubrifiant.name,
+                        qte: lub.qte
+                    }));
+
+                    result.push({
+                        ...baseData,
+                        panne: saisieHim.Panne.name,
+                        him: saisieHim.him,
+                        ni: saisieHim.ni,
+                        lubrifiants: lubrifiants
+                    });
+                });
+            } else {
+                // Si l'engin n'a pas de pannes
+                result.push({
+                    ...baseData,
+                    panne: null,
+                    him: 0,
+                    ni: 0,
+                    lubrifiants: []
+                });
+            }
+        });
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Erreur serveur" });
+    }
+};
 
 
 module.exports = {
@@ -260,5 +354,7 @@ module.exports = {
     deleteSaisieHim,
     updateSaisieHim,
 
-    getSaisieHrm
+    getSaisieHrm,
+
+    getSaisieHrmDay,
 }

@@ -16,7 +16,7 @@ model User {
   email      String       @unique
   password   String
   role       UserRoleType @default(USER)
-  active     Boolean      @default(false)
+  active     Boolean      @default(true)
   lastVisite DateTime
 }
 

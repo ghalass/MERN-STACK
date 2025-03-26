@@ -79,5 +79,6 @@ const LIST_SIDEBAR = [
     title: "Saisie performances",
     icon: "bi-people",
   },
+  { link: "/donnees_saisies", title: "Données saisies", icon: "bi-people" },
   { link: "/performances", title: "Performances", icon: "bi-people" },
 ];

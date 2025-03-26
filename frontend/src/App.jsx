@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react"; // Ajout de Suspense pour gérer le char
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Ajout de Outlet
 import { AuthProvider } from "./context/Auth";
 import TypeparcsPage from "./pages/admin/typeparcs/TypeparcsPage";
+import DonnesSaisieLayout from "./layouts/DonnesSaisieLayout";
 
 /*** LAYOUTS */
 const DefaultLayout = lazy(() => import("./layouts/DefaultLayout"));
@@ -86,12 +87,14 @@ const App = () => {
                     <Route index element={<Home />} />
                     <Route path="saisie_performances" element={<SaisieRje />} />
                     <Route path="profile" element={<Profile />} />
-                    <Route path="performances" element={<PerformancesLayout />}>
-                      {/* <Route
-                        path="performances/rapports/rje"
-                        element={<RapportRje />}
-                      /> */}
-                    </Route>
+                    <Route
+                      path="performances"
+                      element={<PerformancesLayout />}
+                    ></Route>
+                    <Route
+                      path="donnees_saisies"
+                      element={<DonnesSaisieLayout />}
+                    ></Route>
                   </Route>
                 </Route>
               </Route>

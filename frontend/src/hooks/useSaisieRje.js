@@ -1,6 +1,6 @@
 // hooks/useSaisieRje.js
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createSaisieHrm, deleteSaisiePanne, updateSaisiePanne } from '../api/saisieRjeApi';
+import { createSaisieHrm, deleteSaisiePanne, getSaisieHrmDay, updateSaisiePanne } from '../api/saisieRjeApi';
 import { toast } from 'react-toastify';
 
 export const useCreateSaisieHrm = () => {
@@ -34,4 +34,13 @@ export const useUpdateSaisiePanne = (handleCloseEditPanneModal) => {
             queryClient.invalidateQueries(['saisieRjeList']);
         }
     });
+}
+
+export const useGetSaisieHrmDay = (du) => {
+    return queryOptions({
+        queryKey: ["donneesSaisieRjeList"],
+        queryFn: () => getSaisieHrmDay(du),
+        enabled: false, // 🔥 Désactive la requête automatique
+    })
+
 }

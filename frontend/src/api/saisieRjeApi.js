@@ -21,3 +21,7 @@ export const deleteSaisiePanne = async (data) => {
 export const updateSaisiePanne = async (data) => {
     return await apiRequest(API_PATHS.SAISIE_RJE.UPDATE_SAISIE_RJE_PANNE_HIM, "PATCH", data);
 };
+
+export const getSaisieHrmDay = async (du) => {
+    return await apiRequest(API_PATHS.SAISIE_RJE.GET_SAISIE_RJE_DAY, "POST", { du });
+};

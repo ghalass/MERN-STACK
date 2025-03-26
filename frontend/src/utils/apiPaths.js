@@ -76,6 +76,7 @@ export const API_PATHS = {
     },
     SAISIE_RJE: {
         GET_SAISIE_RJE: "/saisiehrm/getSaisieHrm",
+        GET_SAISIE_RJE_DAY: "/saisiehrm/getSaisieHrmDay",
 
         ADD_SAISIE_RJE_HRM: `/saisiehrm/createSaisieHrm`,
         UPDATE_SAISIE_RJE_HRM: `/saisiehrm/updateSaisieHrm`,
@@ -83,6 +84,8 @@ export const API_PATHS = {
         ADD_SAISIE_RJE_PANNE_HIM: "/saisiehrm/createSaisieHim",
         DELETE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/deleteSaisieHim",
         UPDATE_SAISIE_RJE_PANNE_HIM: "/saisiehrm/updateSaisieHim",
+
+
     },
     SAISIE_LUBRIFIANT: {
         ADD_SAISIE_LUBRIFIANT: `/saisielubrifiant/createSaisieLubrifiant`,

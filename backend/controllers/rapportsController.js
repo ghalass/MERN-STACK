@@ -137,12 +137,11 @@ const getRapportUnitePhysique = async (req, res) => {
         const debutAnnee = new Date(dateCible.getFullYear(), 0, 1);  // 1er jour de l'année
         const finAnnee = new Date(dateCible.getFullYear(), 11, 31);  // Dernier jour de l'année
 
-        // Récupérer tous les parcs avec leurs engins et sites associés
+        // Récupérer tous les parcs avec leurs engins et les saisies HRM associées
         const parcs = await prisma.parc.findMany({
             include: {
                 engins: {
                     include: {
-                        Site: true,
                         Saisiehrm: {
                             where: {
                                 OR: [
@@ -151,7 +150,8 @@ const getRapportUnitePhysique = async (req, res) => {
                                 ]
                             },
                             include: {
-                                Saisiehim: true  // Inclure les Saisiehim liées à chaque Saisiehrm
+                                Site: true,  // Inclure le site associé à la saisie HRM
+                                Saisiehim: true  // Inclure les Saisiehim liées
                             }
                         }
                     }
@@ -163,44 +163,36 @@ const getRapportUnitePhysique = async (req, res) => {
         const result = parcs.map(parc => {
             const engins = parc.engins;
 
-            // Objet pour regrouper les données par site
+            // Objet pour regrouper les données par site (basé sur Saisiehrm)
             const sitesData = {};
 
             engins.forEach(engin => {
-                const siteName = engin.Site.name;
+                engin.Saisiehrm.forEach(saisie => {
+                    const siteName = saisie.Site.name;
 
-                // Initialiser les données du site si nécessaire
-                if (!sitesData[siteName]) {
-                    sitesData[siteName] = {
-                        site: siteName,
-                        hrm_m: 0,
-                        him_m: 0,
-                        hrm_a: 0,
-                        him_a: 0
-                    };
-                }
+                    // Initialiser les données du site si nécessaire
+                    if (!sitesData[siteName]) {
+                        sitesData[siteName] = {
+                            site: siteName,
+                            hrm_m: 0,
+                            him_m: 0,
+                            hrm_a: 0,
+                            him_a: 0
+                        };
+                    }
 
-                // Calculer HRM mensuel pour ce site
-                sitesData[siteName].hrm_m += engin.Saisiehrm
-                    .filter(saisie => saisie.du >= debutMois && saisie.du <= finMois)
-                    .reduce((sum, saisie) => sum + saisie.hrm, 0);
+                    // Vérifier si la saisie est dans le mois en cours
+                    if (saisie.du >= debutMois && saisie.du <= finMois) {
+                        sitesData[siteName].hrm_m += saisie.hrm;
+                        sitesData[siteName].him_m += saisie.Saisiehim.reduce((sum, him) => sum + him.him, 0);
+                    }
 
-                // Calculer HIM mensuel pour ce site
-                sitesData[siteName].him_m += engin.Saisiehrm
-                    .filter(saisie => saisie.du >= debutMois && saisie.du <= finMois)
-                    .flatMap(saisie => saisie.Saisiehim)  // Extraire les Saisiehim liées
-                    .reduce((sum, saisie) => sum + saisie.him, 0);
-
-                // Calculer HRM annuel pour ce site
-                sitesData[siteName].hrm_a += engin.Saisiehrm
-                    .filter(saisie => saisie.du >= debutAnnee && saisie.du <= finAnnee)
-                    .reduce((sum, saisie) => sum + saisie.hrm, 0);
-
-                // Calculer HIM annuel pour ce site
-                sitesData[siteName].him_a += engin.Saisiehrm
-                    .filter(saisie => saisie.du >= debutAnnee && saisie.du <= finAnnee)
-                    .flatMap(saisie => saisie.Saisiehim)  // Extraire les Saisiehim liées
-                    .reduce((sum, saisie) => sum + saisie.him, 0);
+                    // Vérifier si la saisie est dans l'année en cours
+                    if (saisie.du >= debutAnnee && saisie.du <= finAnnee) {
+                        sitesData[siteName].hrm_a += saisie.hrm;
+                        sitesData[siteName].him_a += saisie.Saisiehim.reduce((sum, him) => sum + him.him, 0);
+                    }
+                });
             });
 
             // Convertir l'objet sitesData en tableau
@@ -697,20 +689,26 @@ const getParetoIndispoParc = async (req, res) => {
 
         const inputDate = new Date(date);
         const year = inputDate.getFullYear();
-        const month = inputDate.getMonth() + 1; // 1-12
+        const month = inputDate.getMonth() + 1;
         const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 1);
+        const endDate = new Date(year, month, 0, 23, 59, 59); // Fin du dernier jour du mois
 
         // Calcul du nombre d'heures dans le mois
         const daysInMonth = new Date(year, month, 0).getDate();
         const hoursInMonth = daysInMonth * 24;
 
-        // Récupérer le parc avec ses engins
+        // Récupérer le parc avec tous ses engins
         const parc = await prisma.parc.findUnique({
             where: { id: parseInt(parcId) },
             include: {
                 engins: {
-                    select: { id: true }
+                    select: {
+                        id: true,
+                        name: true
+                    },
+                    orderBy: {
+                        name: 'asc'
+                    }
                 }
             }
         });
@@ -722,46 +720,102 @@ const getParetoIndispoParc = async (req, res) => {
         // Calcul du Nho (heures dans le mois * nombre d'engins)
         const nho = hoursInMonth * parc.engins.length;
 
-        // Calcul des Him par panne
-        const indispoByPanne = await prisma.saisiehim.groupBy({
-            by: ['panneId'],
+        // Récupérer toutes les données pour le mois spécifié en une seule requête
+        const records = await prisma.saisiehim.findMany({
             where: {
                 Saisiehrm: {
                     enginId: { in: parc.engins.map(e => e.id) },
                     du: {
                         gte: startDate,
-                        lt: endDate
+                        lte: endDate
                     }
                 }
             },
-            _sum: { him: true },
-            orderBy: {
-                _sum: { him: 'desc' }
+            select: {
+                panneId: true,
+                him: true,
+                ni: true,
+                enginId: true,
+                Saisiehrm: {
+                    select: {
+                        enginId: true,
+                        du: true
+                    }
+                }
             }
         });
 
         // Récupérer les noms des pannes
-        const panneIds = indispoByPanne.map(item => item.panneId);
+        const panneIds = [...new Set(records.map(r => r.panneId))];
         const pannes = await prisma.panne.findMany({
             where: { id: { in: panneIds } },
             select: { id: true, name: true }
         });
-
-        // Créer un map pour accéder rapidement aux noms des pannes
         const panneMap = new Map(pannes.map(panne => [panne.id, panne.name]));
 
-        // Calcul de l'indisponibilité pour chaque panne
-        const result = indispoByPanne.map(item => {
-            const indispo = nho > 0 ? parseFloat(((100 * item._sum.him) / nho).toFixed(2)) : 0;
-            return {
-                // parc: parc.name,
-                // year: year.toString(),
-                // month: month.toString(),
-                // nombe_engin: parc.engins.length,
-                panne: panneMap.get(item.panneId) || 'Inconnue',
-                indispo: indispo
-            };
+        // Organiser les données par panne
+        const dataByPanne = {};
+        records.forEach(record => {
+            const panneId = record.panneId;
+            const enginId = record.enginId || record.Saisiehrm.enginId;
+            const dateDu = record.Saisiehrm.du;
+
+            // Vérifier que la date est bien dans le mois spécifié
+            if (dateDu >= startDate && dateDu <= endDate) {
+                if (!dataByPanne[panneId]) {
+                    dataByPanne[panneId] = {
+                        himTotal: 0,
+                        niTotal: 0,
+                        engins: {}
+                    };
+                }
+
+                dataByPanne[panneId].himTotal += record.him;
+                dataByPanne[panneId].niTotal += record.ni;
+
+                if (!dataByPanne[panneId].engins[enginId]) {
+                    dataByPanne[panneId].engins[enginId] = {
+                        him: 0,
+                        ni: 0
+                    };
+                }
+
+                dataByPanne[panneId].engins[enginId].him += record.him;
+                dataByPanne[panneId].engins[enginId].ni += record.ni;
+            }
         });
+
+        // Préparer le résultat final
+        const result = Object.entries(dataByPanne).map(([panneId, data]) => {
+            const enginsList = parc.engins
+                .filter(engin => data.engins[engin.id]?.him > 0)
+                .map(engin => ({
+                    name: engin.name,
+                    him: data.engins[engin.id].him
+                }))
+                .sort((a, b) => b.him - a.him);
+
+            const enginsMtbfList = parc.engins
+                .filter(engin => data.engins[engin.id]?.ni > 0)
+                .map(engin => ({
+                    name: engin.name,
+                    ni: data.engins[engin.id].ni
+                }))
+                .sort((a, b) => b.ni - a.ni);
+
+            const indispo = nho > 0 ? parseFloat(((100 * data.himTotal) / nho).toFixed(2)) : 0;
+
+            return {
+                parc: parc.name,
+                year: year.toString(),
+                month: month.toString(),
+                nombe_engin: parc.engins.length,
+                panne: panneMap.get(parseInt(panneId)) || 'Inconnue',
+                indispo: indispo,
+                engins: enginsList,
+                engins_mtbf: enginsMtbfList
+            };
+        }).sort((a, b) => b.indispo - a.indispo); // Tri par indisponibilité décroissante
 
         res.json(result);
 
@@ -786,13 +840,15 @@ const getParetoMtbfParc = async (req, res) => {
         const inputDate = new Date(date);
         const year = inputDate.getFullYear();
 
-        // Récupération du parc avec ses engins actifs
+        // Récupération du parc avec tous ses engins (actifs et inactifs)
         const parc = await prisma.parc.findUnique({
             where: { id: parseInt(parcId) },
             include: {
                 engins: {
-                    where: { active: true },
-                    select: { id: true }
+                    select: {
+                        id: true,
+                        active: true
+                    }
                 }
             }
         });
@@ -801,29 +857,38 @@ const getParetoMtbfParc = async (req, res) => {
             return res.status(404).json({ error: "Parc non trouvé" });
         }
 
-        const enginIds = parc.engins.map(engin => engin.id);
-        if (enginIds.length === 0) {
-            return res.status(400).json({ error: "Aucun engin actif dans ce parc" });
-        }
-
         // Noms des mois en français
         const monthNames = [
             "janvier", "février", "mars", "avril", "mai", "juin",
             "juillet", "août", "septembre", "octobre", "novembre", "décembre"
         ];
 
-        const results = [];
+        // Préparer le résultat de base pour tous les mois
+        const results = monthNames.map((monthName, index) => ({
+            mois: monthName.slice(0, 3),
+            mtbf: null,
+            engins_actifs: 0
+        }));
+
+        // Filtrer seulement les engins actifs
+        const activeEnginIds = parc.engins
+            .filter(engin => engin.active)
+            .map(engin => engin.id);
+
+        // Si aucun engin actif, retourner le résultat vide
+        if (activeEnginIds.length === 0) {
+            return res.json(results);
+        }
 
         // Traitement pour chaque mois de l'année
         for (let month = 0; month < 12; month++) {
-            const monthIndex = month + 1;
             const monthStart = new Date(year, month, 1);
             const monthEnd = new Date(year, month + 1, 0);
 
             // Récupération des HRM (somme des hrm)
             const hrmResult = await prisma.saisiehrm.aggregate({
                 where: {
-                    enginId: { in: enginIds },
+                    enginId: { in: activeEnginIds },
                     du: { gte: monthStart, lte: monthEnd }
                 },
                 _sum: { hrm: true }
@@ -834,7 +899,7 @@ const getParetoMtbfParc = async (req, res) => {
             const niResult = await prisma.saisiehim.aggregate({
                 where: {
                     Saisiehrm: {
-                        enginId: { in: enginIds },
+                        enginId: { in: activeEnginIds },
                         du: { gte: monthStart, lte: monthEnd }
                     }
                 },
@@ -845,24 +910,24 @@ const getParetoMtbfParc = async (req, res) => {
             // Calcul du MTBF (avec 2 décimales)
             const mtbf = ni > 0 ? parseFloat((hrm / ni).toFixed(2)) : null;
 
-            // Construction de l'objet résultat pour le mois
-            results.push({
-                mois: monthNames[month],
-                // [`hrm_${monthIndex}`]: hrm,
-                // [`ni_${monthIndex}`]: ni,
-                // [`mtbf_${monthIndex}`]: mtbf,
-                [`mtbf`]: mtbf
-            });
+            // Mise à jour du résultat pour le mois courant
+            results[month] = {
+                ...results[month],
+                mtbf: mtbf,
+                engins_actifs: activeEnginIds.length
+            };
         }
 
         res.json(results);
 
     } catch (error) {
         console.error("Erreur dans getParetoMtbfParc:", error);
-        res.status(500).json({ error: "Erreur interne du serveur" });
+        res.status(500).json({
+            error: "Erreur interne du serveur",
+            details: error.message
+        });
     }
 };
-
 
 module.exports = {
     getRapportRje,

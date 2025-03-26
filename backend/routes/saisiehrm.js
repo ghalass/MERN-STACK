@@ -12,6 +12,7 @@ const {
     updateSaisieHim,
 
     getSaisieHrm,
+    getSaisieHrmDay,
 
 }
     = require('../controllers/saisiehrmController')
@@ -30,6 +31,7 @@ router.patch('/updateSaisieHrm', updateSaisieHrm)
 router.post('/createSaisieHim', createSaisieHim)
 router.delete('/deleteSaisieHim', deleteSaisieHim)
 router.patch('/updateSaisieHim', updateSaisieHim)
+router.post('/getSaisieHrmDay', getSaisieHrmDay)
 
 
 router.post('/byengin_and_date', get_byengin_and_date)
