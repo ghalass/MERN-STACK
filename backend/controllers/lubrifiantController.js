@@ -113,7 +113,7 @@ const updateLubrifiant = async (req, res) => {
 
         });
         if (nameExist) {
-            return res.status(401).json({ error: "Nom déjà utilisé!" })
+            return res.status(400).json({ error: "Nom déjà utilisé!" })
         }
 
         if (!lubrifiant) {

@@ -4,7 +4,7 @@ const prisma = require('../prismaClient')
 const getEngins = async (req, res) => {
     try {
         const engins = await prisma.engin.findMany({
-            include: { Parc: true, Site: true },
+            include: { Parc: { include: { Typeparc: true } }, Site: true },
             orderBy: { name: 'asc' },
         });
 
@@ -77,7 +77,7 @@ const getEnginsByParcIdSiteId = async (req, res) => {
         if (!siteId) emptyFields.push('siteId')
 
         if (emptyFields.length > 0) {
-            return res.status(401).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
         }
 
         if (isNaN(parcId) || parseInt(parcId) != parcId) {
@@ -105,7 +105,7 @@ const getEnginsByParcIdSiteId = async (req, res) => {
 // create new engin
 const createEngin = async (req, res) => {
     try {
-        const { name, parcId, siteId } = req.body
+        const { name, parcId, siteId, initialHeureChassis, active } = req.body
 
         let emptyFields = [];
 
@@ -114,7 +114,7 @@ const createEngin = async (req, res) => {
         if (!siteId) emptyFields.push('siteId')
 
         if (emptyFields.length > 0) {
-            return res.status(401).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
         }
 
         const exists = await prisma.engin.findFirst({
@@ -126,7 +126,7 @@ const createEngin = async (req, res) => {
         }
 
         const engin = await prisma.engin.create({
-            data: { name, parcId: parseInt(parcId), siteId: parseInt(siteId) }
+            data: { name, parcId: parseInt(parcId), siteId: parseInt(siteId), initialHeureChassis: parseFloat(initialHeureChassis), active }
         })
         res.status(201).json(engin)
     } catch (error) {
@@ -166,7 +166,7 @@ const deleteEngin = async (req, res) => {
 const updateEngin = async (req, res) => {
     try {
         const { id } = req.params
-        const { name, parcId, siteId } = req.body
+        const { name, parcId, siteId, initialHeureChassis, active } = req.body
 
         if (isNaN(id) || parseInt(id) != id) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
@@ -178,7 +178,7 @@ const updateEngin = async (req, res) => {
 
         });
         if (nameExist) {
-            return res.status(401).json({ error: "Nom déjà utilisé!" })
+            return res.status(400).json({ error: "Nom déjà utilisé!" })
         }
 
         const engin = await prisma.engin.findFirst({
@@ -190,7 +190,7 @@ const updateEngin = async (req, res) => {
 
         const updatedWorkout = await prisma.engin.update({
             where: { id: parseInt(id) },
-            data: { name, parcId: parseInt(parcId), siteId: parseInt(siteId) }
+            data: { name, parcId: parseInt(parcId), siteId: parseInt(siteId), initialHeureChassis: parseFloat(initialHeureChassis), active }
         });
 
         res.status(200).json(updatedWorkout)
