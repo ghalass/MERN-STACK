@@ -3,10 +3,10 @@ const prisma = require('../prismaClient')
 // get all
 const getLubrifiants = async (req, res) => {
     try {
-        const lubrifiants = await prisma.lubrifiant
-            .findMany({
-                orderBy: { name: 'asc' },
-            });
+        const lubrifiants = await prisma.lubrifiant.findMany({
+            orderBy: { name: 'asc' },
+            include: { Typelubrifiant: true }
+        });
         res.status(200).json(lubrifiants)
     } catch (error) {
         res.status(500).json({ error: error.message });
