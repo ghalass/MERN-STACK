@@ -1,6 +1,13 @@
-require('dotenv').config()
+// allowedOrigins.js
+require('dotenv').config();
 
-const allowedOrigins = [`http://localhost:4000`, `http://localhost:5173`];
-
+const allowedOrigins = [
+    'http://localhost:4000',      // Local API
+    'http://localhost:5173',      // Local React dev server
+    'https://app1.ghalass.com',   // Production frontend
+    'https://api1.ghalass.com',   // Add your API domain if needed for web access
+    "*",
+    "http://localhost:3000"
+];
 
 module.exports = allowedOrigins;

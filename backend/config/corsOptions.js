@@ -1,16 +1,21 @@
-const allowedOrigins = require("./allowedOrigins");
+// corsOptions.js
+const allowedOrigins = require('./allowedOrigins');
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // check if contient elements && !origin meet we send request from PostMan so remove it on production
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true)
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'))
+            callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
-    optionsSuccessStatus: 200
-}
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
 
 module.exports = corsOptions;

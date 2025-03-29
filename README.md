@@ -16,6 +16,7 @@ npm install swagger-jsdoc swagger-ui-express
 - npm i react-router-dom
 - npm i js-cookie
 - npm i bootstrap@5.3.3
+- npm i @tanstack/react-query
 - npm install react-bootstrap bootstrap
 - npm install @popperjs/core
 - npm install zustand
