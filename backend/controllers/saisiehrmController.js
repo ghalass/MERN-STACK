@@ -232,8 +232,18 @@ const getSaisieHrm = async (req, res) => {
                 .status(400)
                 .json({ error: "Veuillez remplir tous les champs!", missingFields });
         }
+
+        const startDate = new Date(du); // 2025-03-29T00:00:00.000Z
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 1); // 2025-03-30T00:00:00.000Z
+
         const saisiehrm = await prisma.saisiehrm.findMany({
-            where: { du: new Date(du), enginId: parseInt(enginId) },
+            where: {
+                du: {
+                    gte: startDate,  // Greater than or equal to start of day
+                    lt: endDate      // Less than start of next day
+                }, enginId: parseInt(enginId)
+            },
             include: {
                 Saisiehim: { include: { Panne: { include: { Typepanne: true } }, Saisielubrifiant: { include: { Lubrifiant: { include: { Typelubrifiant: true } } } } } },
                 Engin: true,
@@ -252,6 +262,10 @@ const getSaisieHrmDay = async (req, res) => {
         const { du } = req.body;
         const dateCible = new Date(du);
 
+        const startDate = new Date(du); // 2025-03-29T00:00:00.000Z
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 1); // 2025-03-30T00:00:00.000Z
+
         // Formater la date pour l'affichage (jj-mm-aaaa)
         const formatDate = (date) => {
             const day = String(date.getDate()).padStart(2, '0');
@@ -264,7 +278,8 @@ const getSaisieHrmDay = async (req, res) => {
         const saisies = await prisma.saisiehrm.findMany({
             where: {
                 du: {
-                    equals: dateCible
+                    gte: startDate,  // Greater than or equal to start of day
+                    lt: endDate      // Less than start of next day
                 }
             },
             include: {

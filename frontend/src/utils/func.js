@@ -23,10 +23,6 @@ export const getUserRole = (user) => {
             re = `Utilisateur`;
             break;
 
-        case "USER":
-            re = `Visiteur`;
-            break;
-
         default:
             re = `NON ATTRIBUÉ`;
             break;
