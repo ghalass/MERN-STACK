@@ -103,11 +103,9 @@ const deleteTypeparc = async (req, res) => {
 
 // update a typeparc
 const updateTypeparc = async (req, res) => {
-    const { id } = req.params
-    const { name } = req.body
-
     try {
-
+        const { id } = req.params
+        const { name } = req.body
         if (isNaN(id) || parseInt(id) != id) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }

@@ -38,19 +38,19 @@ const getLubrifiant = async (req, res) => {
 
 // create new lubrifiant
 const createLubrifiant = async (req, res) => {
-    const { name } = req.body
-
-    let emptyFields = [];
-
-    if (!name) emptyFields.push('name')
-
-    if (emptyFields.length > 0) {
-        return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
-    }
-
     try {
+        const { name, typelubrifiantId } = req.body
+
+        let emptyFields = [];
+
+        if (!name) emptyFields.push('name')
+        if (!typelubrifiantId) emptyFields.push('typelubrifiantId')
+
+        if (emptyFields.length > 0) {
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+        }
         const exists = await prisma.lubrifiant.findFirst({
-            where: { name: name }
+            where: { name }
         });
 
         if (exists) {
@@ -58,7 +58,7 @@ const createLubrifiant = async (req, res) => {
         }
 
         const lubrifiant = await prisma.lubrifiant.create({
-            data: { name }
+            data: { name, typelubrifiantId: parseInt(typelubrifiantId) }
         })
         res.status(201).json(lubrifiant)
     } catch (error) {
@@ -68,8 +68,8 @@ const createLubrifiant = async (req, res) => {
 
 // delete a lubrifiant
 const deleteLubrifiant = async (req, res) => {
-    const { id } = req.params
     try {
+        const { id } = req.params
 
         if (isNaN(id) || parseInt(id) != id) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
@@ -95,11 +95,14 @@ const deleteLubrifiant = async (req, res) => {
 
 // update a lubrifiant
 const updateLubrifiant = async (req, res) => {
-    const { id } = req.params
-    const { name } = req.body
     try {
+        const { id } = req.params
+        const { name, typelubrifiantId } = req.body
 
         if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
+        if (isNaN(typelubrifiantId) || parseInt(typelubrifiantId) != typelubrifiantId) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
@@ -122,7 +125,7 @@ const updateLubrifiant = async (req, res) => {
 
         const updatedWorkout = await prisma.lubrifiant.update({
             where: { id: parseInt(id) },
-            data: { name }
+            data: { name, typelubrifiantId: parseInt(typelubrifiantId) }
         });
 
         res.status(200).json(updatedWorkout)

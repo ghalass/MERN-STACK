@@ -36,115 +36,113 @@ const getTypelubrifiant = async (req, res) => {
 //     }
 // }
 
-// // create new typepanne
-// const createTypepanne = async (req, res) => {
-//     const { name } = req.body
+// create new typepanne
+const createTypelubrifiant = async (req, res) => {
+    try {
+        const { name } = req.body
 
-//     let emptyFields = [];
+        let emptyFields = [];
 
-//     if (!name) emptyFields.push('name')
+        if (!name) emptyFields.push('name')
 
-//     if (emptyFields.length > 0) {
-//         return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
-//     }
+        if (emptyFields.length > 0) {
+            return res.status(400).json({ error: 'Veuillez remplir tout les champs!', emptyFields })
+        }
+        const exists = await prisma.typelubrifiant.findFirst({
+            where: { name: name }
+        });
 
-//     try {
-//         const exists = await prisma.typepanne.findFirst({
-//             where: { name: name }
-//         });
+        if (exists) {
+            return res.status(400).json({ error: 'Typelubrifiant déjà utilisé' })
+        }
 
-//         if (exists) {
-//             return res.status(400).json({ error: 'Typepanne déjà utilisé' })
-//         }
+        const created = await prisma.typelubrifiant.create({
+            data: { name }
+        })
+        res.status(201).json(created)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
 
-//         const typepanne = await prisma.typepanne.create({
-//             data: { name }
-//         })
-//         res.status(201).json(typepanne)
-//     } catch (error) {
-//         res.status(400).json({ error: error.message })
-//     }
-// }
+// delete a typepanne
+const deleteTypelubrifiant = async (req, res) => {
+    try {
+        const { id } = req.params
 
-// // delete a typepanne
-// const deleteTypepanne = async (req, res) => {
-//     const { id } = req.params
-//     try {
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
 
-//         if (isNaN(id) || parseInt(id) != id) {
-//             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
-//         }
+        const typelubrifiant = await prisma.typelubrifiant.findFirst({
+            where: { id: parseInt(id) }
+        });
 
-//         const typepanne = await prisma.typepanne.findFirst({
-//             where: { id: parseInt(id) }
-//         });
+        if (!typelubrifiant) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
 
-//         if (!typepanne) {
-//             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
-//         }
+        // check if typelubrifiant has pannes
+        const lubrifiant = await prisma.lubrifiant.findFirst({
+            where: { typelubrifiantId: parseInt(id) }
+        });
+        if (lubrifiant) {
+            return res.status(405).json({ error: "Impossible de supprimer cet élément car il est référencé ailleurs." })
+        }
 
-//         // check if typepanne has pannes
-//         const panne = await prisma.panne.findFirst({
-//             where: { typepanneId: parseInt(id) }
-//         });
-//         if (panne) {
-//             return res.status(405).json({ error: "Impossible de supprimer cet élément car il est référencé ailleurs." })
-//         }
+        await prisma.typelubrifiant.delete({
+            where: { id: parseInt(id) }
+        });
 
-//         await prisma.typepanne.delete({
-//             where: { id: parseInt(id) }
-//         });
+        res.status(200).json(typelubrifiant)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
-//         res.status(200).json(typepanne)
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// }
+// update a typepanne
+const updateTypelubrifiant = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { name } = req.body
 
-// // update a typepanne
-// const updateTypepanne = async (req, res) => {
-//     const { id } = req.params
-//     const { name } = req.body
+        if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
 
-//     try {
+        const typelubrifiant = await prisma.typelubrifiant.findFirst({
+            where: { id: parseInt(id) }
+        });
 
-//         if (isNaN(id) || parseInt(id) != id) {
-//             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
-//         }
+        // check if name not already exist
+        const nameExist = await prisma.typelubrifiant.findFirst({
+            where: { name: name, id: { not: parseInt(id) } },
 
-//         const typepanne = await prisma.typepanne.findFirst({
-//             where: { id: parseInt(id) }
-//         });
+        });
+        if (nameExist) {
+            return res.status(400).json({ error: "Nom déjà utilisé!" })
+        }
 
-//         // check if name not already exist
-//         const nameExist = await prisma.typepanne.findFirst({
-//             where: { name: name, id: { not: parseInt(id) } },
+        if (!typelubrifiant) {
+            return res.status(404).json({ error: "Enregistrement n'existe pas!" })
+        }
 
-//         });
-//         if (nameExist) {
-//             return res.status(400).json({ error: "Nom déjà utilisé!" })
-//         }
+        const created = await prisma.typelubrifiant.update({
+            where: { id: parseInt(id) },
+            data: { name }
+        });
 
-//         if (!typepanne) {
-//             return res.status(404).json({ error: "Enregistrement n'existe pas!" })
-//         }
+        res.status(200).json(created)
 
-//         const updatedWorkout = await prisma.typepanne.update({
-//             where: { id: parseInt(id) },
-//             data: { name }
-//         });
-
-//         res.status(200).json(updatedWorkout)
-
-//     } catch (error) {
-//         res.status(400).json({ error: error.message })
-//     }
-// }
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
 
 module.exports = {
-    // createTypepanne,
+    createTypelubrifiant,
     getTypelubrifiant,
     // getTypepanne,
-    // deleteTypepanne,
-    // updateTypepanne
+    deleteTypelubrifiant,
+    updateTypelubrifiant
 }

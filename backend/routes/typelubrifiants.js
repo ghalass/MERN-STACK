@@ -2,11 +2,11 @@ const express = require('express')
 
 // controller functions
 const {
-    // createTypepanne,
+    createTypelubrifiant,
     getTypelubrifiant,
     // getTypepanne,
-    // deleteTypepanne,
-    // updateTypepanne
+    deleteTypelubrifiant,
+    updateTypelubrifiant
 } = require('../controllers/typelubrifiantController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -21,14 +21,14 @@ router.get('/', getTypelubrifiant)
 // // GET single workout
 // router.get('/:id', getTypepanne)
 
-// // POST a new workout
-// router.post('/', createTypepanne)
+// POST a new workout
+router.post('/', createTypelubrifiant)
 
-// // UPDATE a workout
-// router.patch('/:id', updateTypepanne)
+// UPDATE a workout
+router.patch('/:id', updateTypelubrifiant)
 
-// // DELETE a workout
-// router.delete('/:id', deleteTypepanne)
+// DELETE a workout
+router.delete('/:id', deleteTypelubrifiant)
 
 
 module.exports = router

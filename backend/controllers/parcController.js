@@ -114,12 +114,14 @@ const deleteParc = async (req, res) => {
 
 // update a parc
 const updateParc = async (req, res) => {
-    const { id } = req.params
-    const { name, typeparcId } = req.body
-
     try {
+        const { id } = req.params
+        const { name, typeparcId } = req.body
 
         if (isNaN(id) || parseInt(id) != id) {
+            return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
+        }
+        if (isNaN(typeparcId) || parseInt(typeparcId) != typeparcId) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
         }
 
