@@ -41,8 +41,6 @@ router.get('/users', getUsers)
 // CREATE A NEW USER ==> ONLY ADMIN & SUPER_ADMIN ARE ALLOWRD
 router.post('/signup', allowedRoles(['SUPER_ADMIN', 'ADMIN']), signupUser)
 
-
-
 // UPDATE AN USER
 router.patch('/updateUser', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateUser)
 

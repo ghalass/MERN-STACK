@@ -10,6 +10,7 @@ const {
 } = require('../controllers/typeparcController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -22,13 +23,13 @@ router.get('/', getTypeparcs)
 router.get('/:id', getTypeparc)
 
 // POST a new workout
-router.post('/', createTypeparc)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createTypeparc)
 
 // UPDATE a workout
-router.patch('/:id', updateTypeparc)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateTypeparc)
 
 // DELETE a workout
-router.delete('/:id', deleteTypeparc)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteTypeparc)
 
 
 module.exports = router

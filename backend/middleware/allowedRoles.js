@@ -3,7 +3,7 @@ const allowedRoles = (roles) => {
         // GET USER ROLE FROM REQUEST
         const userROLE = req?.user?.role;
 
-        const allowedRoleInString = roles.reduce((acc, role) => acc + " " + role)
+        const allowedRoleInString = roles.reduce((acc, role) => acc.replace('_', ' ') + ", " + role.replace('_', ' '))
 
         const msg = `ACCÈS REFUSÉ, AUTORISÉ UNIQUEMENT : [${allowedRoleInString}], ET VOUS ÊTES [${userROLE.replace('_', ' ')}]`
 

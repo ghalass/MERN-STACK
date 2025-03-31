@@ -12,6 +12,7 @@ const {
 } = require('../controllers/panneController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -27,13 +28,13 @@ router.get('/:id', getPanne)
 router.get('/typepanne/:id', fetchPannesByTypepanne)
 
 // POST a new workout
-router.post('/', createPanne)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createPanne)
 
 // UPDATE a workout
-router.patch('/:id', updatePanne)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updatePanne)
 
 // DELETE a workout
-router.delete('/:id', deletePanne)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deletePanne)
 
 
 module.exports = router

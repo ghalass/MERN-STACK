@@ -10,6 +10,7 @@ const {
 } = require('../controllers/siteController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 // const verifyJWT = require('../middleware/verifyJWT')
 
 const router = express.Router()
@@ -25,13 +26,13 @@ router.get('/', getSites)
 router.get('/:id', getSite)
 
 // POST a new workout
-router.post('/', createSite)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createSite)
 
 // UPDATE a workout
-router.patch('/:id', updateSite)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateSite)
 
 // DELETE a workout
-router.delete('/:id', deleteSite)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteSite)
 
 
 module.exports = router

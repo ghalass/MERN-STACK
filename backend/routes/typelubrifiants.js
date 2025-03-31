@@ -10,6 +10,7 @@ const {
 } = require('../controllers/typelubrifiantController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -22,13 +23,13 @@ router.get('/', getTypelubrifiant)
 // router.get('/:id', getTypepanne)
 
 // POST a new workout
-router.post('/', createTypelubrifiant)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createTypelubrifiant)
 
 // UPDATE a workout
-router.patch('/:id', updateTypelubrifiant)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateTypelubrifiant)
 
 // DELETE a workout
-router.delete('/:id', deleteTypelubrifiant)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteTypelubrifiant)
 
 
 module.exports = router

@@ -12,6 +12,7 @@ const {
 } = require('../controllers/enginController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -29,13 +30,13 @@ router.get('/byparcid/:id', getEnginByParcId)
 router.get('/parc/:parcId/site/:siteId', getEnginsByParcIdSiteId)
 
 // POST a new workout
-router.post('/', createEngin)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createEngin)
 
 // UPDATE a workout
-router.patch('/:id', updateEngin)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateEngin)
 
 // DELETE a workout
-router.delete('/:id', deleteEngin)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteEngin)
 
 
 module.exports = router

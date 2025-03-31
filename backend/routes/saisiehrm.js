@@ -18,6 +18,7 @@ const {
     = require('../controllers/saisiehrmController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -25,12 +26,12 @@ const router = express.Router()
 router.use(requireAuth)
 
 router.post('/getSaisieHrm', getSaisieHrm)
-router.post('/createSaisieHrm', createSaisieHrm)
-router.patch('/updateSaisieHrm', updateSaisieHrm)
+router.post('/createSaisieHrm', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), createSaisieHrm)
+router.patch('/updateSaisieHrm', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), updateSaisieHrm)
 
-router.post('/createSaisieHim', createSaisieHim)
-router.delete('/deleteSaisieHim', deleteSaisieHim)
-router.patch('/updateSaisieHim', updateSaisieHim)
+router.post('/createSaisieHim', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), createSaisieHim)
+router.delete('/deleteSaisieHim', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), deleteSaisieHim)
+router.patch('/updateSaisieHim', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), updateSaisieHim)
 router.post('/getSaisieHrmDay', getSaisieHrmDay)
 
 

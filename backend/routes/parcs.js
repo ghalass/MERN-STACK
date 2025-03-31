@@ -11,6 +11,7 @@ const {
 } = require('../controllers/parcController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
@@ -26,13 +27,13 @@ router.get('/:id', getParc)
 router.get('/typeparc/:id', getParcsByTypeparc)
 
 // POST a new workout
-router.post('/', createParc)
+router.post('/', allowedRoles(['SUPER_ADMIN', 'ADMIN']), createParc)
 
 // UPDATE a workout
-router.patch('/:id', updateParc)
+router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateParc)
 
 // DELETE a workout
-router.delete('/:id', deleteParc)
+router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteParc)
 
 
 

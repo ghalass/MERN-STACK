@@ -64,6 +64,7 @@ const signupUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body
+
         // FIELDS VALIDATION 
         if (!email || !password) { return res.status(400).json({ error: "Veuillez remplir tout les champs!" }); }
         if (!validator.isEmail(email)) { return res.status(400).json({ error: "E-mail invalide!" }); }
@@ -73,6 +74,7 @@ const loginUser = async (req, res) => {
 
         // CHECK IF USER EXIST
         if (!user) { return res.status(400).json({ error: "E-mail Or Password incorrect." }) }
+        console.log(user);
 
         // CHECK PASSWORD
         const match = await bcrypt.compare(password, user.password)
@@ -240,11 +242,21 @@ const updateUser = async (req, res) => {
         if (req?.body?.email && await prisma.user.findFirst({ where: { email: req?.body?.email, id: { not: parseInt(id) } } }))
             return res.status(401).json({ error: "CET EMAIL D'UTILISATEUR EST DÉJÀ UTILISÉ!" })
 
+        delete req.body?.id; // remove id from req.body
+
+        if (req.body.password !== "") {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(req.body.password, salt)
+            req.body.password = hash
+        } else {
+            delete req.body.password
+        }
+
         // UPDATE THE USER
         const updatedUser = await prisma.user.update({ where: { id: parseInt(id) }, data: req.body });
 
         // REMOVE PASSWORD BEFORE SEND USER
-        const { password: _, ...updatedUserWithOutPassword } = updatedUser;
+        const { password, ...updatedUserWithOutPassword } = updatedUser;
 
         res.status(200).json(updatedUserWithOutPassword)
 

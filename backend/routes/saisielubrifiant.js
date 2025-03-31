@@ -10,14 +10,15 @@ const {
     = require('../controllers/saisielubrifiantController')
 
 const requireAuth = require('../middleware/requireAuth')
+const allowedRoles = require('../middleware/allowedRoles')
 
 const router = express.Router()
 
 // require auth for all routes bellow
 router.use(requireAuth)
 
-router.post('/createSaisieLubrifiant', createSaisieLubrifiant)
-router.delete('/deleteSaisieLubrifiant', deleteSaisieLubrifiant)
+router.post('/createSaisieLubrifiant', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), createSaisieLubrifiant)
+router.delete('/deleteSaisieLubrifiant', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), deleteSaisieLubrifiant)
 
 
 
