@@ -332,8 +332,9 @@ const checkToken = async (req, res, next) => {
 
 // delete a user
 const deleteUser = async (req, res) => {
-    const { id } = req.params
     try {
+        const { id } = req.params
+        console.log(id);
 
         if (isNaN(id) || parseInt(id) != id) {
             return res.status(404).json({ error: "Enregistrement n'est pas trouvé!" });
