@@ -263,8 +263,10 @@ const getSaisieHrmDay = async (req, res) => {
         const dateCible = new Date(du);
 
         const startDate = new Date(du); // 2025-03-29T00:00:00.000Z
+        startDate.setHours(0, 0, 0, 0); // 00:00:00.000
+
         const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 1); // 2025-03-30T00:00:00.000Z
+        endDate.setHours(23, 59, 59, 999); // 23:59:59.999
 
         // Formater la date pour l'affichage (jj-mm-aaaa)
         const formatDate = (date) => {
@@ -279,7 +281,7 @@ const getSaisieHrmDay = async (req, res) => {
             where: {
                 du: {
                     gte: startDate,  // Greater than or equal to start of day
-                    lt: endDate      // Less than start of next day
+                    lte: endDate      // Less than start of next day
                 }
             },
             include: {

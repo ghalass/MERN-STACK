@@ -369,8 +369,12 @@ const getIndispoParParc = async (req, res) => {
         const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
         const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
 
+        firstDayOfMonth.setHours(0, 0, 0, 0); // 00:00:00.000
+        lastDayOfMonth.setHours(23, 59, 59, 999); // 23:59:59.999
+
         // Calculer le premier jour de l'année
         const firstDayOfYear = new Date(dateDu.getFullYear(), 0, 1);
+        firstDayOfYear.setHours(0, 0, 0, 0); // 00:00:00.000
 
         // Récupérer tous les parcs avec leurs engins, sites et pannes associés
         const parcs = await prisma.parc.findMany({
@@ -399,6 +403,9 @@ const getIndispoParParc = async (req, res) => {
             }
         });
 
+        // console.log(parcs);
+
+
         // Fonction pour calculer les indicateurs par parc et par panne
         const calculateIndicators = (engins, periodStart, periodEnd) => {
             const result = {};
@@ -407,11 +414,11 @@ const getIndispoParParc = async (req, res) => {
             engins.forEach(engin => {
                 // Vérifier si Saisiehrm existe et est un tableau
                 if (engin.Saisiehrm && Array.isArray(engin.Saisiehrm)) {
-                    engin.Saisiehrm.forEach(saisie => {
+                    engin?.Saisiehrm?.forEach(saisie => {
                         if (saisie.du >= periodStart && saisie.du <= periodEnd) {
                             // Vérifier si Saisiehim existe et est un tableau
                             if (saisie.Saisiehim && Array.isArray(saisie.Saisiehim)) {
-                                saisie.Saisiehim.forEach(saisieHim => {
+                                saisie?.Saisiehim?.forEach(saisieHim => {
                                     const panneName = saisieHim.Panne.name;
 
                                     // Initialiser les indicateurs pour cette panne si nécessaire
@@ -442,6 +449,7 @@ const getIndispoParParc = async (req, res) => {
         const result = [];
 
         parcs.forEach(parc => {
+
             const engins = parc.engins;
             const nombre_d_engin = engins.length;
 

@@ -74,7 +74,6 @@ const loginUser = async (req, res) => {
 
         // CHECK IF USER EXIST
         if (!user) { return res.status(400).json({ error: "E-mail Or Password incorrect." }) }
-        console.log(user);
 
         // CHECK PASSWORD
         const match = await bcrypt.compare(password, user.password)
