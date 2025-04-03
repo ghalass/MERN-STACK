@@ -65,9 +65,16 @@ const getRapportRje = async (req, res) => {
             return { dispo, mtbf, tdm };
         };
 
-        // Récupérer tous les engins
+        // Récupérer tous les engins => uniquement les engins qui ont une saisie hrm
         const engins = await prisma.engin.findMany({
-            select: { id: true, name: true },
+            where: {
+                Saisiehrm: { some: {} } // Only engines that have at least one Saisiehrm entry
+            },
+            select: {
+                id: true,
+                name: true
+            },
+            distinct: ['name']
         });
 
         // Construire le tableau de résultats par engin
@@ -161,7 +168,9 @@ const getRapportUnitePhysique = async (req, res) => {
 
         // Calculer les données pour chaque parc
         const result = parcs.map(parc => {
-            const engins = parc.engins;
+            const allEngins = parc.engins;
+            // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
+            const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
 
             // Objet pour regrouper les données par site (basé sur Saisiehrm)
             const sitesData = {};
@@ -313,7 +322,10 @@ const getEtatMensuel = async (req, res) => {
 
         // Formatage des données
         const result = parcs.map(parc => {
-            const engins = parc.engins;
+            const allEngins = parc.engins;
+            // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
+            const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
+
             const nombre_d_engin = engins.length;
 
             // Calcul des indicateurs mensuels
@@ -449,8 +461,9 @@ const getIndispoParParc = async (req, res) => {
         const result = [];
 
         parcs.forEach(parc => {
-
-            const engins = parc.engins;
+            const allEngins = parc.engins;
+            // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
+            const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
             const nombre_d_engin = engins.length;
 
             // Calcul des indicateurs mensuels
@@ -558,6 +571,7 @@ const getHeuresChassis = async (req, res) => {
 const getSpecLub = async (req, res) => {
     try {
         const { typelubrifiantId, year } = req.body;
+        console.log(year);
 
         // Validation des paramètres
         if (!typelubrifiantId || !year) {
@@ -588,6 +602,7 @@ const getSpecLub = async (req, res) => {
                 }
             }
         });
+
 
         const result = await Promise.all(parcs.map(async (parc) => {
             const parcResult = {

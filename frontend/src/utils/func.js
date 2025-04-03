@@ -47,6 +47,12 @@ export function getMultiplesOf10(num) {
     return multiples;
 }
 
+export const toDateOnly = (dateString) => {
+    const date = new Date(dateString);
+    date.setHours(0, 0, 0, 0)
+    return date;
+}
+
 
 // EXCEL EXPORT
 import * as XLSX from "xlsx";
