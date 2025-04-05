@@ -245,7 +245,7 @@ const getSaisieHrm = async (req, res) => {
                 }, enginId: parseInt(enginId)
             },
             include: {
-                Saisiehim: { include: { Panne: { include: { Typepanne: true } }, Saisielubrifiant: { include: { Lubrifiant: { include: { Typelubrifiant: true } } } } } },
+                Saisiehim: { include: { Panne: { include: { Typepanne: true } }, Saisielubrifiant: { include: { Lubrifiant: { include: { Typelubrifiant: true } }, Typeconsommationlub: true } } } },
                 Engin: true,
                 Site: true,
             },

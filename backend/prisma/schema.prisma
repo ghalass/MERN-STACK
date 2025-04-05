@@ -36,13 +36,30 @@ model Typeparc {
 }
 
 model Parc {
-  id         Int     @id @default(autoincrement())
-  name       String  @unique
-  typeparcId Int
-  engins     Engin[]
+  id                   Int                       @id @default(autoincrement())
+  name                 String                    @unique
+  typeparcId           Int
+  engins               Engin[]
+  typesConsommationLub TypeconsommationlubParc[]
 
-  // Relations
   Typeparc Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
+}
+
+model Typeconsommationlub {
+  id               Int                       @id @default(autoincrement())
+  name             String                    @unique
+  parcs            TypeconsommationlubParc[]
+  Saisielubrifiant Saisielubrifiant[]
+}
+
+model TypeconsommationlubParc {
+  parcId                Int                 @map("parc_id")
+  typeconsommationlubId Int                 @map("typeconsommationlub_id")
+  parc                  Parc                @relation(fields: [parcId], references: [id])
+  typeconsommationlub   Typeconsommationlub @relation(fields: [typeconsommationlubId], references: [id])
+
+  @@id([parcId, typeconsommationlubId])
+  @@map("typeconsommationlub_parc")
 }
 
 model Engin {
@@ -130,15 +147,17 @@ model Lubrifiant {
 }
 
 model Saisielubrifiant {
-  id           Int     @id @default(autoincrement())
-  lubrifiantId Int
-  qte          Float
-  obs          String?
-  saisiehimId  Int
+  id                    Int     @id @default(autoincrement())
+  lubrifiantId          Int
+  qte                   Float
+  obs                   String?
+  saisiehimId           Int
+  typeconsommationlubId Int?
 
   // Relations
-  Lubrifiant Lubrifiant @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
-  Saisiehim  Saisiehim  @relation(fields: [saisiehimId], references: [id], onDelete: Restrict)
+  Lubrifiant          Lubrifiant           @relation(fields: [lubrifiantId], references: [id], onDelete: Restrict)
+  Saisiehim           Saisiehim            @relation(fields: [saisiehimId], references: [id], onDelete: Restrict)
+  Typeconsommationlub Typeconsommationlub? @relation(fields: [typeconsommationlubId], references: [id], onDelete: Restrict)
 }
 
 enum UserRoleType {

@@ -17,6 +17,7 @@ const parcsRoutes = require('./routes/parcs');
 const enginsRoutes = require('./routes/engins');
 const typepannesRoutes = require('./routes/typepannes');
 const typelubrifiantsRoutes = require('./routes/typelubrifiants');
+const typeconsommationlubsRoutes = require('./routes/typeconsommationlub');
 const pannesRoutes = require('./routes/pannes');
 const saisiehrmRoutes = require('./routes/saisiehrm');
 const rapportsRoutes = require('./routes/rapports');
@@ -54,6 +55,7 @@ app.use('/parcs', parcsRoutes)
 app.use('/engins', enginsRoutes)
 app.use('/typepannes', typepannesRoutes)
 app.use('/typelubrifiants', typelubrifiantsRoutes)
+app.use('/typeconsommationlubs', typeconsommationlubsRoutes)
 app.use('/pannes', pannesRoutes)
 app.use('/saisiehrm', saisiehrmRoutes)
 app.use('/rapports', rapportsRoutes)
