@@ -247,6 +247,30 @@ const deleteAffectationCodeToParc = async (req, res) => {
     }
 };
 
+const getAllTypeconsommationlubsByParcId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const typeconsommationlubs = await prisma.typeconsommationlub.findMany({
+            where: {
+                parcs: {
+                    some: {
+                        parcId: parseInt(id)
+                    }
+                }
+            },
+            select: {
+                id: true,
+                name: true
+            }
+        });
+
+        res.status(200).json(typeconsommationlubs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     createTypeconsommationlub,
     getTypeconsommationlub,
@@ -255,4 +279,5 @@ module.exports = {
     updateTypeconsommationlub,
     addParcToCodeTypeconsommationlub,
     deleteAffectationCodeToParc,
+    getAllTypeconsommationlubsByParcId,
 }

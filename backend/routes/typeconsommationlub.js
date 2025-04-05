@@ -8,7 +8,8 @@ const {
     deleteTypeconsommationlub,
     updateTypeconsommationlub,
     addParcToCodeTypeconsommationlub,
-    deleteAffectationCodeToParc
+    deleteAffectationCodeToParc,
+    getAllTypeconsommationlubsByParcId
 } = require('../controllers/typeconsommationlubController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -35,7 +36,6 @@ router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteTypeconsomma
 
 router.post('/affectparctocode', allowedRoles(['SUPER_ADMIN', 'ADMIN']), addParcToCodeTypeconsommationlub)
 router.delete('/affectparctocode/delete', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteAffectationCodeToParc)
-
-
+router.get('/affectparctocode/byparcid/:id', getAllTypeconsommationlubsByParcId)
 
 module.exports = router

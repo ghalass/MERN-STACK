@@ -41,6 +41,7 @@ model Parc {
   typeparcId           Int
   engins               Engin[]
   typesConsommationLub TypeconsommationlubParc[]
+  TypepanneParc        TypepanneParc[]
 
   Typeparc Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
 }
@@ -82,7 +83,18 @@ model Typepanne {
   name String @unique
 
   // Relations
-  pannes Panne[]
+  pannes        Panne[]
+  TypepanneParc TypepanneParc[]
+}
+
+model TypepanneParc {
+  parcId      Int       @map("parc_id")
+  typepanneId Int       @map("typepanne_id")
+  parc        Parc      @relation(fields: [parcId], references: [id])
+  typepanne   Typepanne @relation(fields: [typepanneId], references: [id])
+
+  @@id([parcId, typepanneId])
+  @@map("typepanne_parc")
 }
 
 model Panne {

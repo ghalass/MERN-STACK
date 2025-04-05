@@ -30,9 +30,12 @@ const createSaisieLubrifiant = async (req, res) => {
         if (exist) return res.status(400).json({ error: "Saisie déjà faite pour cet engin à cette date!", exist });
 
         const savedSaisie = await prisma.saisielubrifiant.create({
-            data: { lubrifiantId: parseInt(lubrifiantId), qte: parseFloat(qte), obs, saisiehimId: parseInt(saisiehimId) }, include: {
-                Lubrifiant: { include: { Typelubrifiant: true } },
-            }
+            data: {
+                lubrifiantId: parseInt(lubrifiantId), qte: parseFloat(qte), obs,
+                saisiehimId: parseInt(saisiehimId),
+                typeconsommationlubId: parseInt(req.body?.typeconsommationlubId) || ''
+            },
+            include: { Lubrifiant: { include: { Typelubrifiant: true } }, Typeconsommationlub: true }
         })
         return res.status(201).json(savedSaisie)
     } catch (error) {
