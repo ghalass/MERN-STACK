@@ -5,6 +5,7 @@ const {
 
     createSaisieLubrifiant,
     deleteSaisieLubrifiant,
+    getallsaisielubbymonth,
 
 }
     = require('../controllers/saisielubrifiantController')
@@ -19,6 +20,7 @@ router.use(requireAuth)
 
 router.post('/createSaisieLubrifiant', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), createSaisieLubrifiant)
 router.delete('/deleteSaisieLubrifiant', allowedRoles(['SUPER_ADMIN', 'ADMIN', 'AGENT_SAISIE']), deleteSaisieLubrifiant)
+router.post('/getallsaisielubbymonth', getallsaisielubbymonth)
 
 
 

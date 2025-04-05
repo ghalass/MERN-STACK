@@ -952,6 +952,66 @@ const getParetoMtbfParc = async (req, res) => {
     }
 };
 
+const getAnalyseSpcPeriodParcTypeConsomm = async (req, res) => {
+    try {
+        const { parcId, dateDu, dateAu, typelubrifiantId } = req.body;
+
+        const saisies = await prisma.saisielubrifiant.findMany({
+            where: {
+                Lubrifiant: {
+                    typelubrifiantId: parseInt(typelubrifiantId),
+                },
+                Typeconsommationlub: {
+                    parcs: {
+                        some: {
+                            parcId: parseInt(parcId),
+                        },
+                    },
+                },
+                Saisiehim: {
+                    Saisiehrm: {
+                        du: {
+                            gte: new Date(dateDu),
+                            lte: new Date(dateAu),
+                        },
+                        Engin: {
+                            parcId: parseInt(parcId),
+                        },
+                    },
+                },
+            },
+            include: {
+                Typeconsommationlub: true,
+            },
+        });
+
+        const grouped = {};
+        let totalQte = 0;
+
+        for (const s of saisies) {
+            const name = s.Typeconsommationlub?.name || 'Non spécifié';
+            grouped[name] = (grouped[name] || 0) + s.qte;
+            totalQte += s.qte;
+        }
+
+        const result = Object.entries(grouped)
+            .map(([name, sum]) => ({
+                name,
+                sum,
+                percentage: totalQte ? parseFloat((sum / totalQte * 100).toFixed(2)) : 0,
+            }))
+            .sort((a, b) => b.percentage - a.percentage); // ✅ tri décroissant
+
+        res.json(result);
+    } catch (error) {
+        console.error("Erreur dans getAnalyseSpcPeriodParcTypeConsomm", error);
+        res.status(500).json({
+            error: "Erreur interne du serveur",
+            details: error.message,
+        });
+    }
+};
+
 module.exports = {
     getRapportRje,
     getRapportUnitePhysique,
@@ -961,4 +1021,5 @@ module.exports = {
     getSpecLub,
     getParetoIndispoParc,
     getParetoMtbfParc,
+    getAnalyseSpcPeriodParcTypeConsomm
 };

@@ -68,8 +68,77 @@ const deleteSaisieLubrifiant = async (req, res) => {
     }
 }
 
-module.exports = {
+const getallsaisielubbymonth = async (req, res) => {
+    try {
+        const { date } = req.body;
 
+        if (!date) {
+            return res.status(400).json({ error: 'Date requise dans le corps de la requête.' });
+        }
+
+        const parsedDate = new Date(date);
+        const startDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), 1);
+        const endDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth() + 1, 0, 23, 59, 59, 999); // fin du mois
+        console.log(startDate, endDate);
+
+        const saisies = await prisma.saisielubrifiant.findMany({
+            where: {
+                Saisiehim: {
+                    Saisiehrm: {
+                        du: {
+                            gte: startDate,
+                            lte: endDate,
+                        },
+                    },
+                },
+            },
+            include: {
+                Saisiehim: {
+                    include: {
+                        Saisiehrm: {
+                            include: {
+                                Engin: {
+                                    include: {
+                                        Parc: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                Lubrifiant: {
+                    include: {
+                        Typelubrifiant: true,
+                    },
+                },
+                Typeconsommationlub: true,
+            },
+        });
+
+        const result = saisies.map((saisie) => ({
+            date: saisie.Saisiehim.Saisiehrm.du.toISOString().split('T')[0],
+            engin: saisie.Saisiehim.Saisiehrm.Engin.name,
+            parc: saisie.Saisiehim.Saisiehrm.Engin.Parc.name,
+            type_lubrifiant: saisie.Lubrifiant.Typelubrifiant.name,
+            lubrifiant: saisie.Lubrifiant.name,
+            qte: saisie.qte,
+            typeconsommation: saisie.Typeconsommationlub?.name || '',
+            obs: saisie.obs || '',
+        }));
+
+        res.json(result);
+    } catch (error) {
+        console.error("Erreur dans getallsaisielubbymonth:", error);
+        res.status(500).json({
+            error: "Erreur interne du serveur",
+            details: error.message,
+        });
+    }
+};
+
+
+module.exports = {
     createSaisieLubrifiant,
     deleteSaisieLubrifiant,
+    getallsaisielubbymonth,
 }
