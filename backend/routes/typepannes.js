@@ -8,7 +8,8 @@ const {
     deleteTypepanne,
     updateTypepanne,
     addParcToTypepanne,
-    deleteAffectationTypepanne
+    deleteAffectationTypepanne,
+    getAllTypepannesByParcId
 } = require('../controllers/typepanneController')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -36,7 +37,7 @@ router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteTypepanne)
 
 router.post('/affectparctotypepanne', allowedRoles(['SUPER_ADMIN', 'ADMIN']), addParcToTypepanne)
 router.delete('/affectparctotypepanne/delete', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteAffectationTypepanne)
-// router.get('/affectparctotypepanne/byparcid/:id', getAllTypeconsommationlubsByParcId)
+router.get('/affectparctotypepanne/byparcid/:id', getAllTypepannesByParcId)
 
 
 module.exports = router

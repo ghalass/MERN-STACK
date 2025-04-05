@@ -257,6 +257,32 @@ const deleteAffectationTypepanne = async (req, res) => {
     }
 };
 
+
+const getAllTypepannesByParcId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const typepannes = await prisma.typepanne.findMany({
+            where: {
+                TypepanneParc: {
+                    some: {
+                        parcId: parseInt(id)
+                    }
+                }
+            },
+            select: {
+                id: true,
+                name: true
+            }
+        });
+
+        res.status(200).json(typepannes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 module.exports = {
     createTypepanne,
     getTypepannes,
@@ -265,5 +291,6 @@ module.exports = {
     updateTypepanne,
 
     addParcToTypepanne,
-    deleteAffectationTypepanne
+    deleteAffectationTypepanne,
+    getAllTypepannesByParcId
 }
