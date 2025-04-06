@@ -116,7 +116,7 @@ const getallsaisielubbymonth = async (req, res) => {
         });
 
         const result = saisies.map((saisie) => ({
-            date: saisie.Saisiehim.Saisiehrm.du.toISOString().split('T')[0],
+            date: saisie.Saisiehim.Saisiehrm.du.toLocaleDateString('fr-FR'),
             engin: saisie.Saisiehim.Saisiehrm.Engin.name,
             parc: saisie.Saisiehim.Saisiehrm.Engin.Parc.name,
             type_lubrifiant: saisie.Lubrifiant.Typelubrifiant.name,
