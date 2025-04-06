@@ -12,6 +12,7 @@ const {
     getParetoIndispoParc,
     getParetoMtbfParc,
     getAnalyseSpcPeriodParcTypeConsomm,
+    getIndispoParcPeriode,
 }
     = require('../controllers/rapportsController')
 
@@ -31,5 +32,6 @@ router.post('/getSpecLub', getSpecLub)
 router.post('/getParetoIndispoParc', getParetoIndispoParc)
 router.post('/getParetoMtbfParc', getParetoMtbfParc)
 router.post('/getAnalyseSpcPeriodParcTypeConsomm', getAnalyseSpcPeriodParcTypeConsomm)
+router.post('/getIndispoParcPeriode', getIndispoParcPeriode)
 
 module.exports = router

@@ -33,7 +33,7 @@ const createSaisieLubrifiant = async (req, res) => {
             data: {
                 lubrifiantId: parseInt(lubrifiantId), qte: parseFloat(qte), obs,
                 saisiehimId: parseInt(saisiehimId),
-                typeconsommationlubId: parseInt(req.body?.typeconsommationlubId) || ''
+                typeconsommationlubId: parseInt(req.body?.typeconsommationlubId) || null
             },
             include: { Lubrifiant: { include: { Typelubrifiant: true } }, Typeconsommationlub: true }
         })
@@ -79,7 +79,6 @@ const getallsaisielubbymonth = async (req, res) => {
         const parsedDate = new Date(date);
         const startDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), 1);
         const endDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth() + 1, 0, 23, 59, 59, 999); // fin du mois
-        console.log(startDate, endDate);
 
         const saisies = await prisma.saisielubrifiant.findMany({
             where: {

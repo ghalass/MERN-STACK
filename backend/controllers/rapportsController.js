@@ -1012,6 +1012,105 @@ const getAnalyseSpcPeriodParcTypeConsomm = async (req, res) => {
     }
 };
 
+const getIndispoParcPeriode = async (req, res) => {
+    try {
+        const { parcId, dateDu, dateAu } = req.body;
+
+        if (!parcId || !dateDu || !dateAu) {
+            return res.status(400).json({ error: "parcId, dateDu et dateAu sont requis" });
+        }
+
+        const parc = await prisma.parc.findUnique({
+            where: { id: parseInt(parcId) },
+            select: { name: true },
+        });
+
+        if (!parc) {
+            return res.status(404).json({ error: "Parc non trouvé" });
+        }
+
+        const saisiehimList = await prisma.saisiehim.findMany({
+            where: {
+                Saisiehrm: {
+                    du: {
+                        gte: new Date(dateDu),
+                        lte: new Date(dateAu),
+                    },
+                    Engin: {
+                        parcId: parseInt(parcId),
+                    },
+                },
+            },
+            include: {
+                Panne: {
+                    select: {
+                        name: true,
+                        Typepanne: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                Saisiehrm: {
+                    select: {
+                        du: true,
+                        Engin: {
+                            select: {
+                                id: true,
+                                parcId: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        const grouped = {};
+
+        for (const item of saisiehimList) {
+            const panneName = item.Panne?.name || 'Inconnu';
+            const typepanneName = item.Panne?.Typepanne?.name || 'Inconnu';
+            const key = `${typepanneName}||${panneName}`;
+
+            if (!grouped[key]) {
+                grouped[key] = {
+                    dateDu,
+                    dateAu,
+                    parc: parc.name,
+                    panne: panneName,
+                    typepanne: typepanneName,
+                    ni_m: 0,
+                    ni_a: 0,
+                    him_m: 0,
+                    him_a: 0,
+                };
+            }
+
+            grouped[key].ni_m += item.ni || 0;
+            grouped[key].ni_a += item.ni || 0;
+            grouped[key].him_m += item.him || 0;
+            grouped[key].him_a += item.him || 0;
+        }
+
+        const result = Object.values(grouped).sort((a, b) => {
+            if (a.typepanne === b.typepanne) {
+                return a.panne.localeCompare(b.panne);
+            }
+            return a.typepanne.localeCompare(b.typepanne);
+        });
+
+        res.json(result);
+
+    } catch (error) {
+        console.error("Erreur dans getIndispoParcPeriode", error);
+        res.status(500).json({
+            error: "Erreur interne du serveur",
+            details: error.message,
+        });
+    }
+};
+
 module.exports = {
     getRapportRje,
     getRapportUnitePhysique,
@@ -1021,5 +1120,6 @@ module.exports = {
     getSpecLub,
     getParetoIndispoParc,
     getParetoMtbfParc,
-    getAnalyseSpcPeriodParcTypeConsomm
+    getAnalyseSpcPeriodParcTypeConsomm,
+    getIndispoParcPeriode,
 };
