@@ -1216,6 +1216,102 @@ const getIndispoEnginsPeriode = async (req, res) => {
     }
 };
 
+// const getPerormancesEnginsPeriode = async (req, res) => {
+//     try {
+//         const { parcId, dateDu, dateAu } = req.body;
+
+//         if (!parcId || !dateDu || !dateAu) {
+//             return res.status(400).json({ error: "parcId, dateDu et dateAu sont requis" });
+//         }
+
+//         const parc = await prisma.parc.findUnique({
+//             where: { id: parseInt(parcId) },
+//             select: { name: true },
+//         });
+
+//         if (!parc) {
+//             return res.status(404).json({ error: "Parc non trouvé" });
+//         }
+
+//         // Récupération des Saisiehrm avec leurs Saisiehim
+//         const saisiehrms = await prisma.saisiehrm.findMany({
+//             where: {
+//                 du: {
+//                     gte: new Date(dateDu),
+//                     lte: new Date(dateAu),
+//                 },
+//                 Engin: {
+//                     parcId: parseInt(parcId),
+//                 },
+//             },
+//             include: {
+//                 Engin: true,
+//                 Saisiehim: true,
+//             },
+//         });
+
+//         // Grouper par engin
+//         const grouped = {};
+
+//         for (const saisie of saisiehrms) {
+//             const enginName = saisie.Engin.name;
+
+//             if (!grouped[enginName]) {
+//                 grouped[enginName] = {
+//                     dateDu,
+//                     dateAu,
+//                     parc: parc.name,
+//                     engin: enginName,
+//                     hrm: 0,
+//                     him: 0,
+//                     ni: 0,
+//                     nho: 0, // nombre d’heures d’ouverture
+//                 };
+//             }
+
+//             grouped[enginName].hrm += saisie.hrm || 0;
+//             grouped[enginName].nho += 24; // chaque jour vaut 24 heures
+//             for (const him of saisie.Saisiehim) {
+//                 grouped[enginName].him += him.him || 0;
+//                 grouped[enginName].ni += him.ni || 0;
+//             }
+//         }
+
+//         // Calcul des performances
+//         const result = Object.values(grouped).map((e) => {
+//             const { hrm, him, ni, nho } = e;
+
+//             const dispo = nho > 0 ? 100 * (1 - him / nho) : 0;
+//             const tdm = nho > 0 ? 100 * (hrm / nho) : 0;
+//             const mtbf = ni > 0 ? hrm / ni : 0;
+//             const util = nho > him ? 100 * hrm / (nho - him) : 0;
+//             const hrd = nho - (him + hrm);
+
+//             return {
+//                 ...e,
+//                 hrm: hrm.toFixed(2),
+//                 him: him.toFixed(2),
+//                 ni: ni.toFixed(2),
+//                 nho: nho.toFixed(2),
+//                 dispo: dispo.toFixed(2),
+//                 tdm: tdm.toFixed(2),
+//                 mtbf: mtbf.toFixed(2),
+//                 util: util.toFixed(2),
+//                 hrd: hrd.toFixed(2),
+//             };
+//         });
+
+//         res.json(result);
+//     } catch (error) {
+//         console.error("Erreur dans getPerormancesEnginsPeriode", error);
+//         res.status(500).json({
+//             error: "Erreur interne du serveur",
+//             details: error.message,
+//         });
+//     }
+// };
+
+
 const getPerormancesEnginsPeriode = async (req, res) => {
     try {
         const { parcId, dateDu, dateAu } = req.body;
@@ -1233,12 +1329,18 @@ const getPerormancesEnginsPeriode = async (req, res) => {
             return res.status(404).json({ error: "Parc non trouvé" });
         }
 
+        // Calcul du nombre de jours inclusivement
+        const startDate = new Date(dateDu);
+        const endDate = new Date(dateAu);
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 pour inclure les deux dates
+
         // Récupération des Saisiehrm avec leurs Saisiehim
         const saisiehrms = await prisma.saisiehrm.findMany({
             where: {
                 du: {
-                    gte: new Date(dateDu),
-                    lte: new Date(dateAu),
+                    gte: startDate,
+                    lte: endDate,
                 },
                 Engin: {
                     parcId: parseInt(parcId),
@@ -1265,12 +1367,12 @@ const getPerormancesEnginsPeriode = async (req, res) => {
                     hrm: 0,
                     him: 0,
                     ni: 0,
-                    nho: 0, // nombre d’heures d’ouverture
+                    nho: diffDays * 24, // total heures ouvertes = nb jours * 24
                 };
             }
 
             grouped[enginName].hrm += saisie.hrm || 0;
-            grouped[enginName].nho += 24; // chaque jour vaut 24 heures
+
             for (const him of saisie.Saisiehim) {
                 grouped[enginName].him += him.him || 0;
                 grouped[enginName].ni += him.ni || 0;
@@ -1310,6 +1412,7 @@ const getPerormancesEnginsPeriode = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     getRapportRje,
