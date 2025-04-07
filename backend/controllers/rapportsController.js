@@ -274,18 +274,21 @@ const getEtatMensuel = async (req, res) => {
             let him = 0;
             let ni = 0;
 
-            engins.forEach(engin => {
-                // Calcul de NHO (Nombre d'Heures d'Opération)
-                const daysInPeriod = (periodEnd - periodStart) / (1000 * 60 * 60 * 24); // Nombre de jours dans la période
-                nho += 24 * daysInPeriod;
+            const enginsAvecSaisieDansPeriode = new Set();
 
-                // Vérifier si Saisiehrm existe et est un tableau
+            engins.forEach(engin => {
                 if (engin.Saisiehrm && Array.isArray(engin.Saisiehrm)) {
+                    const hasSaisieInPeriod = engin.Saisiehrm.some(saisie =>
+                        saisie.du >= periodStart && saisie.du <= periodEnd
+                    );
+
+                    if (hasSaisieInPeriod) {
+                        enginsAvecSaisieDansPeriode.add(engin.id); // ou engin.uuid si nécessaire
+                    }
+
                     engin.Saisiehrm.forEach(saisie => {
                         if (saisie.du >= periodStart && saisie.du <= periodEnd) {
                             hrm += saisie.hrm;
-
-                            // Vérifier si Saisiehim existe et est un tableau
                             if (saisie.Saisiehim && Array.isArray(saisie.Saisiehim)) {
                                 saisie.Saisiehim.forEach(saisieHim => {
                                     him += saisieHim.him;
@@ -297,15 +300,16 @@ const getEtatMensuel = async (req, res) => {
                 }
             });
 
-            // Calcul des autres indicateurs
-            const hrd = nho - (him + hrm);
-            const mttr = him / ni || 0; // Éviter la division par zéro
-            const dispo = (1 - (him / nho)) * 100 || 0; // Éviter la division par zéro
-            const tdm = hrm / nho * 100 || 0; // Éviter la division par zéro
-            const mtbf = hrm / ni || 0; // Éviter la division par zéro
-            const util = hrm / (hrm + hrd) * 100 || 0; // Éviter la division par zéro
+            const daysInPeriod = Math.floor((periodEnd - periodStart) / (1000 * 60 * 60 * 24)) + 1;
+            nho = enginsAvecSaisieDansPeriode.size * 24 * daysInPeriod;
 
-            // Limiter les valeurs à deux chiffres après la virgule
+            const hrd = nho - (him + hrm);
+            const mttr = ni > 0 ? him / ni : 0;
+            const dispo = nho > 0 ? (1 - (him / nho)) * 100 : 0;
+            const tdm = nho > 0 ? (hrm / nho) * 100 : 0;
+            const mtbf = ni > 0 ? hrm / ni : 0;
+            const util = (hrm + hrd) > 0 ? (hrm / (hrm + hrd)) * 100 : 0;
+
             return {
                 nho: parseFloat(nho.toFixed(2)),
                 hrm: parseFloat(hrm.toFixed(2)),
@@ -320,11 +324,13 @@ const getEtatMensuel = async (req, res) => {
             };
         };
 
+
         // Formatage des données
         const result = parcs.map(parc => {
             const allEngins = parc.engins;
             // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
             const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
+            // console.log(engins);
 
             const nombre_d_engin = engins.length;
 
@@ -370,6 +376,154 @@ const getEtatMensuel = async (req, res) => {
     }
 };
 
+// const getIndispoParParc = async (req, res) => {
+//     try {
+//         const { du } = req.body; // Date de référence
+
+//         // Convertir la date en objet Date
+//         const dateDu = new Date(du);
+
+//         // Calculer le premier et le dernier jour du mois
+//         const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
+//         const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
+
+//         firstDayOfMonth.setHours(0, 0, 0, 0); // 00:00:00.000
+//         lastDayOfMonth.setHours(23, 59, 59, 999); // 23:59:59.999
+
+//         // Calculer le premier jour de l'année
+//         const firstDayOfYear = new Date(dateDu.getFullYear(), 0, 1);
+//         firstDayOfYear.setHours(0, 0, 0, 0); // 00:00:00.000
+
+//         // Récupérer tous les parcs avec leurs engins, sites et pannes associés
+//         const parcs = await prisma.parc.findMany({
+//             include: {
+//                 engins: {
+//                     include: {
+//                         Site: true, // Inclure le site associé
+//                         Saisiehrm: {
+//                             where: {
+//                                 du: {
+//                                     gte: firstDayOfYear, // On prend toutes les saisies depuis le début de l'année
+//                                     lte: lastDayOfMonth // Jusqu'à la fin du mois courant
+//                                 }
+//                             },
+//                             include: {
+//                                 Saisiehim: {
+//                                     include: {
+//                                         Panne: true // Inclure les pannes associées
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 },
+//                 Typeparc: true
+//             }
+//         });
+
+//         // console.log(parcs);
+
+
+//         // Fonction pour calculer les indicateurs par parc et par panne
+//         const calculateIndicators = (engins, periodStart, periodEnd) => {
+//             const result = {};
+//             let him_total = 0; // Total de him pour toutes les pannes
+
+//             engins.forEach(engin => {
+//                 // Vérifier si Saisiehrm existe et est un tableau
+//                 if (engin.Saisiehrm && Array.isArray(engin.Saisiehrm)) {
+//                     engin?.Saisiehrm?.forEach(saisie => {
+//                         if (saisie.du >= periodStart && saisie.du <= periodEnd) {
+//                             // Vérifier si Saisiehim existe et est un tableau
+//                             if (saisie.Saisiehim && Array.isArray(saisie.Saisiehim)) {
+//                                 saisie?.Saisiehim?.forEach(saisieHim => {
+//                                     const panneName = saisieHim.Panne.name;
+
+//                                     // Initialiser les indicateurs pour cette panne si nécessaire
+//                                     if (!result[panneName]) {
+//                                         result[panneName] = {
+//                                             ni: 0,
+//                                             him: 0,
+//                                         };
+//                                     }
+
+//                                     // Ajouter les valeurs de ni et him
+//                                     result[panneName].ni += saisieHim.ni;
+//                                     result[panneName].him += saisieHim.him;
+
+//                                     // Ajouter au total de him pour toutes les pannes
+//                                     him_total += saisieHim.him;
+//                                 });
+//                             }
+//                         }
+//                     });
+//                 }
+//             });
+
+//             return { result, him_total };
+//         };
+
+//         // Formatage des données
+//         const result = [];
+
+//         parcs.forEach(parc => {
+//             const allEngins = parc.engins;
+//             // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
+//             const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
+//             const nombre_d_engin = engins.length;
+
+//             // console.log(engins);
+
+//             // Calcul des indicateurs mensuels
+//             const { result: indicators_m, him_total: him_total_m } = calculateIndicators(engins, firstDayOfMonth, lastDayOfMonth);
+
+//             // Calcul des indicateurs annuels
+//             const { result: indicators_a, him_total: him_total_a } = calculateIndicators(engins, firstDayOfYear, lastDayOfMonth);
+
+//             // Calcul de NHO (Nombre d'Heures d'Opération)
+//             const daysInMonth = (lastDayOfMonth - firstDayOfMonth) / (1000 * 60 * 60 * 24); // Nombre de jours dans le mois
+//             const daysInYear = (lastDayOfMonth - firstDayOfYear) / (1000 * 60 * 60 * 24); // Nombre de jours depuis le début de l'année
+//             const nho_m = 24 * nombre_d_engin * daysInMonth; // NHO mensuel corrigé
+//             const nho_a = 24 * daysInYear * nombre_d_engin; // NHO annuel
+
+//             // Ajouter les résultats pour chaque panne
+//             Object.keys(indicators_m).forEach(panne => {
+//                 const him_m = indicators_m[panne].him;
+//                 const him_a = indicators_a[panne].him;
+//                 const ni_m = indicators_m[panne].ni;
+//                 const ni_a = indicators_a[panne].ni;
+
+//                 const indisp_m = (him_m / nho_m) * 100;
+//                 const indisp_a = (him_a / nho_a) * 100;
+//                 const coef_indispo_m = (him_m / him_total_m) * 100; // Coefficient d'indisponibilité mensuel
+//                 const coef_indispo_a = (him_a / him_total_a) * 100; // Coefficient d'indisponibilité annuel
+
+//                 result.push({
+//                     typeparc: parc.Typeparc.name,
+//                     parc: parc.name,
+//                     panne: panne,
+//                     nombre_d_engin: nombre_d_engin,
+//                     nho_m: parseFloat(nho_m.toFixed(2)), // NHO mensuel corrigé
+//                     nho_a: parseFloat(nho_a.toFixed(2)), // NHO annuel
+//                     ni_m: parseFloat(ni_m.toFixed(2)),
+//                     ni_a: parseFloat(ni_a.toFixed(2)),
+//                     him_m: parseFloat(him_m.toFixed(2)),
+//                     him_a: parseFloat(him_a.toFixed(2)),
+//                     indisp_m: parseFloat(indisp_m.toFixed(2)),
+//                     indisp_a: parseFloat(indisp_a.toFixed(2)),
+//                     coef_indispo_m: parseFloat(coef_indispo_m.toFixed(2)),
+//                     coef_indispo_a: parseFloat(coef_indispo_a.toFixed(2)),
+//                 });
+//             });
+//         });
+
+//         return res.json(result);
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: "Erreur serveur" });
+//     }
+// };
+
 const getIndispoParParc = async (req, res) => {
     try {
         const { du } = req.body; // Date de référence
@@ -381,30 +535,30 @@ const getIndispoParParc = async (req, res) => {
         const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
         const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
 
-        firstDayOfMonth.setHours(0, 0, 0, 0); // 00:00:00.000
-        lastDayOfMonth.setHours(23, 59, 59, 999); // 23:59:59.999
+        firstDayOfMonth.setHours(0, 0, 0, 0);
+        lastDayOfMonth.setHours(23, 59, 59, 999);
 
         // Calculer le premier jour de l'année
         const firstDayOfYear = new Date(dateDu.getFullYear(), 0, 1);
-        firstDayOfYear.setHours(0, 0, 0, 0); // 00:00:00.000
+        firstDayOfYear.setHours(0, 0, 0, 0);
 
         // Récupérer tous les parcs avec leurs engins, sites et pannes associés
         const parcs = await prisma.parc.findMany({
             include: {
                 engins: {
                     include: {
-                        Site: true, // Inclure le site associé
+                        Site: true,
                         Saisiehrm: {
                             where: {
                                 du: {
-                                    gte: firstDayOfYear, // On prend toutes les saisies depuis le début de l'année
-                                    lte: lastDayOfMonth // Jusqu'à la fin du mois courant
+                                    gte: firstDayOfYear,
+                                    lte: lastDayOfMonth
                                 }
                             },
                             include: {
                                 Saisiehim: {
                                     include: {
-                                        Panne: true // Inclure les pannes associées
+                                        Panne: true
                                     }
                                 }
                             }
@@ -415,25 +569,28 @@ const getIndispoParParc = async (req, res) => {
             }
         });
 
-        // console.log(parcs);
-
-
         // Fonction pour calculer les indicateurs par parc et par panne
         const calculateIndicators = (engins, periodStart, periodEnd) => {
             const result = {};
-            let him_total = 0; // Total de him pour toutes les pannes
+            let him_total = 0;
+            const enginsAvecSaisieDansPeriode = new Set();
 
             engins.forEach(engin => {
-                // Vérifier si Saisiehrm existe et est un tableau
                 if (engin.Saisiehrm && Array.isArray(engin.Saisiehrm)) {
-                    engin?.Saisiehrm?.forEach(saisie => {
+                    const hasSaisieInPeriod = engin.Saisiehrm.some(saisie =>
+                        saisie.du >= periodStart && saisie.du <= periodEnd
+                    );
+
+                    if (hasSaisieInPeriod) {
+                        enginsAvecSaisieDansPeriode.add(engin.id);
+                    }
+
+                    engin.Saisiehrm.forEach(saisie => {
                         if (saisie.du >= periodStart && saisie.du <= periodEnd) {
-                            // Vérifier si Saisiehim existe et est un tableau
                             if (saisie.Saisiehim && Array.isArray(saisie.Saisiehim)) {
-                                saisie?.Saisiehim?.forEach(saisieHim => {
+                                saisie.Saisiehim.forEach(saisieHim => {
                                     const panneName = saisieHim.Panne.name;
 
-                                    // Initialiser les indicateurs pour cette panne si nécessaire
                                     if (!result[panneName]) {
                                         result[panneName] = {
                                             ni: 0,
@@ -441,11 +598,8 @@ const getIndispoParParc = async (req, res) => {
                                         };
                                     }
 
-                                    // Ajouter les valeurs de ni et him
                                     result[panneName].ni += saisieHim.ni;
                                     result[panneName].him += saisieHim.him;
-
-                                    // Ajouter au total de him pour toutes les pannes
                                     him_total += saisieHim.him;
                                 });
                             }
@@ -454,49 +608,56 @@ const getIndispoParParc = async (req, res) => {
                 }
             });
 
-            return { result, him_total };
+            return {
+                result,
+                him_total,
+                activeEnginsCount: enginsAvecSaisieDansPeriode.size
+            };
         };
 
-        // Formatage des données
         const result = [];
 
         parcs.forEach(parc => {
             const allEngins = parc.engins;
-            // GARDER QUE LES ENGINS QUI ONT UNE SAISIEHRM
             const engins = allEngins?.filter(e => e?.Saisiehrm?.length > 0);
             const nombre_d_engin = engins.length;
 
-            // Calcul des indicateurs mensuels
-            const { result: indicators_m, him_total: him_total_m } = calculateIndicators(engins, firstDayOfMonth, lastDayOfMonth);
+            const {
+                result: indicators_m,
+                him_total: him_total_m,
+                activeEnginsCount: activeEngins_m
+            } = calculateIndicators(engins, firstDayOfMonth, lastDayOfMonth);
 
-            // Calcul des indicateurs annuels
-            const { result: indicators_a, him_total: him_total_a } = calculateIndicators(engins, firstDayOfYear, lastDayOfMonth);
+            const {
+                result: indicators_a,
+                him_total: him_total_a,
+                activeEnginsCount: activeEngins_a
+            } = calculateIndicators(engins, firstDayOfYear, lastDayOfMonth);
 
-            // Calcul de NHO (Nombre d'Heures d'Opération)
-            const daysInMonth = (lastDayOfMonth - firstDayOfMonth) / (1000 * 60 * 60 * 24); // Nombre de jours dans le mois
-            const daysInYear = (lastDayOfMonth - firstDayOfYear) / (1000 * 60 * 60 * 24); // Nombre de jours depuis le début de l'année
-            const nho_m = 24 * nombre_d_engin * daysInMonth; // NHO mensuel corrigé
-            const nho_a = 24 * daysInYear * nombre_d_engin; // NHO annuel
+            const daysInMonth = Math.floor((lastDayOfMonth - firstDayOfMonth) / (1000 * 60 * 60 * 24)) + 1;
+            const daysInYear = Math.floor((lastDayOfMonth - firstDayOfYear) / (1000 * 60 * 60 * 24)) + 1;
 
-            // Ajouter les résultats pour chaque panne
+            const nho_m = 24 * activeEngins_m * daysInMonth;
+            const nho_a = 24 * activeEngins_a * daysInYear;
+
             Object.keys(indicators_m).forEach(panne => {
                 const him_m = indicators_m[panne].him;
-                const him_a = indicators_a[panne].him;
+                const him_a = indicators_a[panne]?.him ?? 0;
                 const ni_m = indicators_m[panne].ni;
-                const ni_a = indicators_a[panne].ni;
+                const ni_a = indicators_a[panne]?.ni ?? 0;
 
-                const indisp_m = (him_m / nho_m) * 100;
-                const indisp_a = (him_a / nho_a) * 100;
-                const coef_indispo_m = (him_m / him_total_m) * 100; // Coefficient d'indisponibilité mensuel
-                const coef_indispo_a = (him_a / him_total_a) * 100; // Coefficient d'indisponibilité annuel
+                const indisp_m = nho_m ? (him_m / nho_m) * 100 : 0;
+                const indisp_a = nho_a ? (him_a / nho_a) * 100 : 0;
+                const coef_indispo_m = him_total_m ? (him_m / him_total_m) * 100 : 0;
+                const coef_indispo_a = him_total_a ? (him_a / him_total_a) * 100 : 0;
 
                 result.push({
                     typeparc: parc.Typeparc.name,
                     parc: parc.name,
                     panne: panne,
-                    nombre_d_engin: nombre_d_engin,
-                    nho_m: parseFloat(nho_m.toFixed(2)), // NHO mensuel corrigé
-                    nho_a: parseFloat(nho_a.toFixed(2)), // NHO annuel
+                    nombre_d_engin,
+                    nho_m: parseFloat(nho_m.toFixed(2)),
+                    nho_a: parseFloat(nho_a.toFixed(2)),
                     ni_m: parseFloat(ni_m.toFixed(2)),
                     ni_a: parseFloat(ni_a.toFixed(2)),
                     him_m: parseFloat(him_m.toFixed(2)),
@@ -515,6 +676,7 @@ const getIndispoParParc = async (req, res) => {
         return res.status(500).json({ message: "Erreur serveur" });
     }
 };
+
 
 const getHeuresChassis = async (req, res) => {
     try {
@@ -718,16 +880,34 @@ const getParetoIndispoParc = async (req, res) => {
 
         // Calcul du nombre d'heures dans le mois
         const daysInMonth = new Date(year, month, 0).getDate();
+
         const hoursInMonth = daysInMonth * 24;
 
-        // Récupérer le parc avec tous ses engins
         const parc = await prisma.parc.findUnique({
             where: { id: parseInt(parcId) },
             include: {
                 engins: {
+                    where: {
+                        Saisiehrm: {
+                            some: {
+                                du: {
+                                    gte: startDate,
+                                    lte: endDate
+                                }
+                            }
+                        }
+                    },
                     select: {
                         id: true,
-                        name: true
+                        name: true,
+                        Saisiehrm: {
+                            where: {
+                                du: {
+                                    gte: startDate,
+                                    lte: endDate
+                                }
+                            }
+                        }
                     },
                     orderBy: {
                         name: 'asc'
@@ -1215,102 +1395,6 @@ const getIndispoEnginsPeriode = async (req, res) => {
         });
     }
 };
-
-// const getPerormancesEnginsPeriode = async (req, res) => {
-//     try {
-//         const { parcId, dateDu, dateAu } = req.body;
-
-//         if (!parcId || !dateDu || !dateAu) {
-//             return res.status(400).json({ error: "parcId, dateDu et dateAu sont requis" });
-//         }
-
-//         const parc = await prisma.parc.findUnique({
-//             where: { id: parseInt(parcId) },
-//             select: { name: true },
-//         });
-
-//         if (!parc) {
-//             return res.status(404).json({ error: "Parc non trouvé" });
-//         }
-
-//         // Récupération des Saisiehrm avec leurs Saisiehim
-//         const saisiehrms = await prisma.saisiehrm.findMany({
-//             where: {
-//                 du: {
-//                     gte: new Date(dateDu),
-//                     lte: new Date(dateAu),
-//                 },
-//                 Engin: {
-//                     parcId: parseInt(parcId),
-//                 },
-//             },
-//             include: {
-//                 Engin: true,
-//                 Saisiehim: true,
-//             },
-//         });
-
-//         // Grouper par engin
-//         const grouped = {};
-
-//         for (const saisie of saisiehrms) {
-//             const enginName = saisie.Engin.name;
-
-//             if (!grouped[enginName]) {
-//                 grouped[enginName] = {
-//                     dateDu,
-//                     dateAu,
-//                     parc: parc.name,
-//                     engin: enginName,
-//                     hrm: 0,
-//                     him: 0,
-//                     ni: 0,
-//                     nho: 0, // nombre d’heures d’ouverture
-//                 };
-//             }
-
-//             grouped[enginName].hrm += saisie.hrm || 0;
-//             grouped[enginName].nho += 24; // chaque jour vaut 24 heures
-//             for (const him of saisie.Saisiehim) {
-//                 grouped[enginName].him += him.him || 0;
-//                 grouped[enginName].ni += him.ni || 0;
-//             }
-//         }
-
-//         // Calcul des performances
-//         const result = Object.values(grouped).map((e) => {
-//             const { hrm, him, ni, nho } = e;
-
-//             const dispo = nho > 0 ? 100 * (1 - him / nho) : 0;
-//             const tdm = nho > 0 ? 100 * (hrm / nho) : 0;
-//             const mtbf = ni > 0 ? hrm / ni : 0;
-//             const util = nho > him ? 100 * hrm / (nho - him) : 0;
-//             const hrd = nho - (him + hrm);
-
-//             return {
-//                 ...e,
-//                 hrm: hrm.toFixed(2),
-//                 him: him.toFixed(2),
-//                 ni: ni.toFixed(2),
-//                 nho: nho.toFixed(2),
-//                 dispo: dispo.toFixed(2),
-//                 tdm: tdm.toFixed(2),
-//                 mtbf: mtbf.toFixed(2),
-//                 util: util.toFixed(2),
-//                 hrd: hrd.toFixed(2),
-//             };
-//         });
-
-//         res.json(result);
-//     } catch (error) {
-//         console.error("Erreur dans getPerormancesEnginsPeriode", error);
-//         res.status(500).json({
-//             error: "Erreur interne du serveur",
-//             details: error.message,
-//         });
-//     }
-// };
-
 
 const getPerormancesEnginsPeriode = async (req, res) => {
     try {

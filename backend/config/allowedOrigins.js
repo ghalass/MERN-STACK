@@ -7,7 +7,8 @@ const allowedOrigins = [
     'https://app1.ghalass.com',   // Production frontend
     'https://api1.ghalass.com',   // Add your API domain if needed for web access
     "*",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    'https://apsem-v3-client.ghalass.com',
 ];
 
 module.exports = allowedOrigins;

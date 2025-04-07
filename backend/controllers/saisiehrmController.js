@@ -260,28 +260,23 @@ const getSaisieHrm = async (req, res) => {
 const getSaisieHrmDay = async (req, res) => {
     try {
         const { du } = req.body;
-        const dateCible = new Date(du);
 
-        const startDate = new Date(du); // 2025-03-29T00:00:00.000Z
-        startDate.setHours(0, 0, 0, 0); // 00:00:00.000
+        // Convertir la date en objet Date
+        const dateDu = new Date(du);
 
-        const endDate = new Date(startDate);
-        endDate.setHours(23, 59, 59, 999); // 23:59:59.999
+        // Calculer le premier et le dernier jour du mois
+        const firstDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth(), 1);
+        const lastDayOfMonth = new Date(dateDu.getFullYear(), dateDu.getMonth() + 1, 0);
 
-        // Formater la date pour l'affichage (jj-mm-aaaa)
-        const formatDate = (date) => {
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}-${month}-${year}`;
-        };
+        firstDayOfMonth.setHours(0, 0, 0, 0); // 00:00:00.000
+        lastDayOfMonth.setHours(23, 59, 59, 999); // 23:59:59.999
 
-        // Récupérer toutes les saisies HRM pour la date exacte avec les relations nécessaires
+        // Récupérer toutes les saisies HRM pour la période avec les relations nécessaires
         const saisies = await prisma.saisiehrm.findMany({
             where: {
                 du: {
-                    gte: startDate,  // Greater than or equal to start of day
-                    lte: endDate      // Less than start of next day
+                    gte: firstDayOfMonth,
+                    lte: lastDayOfMonth
                 }
             },
             include: {
@@ -294,17 +289,21 @@ const getSaisieHrmDay = async (req, res) => {
                         }
                     }
                 },
-                Site: true,  // On inclut maintenant le Site depuis Saisiehrm
+                Site: true,
                 Saisiehim: {
                     include: {
                         Panne: true,
                         Saisielubrifiant: {
                             include: {
-                                Lubrifiant: true
+                                Lubrifiant: true,
+                                Typeconsommationlub: true
                             }
                         }
                     }
                 }
+            },
+            orderBy: {
+                du: 'asc' // Tri par date croissante
             }
         });
 
@@ -312,23 +311,24 @@ const getSaisieHrmDay = async (req, res) => {
         const result = [];
 
         // Traiter chaque saisie HRM
-        saisies.forEach(saisie => {
+        for (const saisie of saisies) {
             const baseData = {
-                date: formatDate(dateCible),
+                date: saisie.du.toISOString().split('T')[0], // Format YYYY-MM-DD
                 typeparc: saisie.Engin.Parc.Typeparc.name,
                 parc: saisie.Engin.Parc.name,
                 engin: saisie.Engin.name,
-                site: saisie.Site.name,  // On prend maintenant le site depuis Saisiehrm
+                site: saisie.Site.name,
                 hrm: saisie.hrm
             };
 
             // Si l'engin a des pannes (Saisiehim)
             if (saisie.Saisiehim && saisie.Saisiehim.length > 0) {
-                saisie.Saisiehim.forEach(saisieHim => {
+                for (const saisieHim of saisie.Saisiehim) {
                     // Préparer les lubrifiants consommés
                     const lubrifiants = saisieHim.Saisielubrifiant.map(lub => ({
                         name: lub.Lubrifiant.name,
-                        qte: lub.qte
+                        qte: lub.qte,
+                        typeConsommation: lub.Typeconsommationlub?.name || null
                     }));
 
                     result.push({
@@ -336,9 +336,10 @@ const getSaisieHrmDay = async (req, res) => {
                         panne: saisieHim.Panne.name,
                         him: saisieHim.him,
                         ni: saisieHim.ni,
+                        obs: saisieHim.obs || null,
                         lubrifiants: lubrifiants
                     });
-                });
+                }
             } else {
                 // Si l'engin n'a pas de pannes
                 result.push({
@@ -346,19 +347,22 @@ const getSaisieHrmDay = async (req, res) => {
                     panne: null,
                     him: 0,
                     ni: 0,
+                    obs: null,
                     lubrifiants: []
                 });
             }
-        });
+        }
 
         return res.status(200).json(result);
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Erreur serveur" });
+        console.error('Erreur:', error);
+        return res.status(500).json({
+            message: "Erreur serveur",
+            error: error.message
+        });
     }
 };
-
 
 module.exports = {
     get_byengin_and_date,
