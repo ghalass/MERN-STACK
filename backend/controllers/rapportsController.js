@@ -585,9 +585,7 @@ const getHeuresChassis = async (req, res) => {
 const getSpecLub = async (req, res) => {
     try {
         const { typelubrifiantId, year } = req.body;
-        console.log(year);
 
-        // Validation des paramètres
         if (!typelubrifiantId || !year) {
             return res.status(400).json({
                 message: "typelubrifiantId and year are required"
@@ -598,7 +596,6 @@ const getSpecLub = async (req, res) => {
         const startDate = new Date(yearNum, 0, 1);
         const endDate = new Date(yearNum + 1, 0, 1);
 
-        // Récupérer le type de lubrifiant
         const typelubrifiant = await prisma.typelubrifiant.findUnique({
             where: { id: parseInt(typelubrifiantId) }
         });
@@ -607,7 +604,6 @@ const getSpecLub = async (req, res) => {
             return res.status(404).json({ message: "Typelubrifiant not found" });
         }
 
-        // Récupérer tous les parcs triés par nom avec leurs engins
         const parcs = await prisma.parc.findMany({
             orderBy: { name: 'asc' },
             include: {
@@ -616,7 +612,6 @@ const getSpecLub = async (req, res) => {
                 }
             }
         });
-
 
         const result = await Promise.all(parcs.map(async (parc) => {
             const parcResult = {
@@ -628,14 +623,12 @@ const getSpecLub = async (req, res) => {
                 qte_total: 0
             };
 
-            // Initialiser les valeurs mensuelles (1-12)
             for (let month = 1; month <= 12; month++) {
                 parcResult[`hrm_${month}`] = 0;
                 parcResult[`qte_${month}`] = 0;
                 parcResult[`spec_${month}`] = 0;
             }
 
-            // 1. Calcul des HRM par mois
             const hrmByMonth = await prisma.saisiehrm.groupBy({
                 by: ['du'],
                 where: {
@@ -648,14 +641,12 @@ const getSpecLub = async (req, res) => {
                 _sum: { hrm: true }
             });
 
-            // Traitement des HRM
             hrmByMonth.forEach(({ du, _sum }) => {
-                const month = du.getMonth() + 1; // Convertir en 1-12
+                const month = du.getMonth() + 1;
                 parcResult[`hrm_${month}`] += _sum.hrm;
                 parcResult.hrm_total += _sum.hrm;
             });
 
-            // 2. Calcul des quantités par mois
             const qteByMonth = await prisma.saisielubrifiant.findMany({
                 where: {
                     Lubrifiant: { typelubrifiantId: parseInt(typelubrifiantId) },
@@ -680,21 +671,25 @@ const getSpecLub = async (req, res) => {
                 }
             });
 
-            // Traitement des quantités
             qteByMonth.forEach(({ qte, Saisiehim }) => {
-                const month = Saisiehim.Saisiehrm.du.getMonth() + 1; // Convertir en 1-12
+                const month = Saisiehim.Saisiehrm.du.getMonth() + 1;
                 parcResult[`qte_${month}`] += qte;
                 parcResult.qte_total += qte;
             });
 
-            // Calcul des spécifications mensuelles avec 2 décimales
+            // Formatage à 2 décimales pour toutes les valeurs
             for (let month = 1; month <= 12; month++) {
                 const hrm = parcResult[`hrm_${month}`];
                 const qte = parcResult[`qte_${month}`];
-                parcResult[`spec_${month}`] = hrm > 0 ? parseFloat((qte / hrm).toFixed(2)) : 0;
+                const spec = hrm > 0 ? qte / hrm : 0;
+
+                parcResult[`hrm_${month}`] = parseFloat(hrm.toFixed(2));
+                parcResult[`qte_${month}`] = parseFloat(qte.toFixed(2));
+                parcResult[`spec_${month}`] = parseFloat(spec.toFixed(2));
             }
 
-            // Calcul de la spécification totale avec 2 décimales
+            parcResult.hrm_total = parseFloat(parcResult.hrm_total.toFixed(2));
+            parcResult.qte_total = parseFloat(parcResult.qte_total.toFixed(2));
             parcResult.spec_total = parcResult.hrm_total > 0
                 ? parseFloat((parcResult.qte_total / parcResult.hrm_total).toFixed(2))
                 : 0;
@@ -712,6 +707,7 @@ const getSpecLub = async (req, res) => {
         });
     }
 };
+
 
 const getParetoIndispoParc = async (req, res) => {
     try {
