@@ -41,7 +41,8 @@ model Parc {
   typeparcId           Int
   engins               Engin[]
   typesConsommationLub TypeconsommationlubParc[]
-  TypepanneParc        TypepanneParc[]
+  typepanneParc        TypepanneParc[]
+  lubrifiantParc       LubrifiantParc[]
 
   Typeparc Typeparc @relation(fields: [typeparcId], references: [id], onDelete: Restrict)
 }
@@ -61,6 +62,16 @@ model TypeconsommationlubParc {
 
   @@id([parcId, typeconsommationlubId])
   @@map("typeconsommationlub_parc")
+}
+
+model LubrifiantParc {
+  parcId       Int        @map("parc_id")
+  lubrifiantId Int        @map("lubrifiant_id")
+  parc         Parc       @relation(fields: [parcId], references: [id])
+  lubrifiant   Lubrifiant @relation(fields: [lubrifiantId], references: [id])
+
+  @@id([parcId, lubrifiantId])
+  @@map("lubrifiant_parc")
 }
 
 model Engin {
@@ -156,6 +167,7 @@ model Lubrifiant {
   // Relations
   Typelubrifiant   Typelubrifiant     @relation(fields: [typelubrifiantId], references: [id], onDelete: Restrict)
   Saisielubrifiant Saisielubrifiant[]
+  LubrifiantParc   LubrifiantParc[]
 }
 
 model Saisielubrifiant {

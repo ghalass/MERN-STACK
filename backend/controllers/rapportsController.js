@@ -708,7 +708,6 @@ const getSpecLub = async (req, res) => {
     }
 };
 
-
 const getParetoIndispoParc = async (req, res) => {
     try {
         const { parcId, date } = req.body;

@@ -257,7 +257,6 @@ const deleteAffectationTypepanne = async (req, res) => {
     }
 };
 
-
 const getAllTypepannesByParcId = async (req, res) => {
     try {
         const { id } = req.params;
