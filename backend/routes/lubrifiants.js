@@ -36,7 +36,6 @@ router.patch('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), updateLubrifiant)
 // DELETE a workout
 router.delete('/:id', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteLubrifiant)
 
-
 router.post('/affectparctolubrifiant', allowedRoles(['SUPER_ADMIN', 'ADMIN']), addParcToLubrifiant)
 router.delete('/affectparctolubrifiant/delete', allowedRoles(['SUPER_ADMIN', 'ADMIN']), deleteAffectationLubrifiant)
 router.get('/affectparctolubrifiant/byparcid/:id', getAllLubrifiantsByParcId)
